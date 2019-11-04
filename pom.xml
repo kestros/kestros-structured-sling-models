@@ -161,9 +161,11 @@ under the License.
             <Sling-Model-Packages>
               io.kestros.commons.structuredslingmodels
             </Sling-Model-Packages>
+            <Bundle-Category>kestros</Bundle-Category>
           </instructions>
         </configuration>
       </plugin>
+
     </plugins>
   </build>
 
