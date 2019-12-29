@@ -77,11 +77,7 @@ public class BaseResource extends BaseSlingModel {
    */
   @JsonIgnore
   public BaseResource getParent() throws NoParentResourceException {
-    Resource parent = getResource().getParent();
-    if (parent != null) {
-      return SlingModelUtils.adaptToBaseResource(parent);
-    }
-    throw new NoParentResourceException(getPath());
+    return SlingModelUtils.getParentResourceAsBaseResource(this);
   }
 
   /**
