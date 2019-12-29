@@ -19,11 +19,15 @@
 
 package io.kestros.commons.structuredslingmodels.filetypes;
 
+import java.util.List;
+
 public interface FileType {
 
   String getExtension();
 
-  String getContentType();
+  String getOutputContentType();
+
+  List<String> getReadableContentTypes();
 
   String getFileType();
 }
