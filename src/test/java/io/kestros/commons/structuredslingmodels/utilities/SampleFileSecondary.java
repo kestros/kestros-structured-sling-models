@@ -29,11 +29,11 @@ import org.apache.sling.models.annotations.Model;
 
 @Model(adaptables = Resource.class,
        resourceType = "nt:file")
-public class SampleFile extends BaseFile {
+public class SampleFileSecondary extends BaseFile {
 
   @PostConstruct
   public void validate() {
-    if (!getName().endsWith(".sample")) {
+    if (!getName().endsWith(".sample-secondary")) {
       addErrorMessage("invalid file type");
     }
   }
@@ -43,22 +43,22 @@ public class SampleFile extends BaseFile {
     return new FileType() {
       @Override
       public String getExtension() {
-        return "sample";
+        return "sample-secondary";
       }
 
       @Override
       public String getOutputContentType() {
-        return "sample/test";
+        return "sample-secondary/test";
       }
 
       @Override
       public List<String> getReadableContentTypes() {
-        return Arrays.asList("sample/test");
+        return Arrays.asList("sample-secondary/test");
       }
 
       @Override
       public String getFileType() {
-        return "sample";
+        return "sample-secondary";
       }
     };
   }

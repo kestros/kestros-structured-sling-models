@@ -29,30 +29,44 @@ import org.junit.Test;
 
 public class DefaultModelValidationServiceTest {
 
-    @Rule
-    public SlingContext context = new SlingContext();
+  @Rule
+  public SlingContext context = new SlingContext();
 
-    private DefaultModelValidationService service;
-    private Resource resource;
+  private DefaultModelValidationService service;
+  private Resource resource;
 
-    @Before
-    public void setUp() throws Exception {
-        service = new DefaultModelValidationService();
-        context.addModelsForPackage("io.kestros");
-    }
+  @Before
+  public void setUp() throws Exception {
+    service = new DefaultModelValidationService();
+    context.addModelsForPackage("io.kestros");
+  }
 
-    @Test
-    public void testGetModel() throws Exception {
-        resource = context.create().resource("/resource");
+  @Test
+  public void testGetModel() throws Exception {
+    resource = context.create().resource("/resource");
 
-        BaseResource baseResource = resource.adaptTo(BaseResource.class);
-        service.setModel(baseResource);
+    BaseResource baseResource = resource.adaptTo(BaseResource.class);
+    service.setModel(baseResource);
 
-        Assert.assertEquals(BaseResource.class, service.getModel().getClass());
-    }
+    Assert.assertEquals(BaseResource.class, service.getModel().getClass());
+  }
 
-    @Test
-    public void testRegisterValidators() throws Exception {
-        service.registerBasicValidators();
-    }
+  @Test(expected = IllegalStateException.class)
+  public void testGetModelWhenGenericModelIsNotInstanceOfBaseResource() throws Exception {
+    resource = context.create().resource("/resource");
+
+    service.setModel(null);
+
+    Assert.assertEquals(BaseResource.class, service.getModel().getClass());
+  }
+
+  @Test
+  public void testRegisterBasicValidators() throws Exception {
+    service.registerBasicValidators();
+  }
+
+  @Test
+  public void testRegisterDetailedValidators() throws Exception {
+    service.registerDetailedValidators();
+  }
 }

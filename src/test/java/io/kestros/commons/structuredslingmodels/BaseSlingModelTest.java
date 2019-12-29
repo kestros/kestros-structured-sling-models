@@ -21,12 +21,15 @@ package io.kestros.commons.structuredslingmodels;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
 import io.kestros.commons.structuredslingmodels.services.ValidationProviderService;
 import io.kestros.commons.structuredslingmodels.services.impl.BaseValidationProviderService;
 import io.kestros.commons.structuredslingmodels.utilities.SampleResourceModel;
 import io.kestros.commons.structuredslingmodels.validation.DefaultModelValidationService;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Assert;
@@ -34,15 +37,11 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class BaseSlingModelTest {
 
   @Rule
   public final SlingContext context = new SlingContext();
 
-  private BaseSlingModel model;
   private BaseValidationProviderService validationProviderService;
 
   Map<String, Object> properties = new HashMap<>();
@@ -55,13 +54,13 @@ public class BaseSlingModelTest {
 
     context.registerService(ValidationProviderService.class, validationProviderService);
 
-    model = new BaseSlingModel();
-    model = spy(model);
     resource = context.create().resource("/resource", properties);
   }
 
   @Test
   public void testGetErrorMessages() throws Exception {
+    BaseSlingModel model = new BaseSlingModel();
+
     model.addErrorMessage("This is an error message.");
     model.addErrorMessage("This is an error message.");
     model.addErrorMessage("This is another error message.");
@@ -84,6 +83,8 @@ public class BaseSlingModelTest {
 
   @Test
   public void testGetWarningMessages() throws Exception {
+    BaseSlingModel model = new BaseSlingModel();
+
     model.addErrorMessage("This is an error message.");
     model.addErrorMessage("This is an error message.");
     model.addErrorMessage("This is another error message.");
@@ -106,6 +107,8 @@ public class BaseSlingModelTest {
 
   @Test
   public void testGetInfoMessages() throws Exception {
+    BaseSlingModel model = new BaseSlingModel();
+
     model.addErrorMessage("This is an error message.");
     model.addErrorMessage("This is an error message.");
     model.addErrorMessage("This is another error message.");
@@ -128,58 +131,61 @@ public class BaseSlingModelTest {
 
   @Test
   public void testGetBasicValidators() {
-    model = resource.adaptTo(SampleResourceModel.class);
+    BaseSlingModel model = resource.adaptTo(SampleResourceModel.class);
 
     assertEquals(10, model.getBasicValidators().size());
   }
 
   @Test
   public void testGetBasicValidatorsWhenProviderServiceIsNull() {
-    model = new SampleResourceModel();
+    SampleResourceModel model = new SampleResourceModel();
+    model = spy(model);
 
     assertEquals(0, model.getBasicValidators().size());
   }
 
   @Test
   public void testGetDetailedValidators() {
-    model = resource.adaptTo(SampleResourceModel.class);
+    BaseSlingModel model = resource.adaptTo(SampleResourceModel.class);
 
     assertEquals(1, model.getDetailedValidators().size());
   }
 
   @Test
   public void testGetDetailedValidatorsWhenProviderServiceIsNull() {
-    model = new SampleResourceModel();
+    BaseSlingModel model = new BaseSlingModel();
+    model = spy(model);
 
     assertEquals(0, model.getDetailedValidators().size());
   }
 
   @Test
   public void testGetValidators() {
-    model = resource.adaptTo(SampleResourceModel.class);
+    SampleResourceModel model = resource.adaptTo(SampleResourceModel.class);
 
     assertEquals(11, model.getValidators().size());
   }
 
   @Test
   public void testGetValidatorsWhenProviderServiceIsNull() {
-    model = new SampleResourceModel();
+    BaseSlingModel model = new BaseSlingModel();
+    model = spy(model);
 
     assertEquals(0, model.getValidators().size());
   }
 
   @Test
   public void testGetValidatorsWhenModelValidationServiceIsNull() {
-    model = new BaseResource();
-    model = resource.adaptTo(BaseResource.class);
+    BaseSlingModel model = new BaseSlingModel();
+
+    model = spy(model);
 
     assertEquals(0, model.getValidators().size());
   }
 
-
   @Test
   public void testValidate() {
-    model = resource.adaptTo(SampleResourceModel.class);
+    BaseSlingModel model = resource.adaptTo(SampleResourceModel.class);
 
     model.validate();
 
@@ -197,8 +203,21 @@ public class BaseSlingModelTest {
   }
 
   @Test
+  public void testValidateWhenValidationProviderServiceIsNull() {
+    BaseSlingModel model = spy(new BaseSlingModel());
+
+    doReturn(null).when(model).getValidationProviderService();
+
+    model.validate();
+
+    assertEquals(0, model.getErrorMessages().size());
+    assertEquals(0, model.getWarningMessages().size());
+    assertEquals(0, model.getInfoMessages().size());
+  }
+
+  @Test
   public void testValidateWithDetailedValidation() {
-    model = resource.adaptTo(SampleResourceModel.class);
+    BaseSlingModel model = resource.adaptTo(SampleResourceModel.class);
 
     model.doDetailedValidation();
 
@@ -219,7 +238,7 @@ public class BaseSlingModelTest {
   @Test
   public void testDoDetailedValidationWhenModelValidationServiceIsNull() {
 
-    model = resource.adaptTo(BaseResource.class);
+    BaseSlingModel model = resource.adaptTo(BaseResource.class);
 
     model.doDetailedValidation();
 
@@ -231,8 +250,22 @@ public class BaseSlingModelTest {
   }
 
   @Test
+  public void testDoDetailedValidationWhenValidatoinProviderServiceIsNull() {
+
+    BaseSlingModel model = spy(resource.adaptTo(BaseResource.class));
+
+    doReturn(null).when(model).getValidationProviderService();
+
+    model.doDetailedValidation();
+
+    assertEquals(0, model.getErrorMessages().size());
+    assertEquals(0, model.getWarningMessages().size());
+    assertEquals(0, model.getInfoMessages().size());
+  }
+
+  @Test
   public void testGetModelValidationService() {
-    model = resource.adaptTo(SampleResourceModel.class);
+    BaseSlingModel model = resource.adaptTo(SampleResourceModel.class);
 
     assertNotNull(model.getModelValidationService());
     Assert.assertEquals("SampleModelValidationService",
@@ -242,8 +275,17 @@ public class BaseSlingModelTest {
 
   @Test
   public void testGetModelValidationServiceWhenNoneSet() {
-    model = resource.adaptTo(BaseResource.class);
+    BaseSlingModel model = resource.adaptTo(BaseResource.class);
     Assert.assertEquals(DefaultModelValidationService.class,
         model.getModelValidationService().getClass());
+  }
+
+  @Test
+  public void testGetModelValidationServiceWhenValidationProviderServiceIsNull() {
+    BaseSlingModel model = spy(resource.adaptTo(BaseResource.class));
+
+    doReturn(null).when(model).getValidationProviderService();
+
+    Assert.assertNull(model.getModelValidationService());
   }
 }

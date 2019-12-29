@@ -30,17 +30,16 @@ import io.kestros.commons.structuredslingmodels.services.impl.BaseValidationProv
 import io.kestros.commons.structuredslingmodels.utilities.SampleFile;
 import io.kestros.commons.structuredslingmodels.utilities.SampleResourceModel;
 import io.kestros.commons.structuredslingmodels.utils.SlingModelUtils;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class CommonValidatorsTest {
 
@@ -72,7 +71,7 @@ public class CommonValidatorsTest {
     assertTrue(CommonValidators.hasTitle(baseResource).isValid());
     assertEquals("Title is configured.", CommonValidators.hasTitle(baseResource).getMessage());
     Assert.assertEquals(ModelValidationMessageType.ERROR,
-                        CommonValidators.hasTitle(baseResource).getType());
+        CommonValidators.hasTitle(baseResource).getType());
   }
 
   @Test
@@ -87,7 +86,7 @@ public class CommonValidatorsTest {
     assertFalse(CommonValidators.hasTitle(baseResource).isValid());
     assertEquals("Title is configured.", CommonValidators.hasTitle(baseResource).getMessage());
     Assert.assertEquals(ModelValidationMessageType.ERROR,
-                        CommonValidators.hasTitle(baseResource).getType());
+        CommonValidators.hasTitle(baseResource).getType());
   }
 
   @Test
@@ -100,13 +99,10 @@ public class CommonValidatorsTest {
     assertEquals("Description", baseResource.getDescription());
     assertTrue(
         CommonValidators.hasDescription(baseResource, ModelValidationMessageType.ERROR).isValid());
-    assertEquals("Description is configured.",
-                 CommonValidators.hasDescription(baseResource, ModelValidationMessageType.ERROR)
-                                 .getMessage());
-    Assert.assertEquals(
-        ModelValidationMessageType.ERROR, CommonValidators.hasDescription(baseResource,
-                                                                          ModelValidationMessageType.ERROR)
-                                                          .getType());
+    assertEquals("Description is configured.", CommonValidators.hasDescription(baseResource,
+        ModelValidationMessageType.ERROR).getMessage());
+    Assert.assertEquals(ModelValidationMessageType.ERROR,
+        CommonValidators.hasDescription(baseResource, ModelValidationMessageType.ERROR).getType());
   }
 
   @Test
@@ -118,13 +114,10 @@ public class CommonValidatorsTest {
     assertEquals("", baseResource.getDescription());
     assertFalse(
         CommonValidators.hasDescription(baseResource, ModelValidationMessageType.ERROR).isValid());
-    assertEquals("Description is configured.",
-                 CommonValidators.hasDescription(baseResource, ModelValidationMessageType.ERROR)
-                                 .getMessage());
-    Assert.assertEquals(
-        ModelValidationMessageType.ERROR, CommonValidators.hasDescription(baseResource,
-                                                                          ModelValidationMessageType.ERROR)
-                                                          .getType());
+    assertEquals("Description is configured.", CommonValidators.hasDescription(baseResource,
+        ModelValidationMessageType.ERROR).getMessage());
+    Assert.assertEquals(ModelValidationMessageType.ERROR,
+        CommonValidators.hasDescription(baseResource, ModelValidationMessageType.ERROR).getType());
   }
 
   @Test
@@ -133,18 +126,14 @@ public class CommonValidatorsTest {
 
     baseResource = resource.adaptTo(BaseResource.class);
 
-    assertTrue(
-        CommonValidators.hasFileExtension("css", baseResource, ModelValidationMessageType.ERROR)
-                        .isValid());
-    assertEquals(
-        "Resource name ends with css extension.", CommonValidators.hasFileExtension("css",
-                                                                                    baseResource,
-                                                                                    ModelValidationMessageType.ERROR)
-                                                                  .getMessage());
-    Assert.assertEquals(
-        ModelValidationMessageType.ERROR, CommonValidators.hasFileExtension("css", baseResource,
-                                                                            ModelValidationMessageType.ERROR)
-                                                          .getType());
+    assertTrue(CommonValidators.hasFileExtension("css", baseResource,
+        ModelValidationMessageType.ERROR).isValid());
+    assertEquals("Resource name ends with css extension.",
+        CommonValidators.hasFileExtension("css", baseResource,
+            ModelValidationMessageType.ERROR).getMessage());
+    Assert.assertEquals(ModelValidationMessageType.ERROR,
+        CommonValidators.hasFileExtension("css", baseResource,
+            ModelValidationMessageType.ERROR).getType());
   }
 
   @Test
@@ -153,18 +142,14 @@ public class CommonValidatorsTest {
 
     baseResource = resource.adaptTo(BaseResource.class);
 
-    assertFalse(
-        CommonValidators.hasFileExtension("css", baseResource, ModelValidationMessageType.ERROR)
-                        .isValid());
-    assertEquals(
-        "Resource name ends with css extension.", CommonValidators.hasFileExtension("css",
-                                                                                    baseResource,
-                                                                                    ModelValidationMessageType.ERROR)
-                                                                  .getMessage());
-    Assert.assertEquals(
-        ModelValidationMessageType.ERROR, CommonValidators.hasFileExtension("css", baseResource,
-                                                                            ModelValidationMessageType.ERROR)
-                                                          .getType());
+    assertFalse(CommonValidators.hasFileExtension("css", baseResource,
+        ModelValidationMessageType.ERROR).isValid());
+    assertEquals("Resource name ends with css extension.",
+        CommonValidators.hasFileExtension("css", baseResource,
+            ModelValidationMessageType.ERROR).getMessage());
+    Assert.assertEquals(ModelValidationMessageType.ERROR,
+        CommonValidators.hasFileExtension("css", baseResource,
+            ModelValidationMessageType.ERROR).getType());
   }
 
   @Test
@@ -176,38 +161,30 @@ public class CommonValidatorsTest {
 
     assertTrue(CommonValidators.hasChildResource("child", baseResource).isValid());
     assertEquals("Has child resource 'child'.",
-                 CommonValidators.hasChildResource("child", baseResource).getMessage());
+        CommonValidators.hasChildResource("child", baseResource).getMessage());
     Assert.assertEquals(ModelValidationMessageType.ERROR,
-                        CommonValidators.hasChildResource("child", baseResource).getType());
+        CommonValidators.hasChildResource("child", baseResource).getType());
 
-    assertTrue(
-        CommonValidators.isChildResourceValidResourceType("child", BaseResource.class, baseResource)
-                        .isValid());
-    assertEquals(
-        "Has valid child resource 'child'.", CommonValidators
-                                                 .isChildResourceValidResourceType("child",
-                                                                                   SampleResourceModel.class,
-                                                                                   baseResource)
-                                                 .getMessage());
-    Assert.assertEquals(
-        ModelValidationMessageType.ERROR, CommonValidators.isChildResourceValidResourceType("child",
-                                                                                            SampleResourceModel.class,
-                                                                                            baseResource)
-                                                          .getType());
+    assertTrue(CommonValidators.isChildResourceValidResourceType("child", BaseResource.class,
+        baseResource).isValid());
+    assertEquals("Has valid child resource 'child'.",
+        CommonValidators.isChildResourceValidResourceType("child", SampleResourceModel.class,
+            baseResource).getMessage());
+    Assert.assertEquals(ModelValidationMessageType.ERROR,
+        CommonValidators.isChildResourceValidResourceType("child", SampleResourceModel.class,
+            baseResource).getType());
 
     assertTrue(CommonValidators.hasValidChild("child", BaseResource.class, baseResource).isValid());
     assertFalse(
         CommonValidators.hasValidChild("child", SampleResourceModel.class, baseResource).isValid());
     assertEquals("All of the following are true:",
-                 CommonValidators.hasValidChild("child", SampleResourceModel.class, baseResource)
-                                 .getMessage());
-    Assert.assertEquals(
-        ModelValidationMessageType.ERROR, CommonValidators.hasValidChild("child",
-                                                                         SampleResourceModel.class,
-                                                                         baseResource).getType());
+        CommonValidators.hasValidChild("child", SampleResourceModel.class,
+            baseResource).getMessage());
+    Assert.assertEquals(ModelValidationMessageType.ERROR,
+        CommonValidators.hasValidChild("child", SampleResourceModel.class, baseResource).getType());
     assertEquals("Has valid child SampleResourceModel 'child'",
-                 CommonValidators.hasValidChild("child", SampleResourceModel.class, baseResource)
-                                 .getBundleMessage());
+        CommonValidators.hasValidChild("child", SampleResourceModel.class,
+            baseResource).getBundleMessage());
   }
 
   @Test
@@ -219,36 +196,29 @@ public class CommonValidatorsTest {
 
     assertTrue(CommonValidators.hasChildResource("child", baseResource).isValid());
     assertEquals("Has child resource 'child'.",
-                 CommonValidators.hasChildResource("child", baseResource).getMessage());
+        CommonValidators.hasChildResource("child", baseResource).getMessage());
     Assert.assertEquals(ModelValidationMessageType.ERROR,
-                        CommonValidators.hasChildResource("child", baseResource).getType());
+        CommonValidators.hasChildResource("child", baseResource).getType());
 
-    assertFalse(CommonValidators
-                    .isChildResourceValidResourceType("child", SampleResourceModel.class,
-                                                      baseResource).isValid());
-    assertEquals(
-        "Has valid child resource 'child'.", CommonValidators
-                                                 .isChildResourceValidResourceType("child",
-                                                                                   SampleResourceModel.class,
-                                                                                   baseResource)
-                                                 .getMessage());
-    Assert.assertEquals(
-        ModelValidationMessageType.ERROR, CommonValidators.isChildResourceValidResourceType("child",
-                                                                                            SampleResourceModel.class,
-                                                                                            baseResource)
-                                                          .getType());
+    assertFalse(
+        CommonValidators.isChildResourceValidResourceType("child", SampleResourceModel.class,
+            baseResource).isValid());
+    assertEquals("Has valid child resource 'child'.",
+        CommonValidators.isChildResourceValidResourceType("child", SampleResourceModel.class,
+            baseResource).getMessage());
+    Assert.assertEquals(ModelValidationMessageType.ERROR,
+        CommonValidators.isChildResourceValidResourceType("child", SampleResourceModel.class,
+            baseResource).getType());
 
     assertFalse(
         CommonValidators.hasValidChild("child", SampleResourceModel.class, baseResource).isValid());
     assertFalse(
         CommonValidators.hasValidChild("child", SampleResourceModel.class, baseResource).isValid());
     assertEquals("All of the following are true:",
-                 CommonValidators.hasValidChild("child", SampleResourceModel.class, baseResource)
-                                 .getMessage());
-    Assert.assertEquals(
-        ModelValidationMessageType.ERROR, CommonValidators.hasValidChild("child",
-                                                                         SampleResourceModel.class,
-                                                                         baseResource).getType());
+        CommonValidators.hasValidChild("child", SampleResourceModel.class,
+            baseResource).getMessage());
+    Assert.assertEquals(ModelValidationMessageType.ERROR,
+        CommonValidators.hasValidChild("child", SampleResourceModel.class, baseResource).getType());
   }
 
   @Test
@@ -256,37 +226,15 @@ public class CommonValidatorsTest {
     resource = context.create().resource("/resource", properties);
 
     baseResource = resource.adaptTo(BaseResource.class);
-
-    assertFalse(CommonValidators.hasChildResource("child", baseResource).isValid());
-    assertEquals("Has child resource 'child'.",
-                 CommonValidators.hasChildResource("child", baseResource).getMessage());
-    Assert.assertEquals(ModelValidationMessageType.ERROR,
-                        CommonValidators.hasChildResource("child", baseResource).getType());
-
-    assertFalse(CommonValidators
-                    .isChildResourceValidResourceType("child", SampleResourceModel.class,
-                                                      baseResource).isValid());
-    assertEquals(
-        "Has valid child resource 'child'.", CommonValidators
-                                                 .isChildResourceValidResourceType("child",
-                                                                                   SampleResourceModel.class,
-                                                                                   baseResource)
-                                                 .getMessage());
-    Assert.assertEquals(
-        ModelValidationMessageType.ERROR, CommonValidators.isChildResourceValidResourceType("child",
-                                                                                            SampleResourceModel.class,
-                                                                                            baseResource)
-                                                          .getType());
-
-    assertFalse(
-        CommonValidators.hasValidChild("child", SampleResourceModel.class, baseResource).isValid());
+    ModelValidatorBundle bundle = CommonValidators.hasValidChild("child", SampleResourceModel.class,
+        baseResource);
+    assertFalse(bundle.getValidators().get(0).isValid());
+    assertFalse(bundle.getValidators().get(1).isValid());
     assertEquals("All of the following are true:",
-                 CommonValidators.hasValidChild("child", SampleResourceModel.class, baseResource)
-                                 .getMessage());
-    Assert.assertEquals(
-        ModelValidationMessageType.ERROR, CommonValidators.hasValidChild("child",
-                                                                         SampleResourceModel.class,
-                                                                         baseResource).getType());
+        CommonValidators.hasValidChild("child", SampleResourceModel.class,
+            baseResource).getMessage());
+    Assert.assertEquals(ModelValidationMessageType.ERROR,
+        CommonValidators.hasValidChild("child", SampleResourceModel.class, baseResource).getType());
   }
 
   @Test
@@ -296,8 +244,20 @@ public class CommonValidatorsTest {
     baseResource = resource.adaptTo(SampleFile.class);
 
     assertEquals(1, CommonValidators.getFailedErrorValidators(baseResource).size());
+    assertFalse(CommonValidators.getFailedErrorValidators(baseResource).get(0).isValid());
+    assertEquals(ModelValidationMessageType.ERROR, CommonValidators.getFailedErrorValidators(
+        baseResource).get(0).getType());
     assertEquals("Error validator failed for /resource: invalid file type",
-                 CommonValidators.getFailedErrorValidators(baseResource).get(0).getMessage());
+        CommonValidators.getFailedErrorValidators(baseResource).get(0).getMessage());
+  }
+
+  @Test
+  public void testGetFailedErrorValidatorsWhenNoneFail() {
+    resource = context.create().resource("/resource.sample", properties);
+
+    baseResource = resource.adaptTo(SampleFile.class);
+
+    assertEquals(0, CommonValidators.getFailedErrorValidators(baseResource).size());
   }
 
   @Test
@@ -305,23 +265,38 @@ public class CommonValidatorsTest {
     properties.put("sling:resourceType", "kestros/commons/component");
     resource = context.create().resource("/resource", properties);
 
-    SampleResourceModel sampleResourceModel = SlingModelUtils.adaptTo(
-        resource, SampleResourceModel.class);
+    SampleResourceModel sampleResourceModel = SlingModelUtils.adaptTo(resource,
+        SampleResourceModel.class);
     sampleResourceModel.validate();
     sampleResourceModel.doDetailedValidation();
     assertEquals(1, CommonValidators.getFailedWarningValidators(sampleResourceModel).size());
+    assertFalse(CommonValidators.getFailedWarningValidators(sampleResourceModel).get(0).isValid());
+    assertEquals(ModelValidationMessageType.WARNING, CommonValidators.getFailedWarningValidators(
+        sampleResourceModel).get(0).getType());
     assertEquals("Warning validator failed for /resource: This is a warning validator.",
-                 CommonValidators.getFailedWarningValidators(sampleResourceModel).get(0)
-                                 .getMessage());
+        CommonValidators.getFailedWarningValidators(sampleResourceModel).get(0).getMessage());
   }
 
   @Test
-  public void testListContainsNoNulls() {
+  public void testListContainsNoNullsWhenEmpty() {
     List<Object> list = new ArrayList<>();
 
-    assertTrue(
-        CommonValidators.listContainsNoNulls(list, "message", ModelValidationMessageType.ERROR)
-                        .isValid());
+    assertTrue(CommonValidators.listContainsNoNulls(list, "message",
+        ModelValidationMessageType.ERROR).isValid());
+  }
+
+  @Test
+  public void testListContainsNoNullsWhenHasNoNulls() {
+    List<Object> list = new ArrayList<>();
+
+    list.add("test");
+    assertTrue(CommonValidators.listContainsNoNulls(list, "message",
+        ModelValidationMessageType.ERROR).isValid());
+    assertEquals(ModelValidationMessageType.ERROR,
+        CommonValidators.listContainsNoNulls(list, "message",
+            ModelValidationMessageType.ERROR).getType());
+    assertEquals("message", CommonValidators.listContainsNoNulls(list, "message",
+        ModelValidationMessageType.ERROR).getMessage());
   }
 
   @Test
@@ -329,15 +304,12 @@ public class CommonValidatorsTest {
     List<Object> list = new ArrayList<>();
 
     list.add(null);
-    assertFalse(
-        CommonValidators.listContainsNoNulls(list, "message", ModelValidationMessageType.ERROR)
-                        .isValid());
-    assertEquals(ModelValidationMessageType.ERROR, CommonValidators
-                                                       .listContainsNoNulls(list, "message",
-                                                                            ModelValidationMessageType.ERROR)
-                                                       .getType());
-    assertEquals("message", CommonValidators
-                         .listContainsNoNulls(list, "message", ModelValidationMessageType.ERROR)
-                         .getMessage());
+    assertFalse(CommonValidators.listContainsNoNulls(list, "message",
+        ModelValidationMessageType.ERROR).isValid());
+    assertEquals(ModelValidationMessageType.ERROR,
+        CommonValidators.listContainsNoNulls(list, "message",
+            ModelValidationMessageType.ERROR).getType());
+    assertEquals("message", CommonValidators.listContainsNoNulls(list, "message",
+        ModelValidationMessageType.ERROR).getMessage());
   }
 }
