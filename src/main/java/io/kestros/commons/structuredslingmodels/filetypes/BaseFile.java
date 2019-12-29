@@ -21,6 +21,7 @@ package io.kestros.commons.structuredslingmodels.filetypes;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.apache.jackrabbit.JcrConstants.JCR_DATA;
+import static org.apache.jackrabbit.JcrConstants.JCR_MIMETYPE;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.kestros.commons.structuredslingmodels.BasePage;
@@ -45,6 +46,10 @@ public abstract class BaseFile extends BasePage {
   private static final Logger LOG = LoggerFactory.getLogger(BaseFile.class);
 
   public abstract FileType getFileType();
+
+  public String getMimeType() {
+    return getProperties().get(JCR_MIMETYPE, StringUtils.EMPTY);
+  }
 
   /**
    * Content of the current file as an InputStream. Pulls from jcr:data property of the *
