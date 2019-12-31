@@ -23,15 +23,14 @@ import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertEquals;
 
 import io.kestros.commons.structuredslingmodels.exceptions.NoParentResourceException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public class BaseResourceTest {
 
@@ -191,12 +190,50 @@ public class BaseResourceTest {
 
   @Test
   public void testGetResourceTypeWhenJcrPrimaryTypeIsSet() {
-    properties.put("jcr:primaryType", "resource-type");
+    properties.put("jcr:primaryType", "jcr-primary-type");
     resource = context.create().resource("/resource-with-jcr-primary-type", properties);
 
     baseResource = resource.adaptTo(BaseResource.class);
 
-    assertEquals("resource-type", baseResource.getResourceType());
+    assertEquals("jcr-primary-type", baseResource.getResourceType());
+  }
+
+  @Test
+  public void testGetJcrPrimaryType() {
+    properties.put("jcr:primaryType", "jcr-primary-type");
+    resource = context.create().resource("/resource-with-jcr-primary-type", properties);
+
+    baseResource = resource.adaptTo(BaseResource.class);
+
+    assertEquals("jcr-primary-type", baseResource.getJcrPrimaryType());
+  }
+
+  @Test
+  public void testGetJcrPrimaryTypeWhenNotSet() {
+    resource = context.create().resource("/resource-with-jcr-primary-type", properties);
+
+    baseResource = resource.adaptTo(BaseResource.class);
+
+    assertEquals("", baseResource.getJcrPrimaryType());
+  }
+
+  @Test
+  public void testGetSlingResourceType() {
+    properties.put("sling:resourceType", "resource-type");
+    resource = context.create().resource("/resource-with-sling-resource-type", properties);
+
+    baseResource = resource.adaptTo(BaseResource.class);
+
+    assertEquals("resource-type", baseResource.getSlingResourceType());
+  }
+
+  @Test
+  public void testGetSlingResourceTypeWhenEmpty() {
+    resource = context.create().resource("/resource-with-sling-resource-type", properties);
+
+    baseResource = resource.adaptTo(BaseResource.class);
+
+    assertEquals("", baseResource.getSlingResourceType());
   }
 
   @Test

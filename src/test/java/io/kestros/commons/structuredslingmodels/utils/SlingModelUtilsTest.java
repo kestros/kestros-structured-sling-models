@@ -41,6 +41,11 @@ import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundExcep
 import io.kestros.commons.structuredslingmodels.utilities.SampleFile;
 import io.kestros.commons.structuredslingmodels.utilities.SampleRequestModel;
 import io.kestros.commons.structuredslingmodels.utilities.SampleResourceModel;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.models.factory.ModelFactory;
@@ -49,12 +54,6 @@ import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class SlingModelUtilsTest {
 
@@ -226,8 +225,8 @@ public class SlingModelUtilsTest {
     properties.put("sling:resourceType", "extending-resource-type");
 
     resource = context.create().resource("/apps/extending-resource-type", resourceTypeProperties);
-    resource = context.create().resource(
-        "/resource-implementing-extending-resource-type", properties);
+    resource = context.create().resource("/resource-implementing-extending-resource-type",
+        properties);
 
     assertTrue(SlingModelUtils.isValidResourceType(resource, SampleResourceModel.class));
   }
@@ -240,8 +239,8 @@ public class SlingModelUtilsTest {
     properties.put("sling:resourceType", "extending-resource-type");
 
     resource = context.create().resource("/apps/extending-resource-type", resourceTypeProperties);
-    resource = context.create().resource(
-        "/resource-implementing-extending-resource-type", properties);
+    resource = context.create().resource("/resource-implementing-extending-resource-type",
+        properties);
 
     assertFalse(SlingModelUtils.isValidResourceType(resource, SampleResourceModel.class));
   }
@@ -258,8 +257,8 @@ public class SlingModelUtilsTest {
     context.create().resource("/apps/extending-resource-type", thirdResourceTypeProperties);
 
     properties.put("sling:resourceType", "extending-resource-type");
-    resource = context.create().resource(
-        "/resource-implementing-extending-resource-type", properties);
+    resource = context.create().resource("/resource-implementing-extending-resource-type",
+        properties);
 
     assertTrue(SlingModelUtils.isValidResourceType(resource, SampleResourceModel.class));
   }
@@ -275,12 +274,12 @@ public class SlingModelUtilsTest {
 
     properties.put("sling:resourceType", "extending-resource-type");
 
-    resource = context.create().resource(
-        "/apps/secondary-resource-type", secondResourceTypeProperties);
-    resource = context.create().resource(
-        "/apps/extending-resource-type", thirdResourceTypeProperties);
-    resource = context.create().resource(
-        "/resource-implementing-extending-resource-type", properties);
+    resource = context.create().resource("/apps/secondary-resource-type",
+        secondResourceTypeProperties);
+    resource = context.create().resource("/apps/extending-resource-type",
+        thirdResourceTypeProperties);
+    resource = context.create().resource("/resource-implementing-extending-resource-type",
+        properties);
 
     assertFalse(SlingModelUtils.isValidResourceType(resource, SampleResourceModel.class));
   }
@@ -289,14 +288,14 @@ public class SlingModelUtilsTest {
   public void testGetResourceTypePathWhenApps() {
     resource = context.create().resource("/apps/my-resource");
     assertEquals("my-resource",
-                 SlingModelUtils.getResourceTypePath(resource.adaptTo(BaseResource.class)));
+        SlingModelUtils.getResourceTypePath(resource.adaptTo(BaseResource.class)));
   }
 
   @Test
   public void testGetResourceTypePathWhenLibs() {
     resource = context.create().resource("/libs/my-resource");
     assertEquals("my-resource",
-                 SlingModelUtils.getResourceTypePath(resource.adaptTo(BaseResource.class)));
+        SlingModelUtils.getResourceTypePath(resource.adaptTo(BaseResource.class)));
   }
 
 
@@ -330,8 +329,8 @@ public class SlingModelUtilsTest {
 
     resource = context.create().resource("/resource-with-child-framework");
     context.create().resource("/resource-with-child-framework/jcr:content");
-    context.create().resource(
-        "/resource-with-child-framework/jcr:content/ui-framework", properties);
+    context.create().resource("/resource-with-child-framework/jcr:content/ui-framework",
+        properties);
 
     assertNotNull(
         SlingModelUtils.getChildAsType("ui-framework", resource, SampleResourceModel.class));
@@ -453,8 +452,8 @@ public class SlingModelUtilsTest {
 
     resource = spy(resource);
 
-    List<SampleResourceModel> frameworkList = SlingModelUtils.getChildrenOfType(
-        resource, SampleResourceModel.class);
+    List<SampleResourceModel> frameworkList = SlingModelUtils.getChildrenOfType(resource,
+        SampleResourceModel.class);
 
     assertNotNull(frameworkList);
     assertEquals(4, frameworkList.size());
@@ -480,8 +479,8 @@ public class SlingModelUtilsTest {
 
     BaseResource baseResource = resource.adaptTo(BaseResource.class);
 
-    List<SampleResourceModel> frameworkList = SlingModelUtils.getChildrenOfType(
-        baseResource, SampleResourceModel.class);
+    List<SampleResourceModel> frameworkList = SlingModelUtils.getChildrenOfType(baseResource,
+        SampleResourceModel.class);
 
     assertNotNull(frameworkList);
     assertEquals(4, frameworkList.size());
@@ -524,8 +523,8 @@ public class SlingModelUtilsTest {
 
     resource = spy(resource);
 
-    List<SampleResourceModel> frameworkList = SlingModelUtils.getChildrenOfType(
-        resource, Arrays.asList(new String[] {"ui-framework-1", "ui-framework-2"}), SampleResourceModel.class);
+    List<SampleResourceModel> frameworkList = SlingModelUtils.getChildrenOfType(resource,
+        Arrays.asList(new String[]{"ui-framework-1", "ui-framework-2"}), SampleResourceModel.class);
 
     assertNotNull(frameworkList);
     assertEquals(2, frameworkList.size());
@@ -552,14 +551,14 @@ public class SlingModelUtilsTest {
 
   @Test(expected = ResourceNotFoundException.class)
   public void testGetResourceAsTypeWhenEmptyPath() throws Exception {
-    SlingModelUtils.getResourceAsType(
-        "", resource.getResourceResolver(), SampleResourceModel.class);
+    SlingModelUtils.getResourceAsType("", resource.getResourceResolver(),
+        SampleResourceModel.class);
   }
 
   @Test(expected = ResourceNotFoundException.class)
   public void testGetResourceAsTypeWhenResourceIsNotFound() throws Exception {
     SlingModelUtils.getResourceAsType("/content/nonexistent-resource",
-                                      resource.getResourceResolver(), SampleResourceModel.class);
+        resource.getResourceResolver(), SampleResourceModel.class);
   }
 
   @Test
@@ -581,14 +580,14 @@ public class SlingModelUtilsTest {
 
   @Test(expected = ResourceNotFoundException.class)
   public void testGetResourceAsTypeWhenPathIsEmpty() throws Exception {
-    SlingModelUtils.getResourceAsType(
-        "", resource.getResourceResolver(), SampleResourceModel.class);
+    SlingModelUtils.getResourceAsType("", resource.getResourceResolver(),
+        SampleResourceModel.class);
   }
 
   @Test(expected = InvalidResourceTypeException.class)
   public void testGetResourceAsTypeWhenResourceCannotBeAdapted() throws Exception {
-    SlingModelUtils.getResourceAsType(
-        "/resource", resource.getResourceResolver(), SampleRequestModel.class);
+    SlingModelUtils.getResourceAsType("/resource", resource.getResourceResolver(),
+        SampleRequestModel.class);
   }
 
   @Test
@@ -604,11 +603,10 @@ public class SlingModelUtilsTest {
     when(resolver.getResource("resource")).thenReturn(syntheticResource);
 
     assertNotNull(SlingModelUtils.getResourceAsType("resource", resource.getResourceResolver(),
-                                                    BaseResource.class));
+        BaseResource.class));
 
     assertEquals("/libs/resource",
-                 SlingModelUtils.getResourceAsType("resource", resolver, BaseResource.class)
-                                .getPath());
+        SlingModelUtils.getResourceAsType("resource", resolver, BaseResource.class).getPath());
   }
 
   @Test
@@ -624,11 +622,10 @@ public class SlingModelUtilsTest {
     when(resolver.getResource("resource")).thenReturn(syntheticResource);
 
     assertNotNull(SlingModelUtils.getResourceAsType("resource", resource.getResourceResolver(),
-                                                    BaseResource.class));
+        BaseResource.class));
 
     assertEquals("/apps/resource",
-                 SlingModelUtils.getResourceAsType("resource", resolver, BaseResource.class)
-                                .getPath());
+        SlingModelUtils.getResourceAsType("resource", resolver, BaseResource.class).getPath());
   }
 
   @Test
@@ -645,11 +642,10 @@ public class SlingModelUtilsTest {
     when(resolver.getResource("resource")).thenReturn(syntheticResource);
 
     assertNotNull(SlingModelUtils.getResourceAsType("resource", resource.getResourceResolver(),
-                                                    BaseResource.class));
+        BaseResource.class));
 
     assertEquals("/apps/resource",
-                 SlingModelUtils.getResourceAsType("resource", resolver, BaseResource.class)
-                                .getPath());
+        SlingModelUtils.getResourceAsType("resource", resolver, BaseResource.class).getPath());
   }
 
   @Test(expected = ResourceNotFoundException.class)
@@ -719,9 +715,8 @@ public class SlingModelUtilsTest {
 
     List<String> paths = Arrays.asList(new String[]{"/resource-1", "/resource-2", "/resource-3"});
 
-    assertEquals(3, SlingModelUtils
-                        .getResourcesAsType(paths, context.resourceResolver(), BaseResource.class)
-                        .size());
+    assertEquals(3, SlingModelUtils.getResourcesAsType(paths, context.resourceResolver(),
+        BaseResource.class).size());
   }
 
   @Test
@@ -732,9 +727,8 @@ public class SlingModelUtilsTest {
 
     List<String> paths = Arrays.asList(new String[]{"/resource-1", "/resource-2", "/resource-3"});
 
-    assertEquals(0, SlingModelUtils
-                        .getResourcesAsType(paths, context.resourceResolver(), SampleFile.class)
-                        .size());
+    assertEquals(0, SlingModelUtils.getResourcesAsType(paths, context.resourceResolver(),
+        SampleFile.class).size());
   }
 
   @Test
@@ -742,9 +736,8 @@ public class SlingModelUtilsTest {
 
     List<String> paths = Arrays.asList(new String[]{"/resource-1", "/resource-2", "/resource-3"});
 
-    assertEquals(0, SlingModelUtils
-                        .getResourcesAsType(paths, context.resourceResolver(), SampleFile.class)
-                        .size());
+    assertEquals(0, SlingModelUtils.getResourcesAsType(paths, context.resourceResolver(),
+        SampleFile.class).size());
   }
 
   @Test
@@ -754,8 +747,8 @@ public class SlingModelUtilsTest {
     context.create().resource("/parent-framework", properties);
     resource = context.create().resource("/parent-framework/child");
 
-    SampleResourceModel framework = SlingModelUtils.getParentResourceAsType(
-        resource, SampleResourceModel.class);
+    SampleResourceModel framework = SlingModelUtils.getParentResourceAsType(resource,
+        SampleResourceModel.class);
 
     assertNotNull(framework);
     assertEquals("/parent-framework", framework.getPath());
@@ -768,15 +761,17 @@ public class SlingModelUtilsTest {
 
     context.create().resource("/parent-framework", properties);
     resource = context.create().resource("/parent-framework/child");
+    resource = spy(resource);
 
     BaseResource baseResource = resource.adaptTo(BaseResource.class);
 
-    SampleResourceModel framework = SlingModelUtils.getParentResourceAsType(
-        baseResource, SampleResourceModel.class);
+    SampleResourceModel framework = SlingModelUtils.getParentResourceAsType(baseResource,
+        SampleResourceModel.class);
 
     assertNotNull(framework);
     assertEquals("/parent-framework", framework.getPath());
     assertEquals(SampleResourceModel.class, framework.getClass());
+    verify(resource, times(1)).getPath();
   }
 
   @Test(expected = NoParentResourceException.class)
@@ -786,6 +781,19 @@ public class SlingModelUtilsTest {
     resource = resource.getParent();
 
     SlingModelUtils.getParentResourceAsType(resource, BaseResource.class);
+  }
+
+  @Test
+  public void testGetParentResourceAsTypeWhenNoParentLogging() {
+    resource = context.create().resource("/orphan-resource");
+
+    resource = resource.getParent();
+    resource = spy(resource);
+    try {
+      SlingModelUtils.getParentResourceAsType(resource, BaseResource.class);
+    } catch (Exception e) {
+      verify(resource, times(2)).getPath();
+    }
   }
 
   @Test
@@ -814,11 +822,10 @@ public class SlingModelUtilsTest {
     resource = context.create().resource("/parent/child/grand-child/great-grand-child");
 
     assertEquals("/parent/child",
-                 SlingModelUtils.getFirstAncestorOfType(resource, SampleResourceModel.class)
-                                .getPath());
-    assertEquals("/parent/child", SlingModelUtils
-                                      .getFirstAncestorOfType(resource.adaptTo(BaseResource.class),
-                                                              SampleResourceModel.class).getPath());
+        SlingModelUtils.getFirstAncestorOfType(resource, SampleResourceModel.class).getPath());
+    assertEquals("/parent/child",
+        SlingModelUtils.getFirstAncestorOfType(resource.adaptTo(BaseResource.class),
+            SampleResourceModel.class).getPath());
   }
 
   @Test
@@ -833,11 +840,10 @@ public class SlingModelUtilsTest {
     resource = context.create().resource("/parent/child/grand-child/great-grand-child", properties);
 
     assertEquals("/parent/child",
-                 SlingModelUtils.getFirstAncestorOfType(resource, SampleResourceModel.class)
-                                .getPath());
-    assertEquals("/parent/child", SlingModelUtils
-                                      .getFirstAncestorOfType(resource.adaptTo(BaseResource.class),
-                                                              SampleResourceModel.class).getPath());
+        SlingModelUtils.getFirstAncestorOfType(resource, SampleResourceModel.class).getPath());
+    assertEquals("/parent/child",
+        SlingModelUtils.getFirstAncestorOfType(resource.adaptTo(BaseResource.class),
+            SampleResourceModel.class).getPath());
   }
 
   @Test
@@ -852,11 +858,10 @@ public class SlingModelUtilsTest {
     resource = context.create().resource("/parent/child/grand-child/great-grand-child", properties);
 
     assertEquals("/parent/child/grand-child",
-                 SlingModelUtils.getFirstAncestorOfType(resource, SampleResourceModel.class)
-                                .getPath());
-    assertEquals(
-        "/parent/child/grand-child", SlingModelUtils.getFirstAncestorOfType(
-            resource.adaptTo(BaseResource.class), SampleResourceModel.class).getPath());
+        SlingModelUtils.getFirstAncestorOfType(resource, SampleResourceModel.class).getPath());
+    assertEquals("/parent/child/grand-child",
+        SlingModelUtils.getFirstAncestorOfType(resource.adaptTo(BaseResource.class),
+            SampleResourceModel.class).getPath());
   }
 
   @Test(expected = NoValidAncestorException.class)
@@ -869,8 +874,8 @@ public class SlingModelUtilsTest {
     resource = context.create().resource("/parent/child/grand-child/great-grand-child");
 
     SlingModelUtils.getFirstAncestorOfType(resource, SampleResourceModel.class);
-    SlingModelUtils.getFirstAncestorOfType(
-        resource.adaptTo(BaseResource.class), SampleResourceModel.class);
+    SlingModelUtils.getFirstAncestorOfType(resource.adaptTo(BaseResource.class),
+        SampleResourceModel.class);
   }
 
   @Test
@@ -900,13 +905,13 @@ public class SlingModelUtilsTest {
     assertEquals("/grand-parent/parent-framework-1", SampleResourceModelList.get(0).getPath());
     assertEquals("/grand-parent/parent-framework-2", SampleResourceModelList.get(1).getPath());
     assertEquals("/grand-parent/parent-framework-1/child-framework",
-                 SampleResourceModelList.get(2).getPath());
+        SampleResourceModelList.get(2).getPath());
     assertEquals("/grand-parent/parent-framework-2/child-framework",
-                 SampleResourceModelList.get(3).getPath());
+        SampleResourceModelList.get(3).getPath());
     assertEquals("/grand-parent/parent-unstructured-1/child-framework",
-                 SampleResourceModelList.get(4).getPath());
+        SampleResourceModelList.get(4).getPath());
     assertEquals("/grand-parent/parent-unstructured-2/child-framework",
-                 SampleResourceModelList.get(5).getPath());
+        SampleResourceModelList.get(5).getPath());
 
   }
 
@@ -939,13 +944,13 @@ public class SlingModelUtilsTest {
     assertEquals("/grand-parent/parent-framework-1", SampleResourceModelList.get(0).getPath());
     assertEquals("/grand-parent/parent-framework-2", SampleResourceModelList.get(1).getPath());
     assertEquals("/grand-parent/parent-framework-1/child-framework",
-                 SampleResourceModelList.get(2).getPath());
+        SampleResourceModelList.get(2).getPath());
     assertEquals("/grand-parent/parent-framework-2/child-framework",
-                 SampleResourceModelList.get(3).getPath());
+        SampleResourceModelList.get(3).getPath());
     assertEquals("/grand-parent/parent-unstructured-1/child-framework",
-                 SampleResourceModelList.get(4).getPath());
+        SampleResourceModelList.get(4).getPath());
     assertEquals("/grand-parent/parent-unstructured-2/child-framework",
-                 SampleResourceModelList.get(5).getPath());
+        SampleResourceModelList.get(5).getPath());
 
   }
 
@@ -964,11 +969,11 @@ public class SlingModelUtilsTest {
     assertNotNull(SlingModelUtils.getResourceAsClosestType(resource, modelAdapterFactory));
 
     assertEquals("/sample-resource",
-                 SlingModelUtils.getResourceAsClosestType(resource, modelAdapterFactory).getPath());
-    assertEquals("SampleResourceModel", SlingModelUtils.getResourceAsClosestType(
-        resource, modelAdapterFactory).getClass().getSimpleName());
+        SlingModelUtils.getResourceAsClosestType(resource, modelAdapterFactory).getPath());
+    assertEquals("SampleResourceModel", SlingModelUtils.getResourceAsClosestType(resource,
+        modelAdapterFactory).getClass().getSimpleName());
   }
-
+  
   @Test(expected = InvalidResourceTypeException.class)
   public void testGetResourceAsClosestTypeWhenNotExtendingBaseResource()
       throws InvalidResourceTypeException {

@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.apache.sling.models.annotations.Optional;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.slf4j.Logger;
@@ -193,7 +194,7 @@ public class BaseSlingModel {
       return getValidationProviderService().getDetailedValidators(this,
           getModelValidationService());
     }
-    LOG.error("Unable to retrieve ValidationProviderService getting Detailed Validators for {}",
+    LOG.error("Unable to retrieve ValidationProviderService getting Detailed Validators for {}.",
         getClass().getSimpleName());
     return Collections.emptyList();
   }
@@ -217,10 +218,12 @@ public class BaseSlingModel {
     }
   }
 
-  private ValidationProviderService getValidationProviderService() {
+  @Nullable
+  ValidationProviderService getValidationProviderService() {
     return this.validationProviderService;
   }
 
+  @Nullable
   ModelValidationService getModelValidationService() {
     if (modelValidationService == null && getValidationProviderService() != null) {
       modelValidationService = getValidationProviderService().getModelValidationService(this);

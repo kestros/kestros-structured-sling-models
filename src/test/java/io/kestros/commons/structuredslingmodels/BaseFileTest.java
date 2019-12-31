@@ -19,19 +19,25 @@
 
 package io.kestros.commons.structuredslingmodels;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
+
 import io.kestros.commons.structuredslingmodels.utilities.SampleFile;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.Assert.*;
 
 public class BaseFileTest {
 
@@ -111,6 +117,23 @@ public class BaseFileTest {
 
     // TODO add more tests and verification around this.
     assertEquals("38 bytes", baseFile.getFileSize());
+  }
+
+
+  @Test
+  public void testGetFileSizeWhenIoException() throws IOException {
+    properties.put("jcr:primaryType", "nt:file");
+    InputStream inputStream = mock(ByteArrayInputStream.class);
+
+    when(inputStream.read(any())).thenThrow(IOException.class);
+    resource = context.create().resource("/file.txt", properties);
+
+    baseFile = resource.adaptTo(SampleFile.class);
+    baseFile = spy(baseFile);
+    doReturn(inputStream).when(baseFile).getJcrDataInputStream();
+
+    // TODO add more tests and verification around this.
+    assertEquals("", baseFile.getFileSize());
   }
 
 }

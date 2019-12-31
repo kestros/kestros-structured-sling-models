@@ -52,7 +52,16 @@ public class FileModelUtils {
       throws InvalidResourceTypeException {
     T file = adaptTo(fileResource, type);
     if (!file.getErrorMessages().isEmpty()) {
-      throw new InvalidResourceTypeException(fileResource.getPath(), type);
+      throw new InvalidResourceTypeException(fileResource.getPath(), type,
+          "Failed validation checks");
+    } else if (!file.getFileType().getReadableContentTypes().contains(file.getMimeType())) {
+      file = fileResource.getResource().adaptTo(type);
+      if (file != null) {
+        throw new InvalidResourceTypeException(fileResource.getPath(), type,
+            "File mimeType '" + file.getMimeType() + "' did not match any expected types.");
+      } else {
+        throw new InvalidResourceTypeException(fileResource.getPath(), type);
+      }
     }
     return file;
   }

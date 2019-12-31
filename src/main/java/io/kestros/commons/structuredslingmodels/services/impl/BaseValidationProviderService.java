@@ -19,13 +19,10 @@
 
 package io.kestros.commons.structuredslingmodels.services.impl;
 
-import static io.kestros.commons.structuredslingmodels.validation.ModelValidationMessageType.ERROR;
-import static io.kestros.commons.structuredslingmodels.validation.ModelValidationMessageType.INFO;
-import static io.kestros.commons.structuredslingmodels.validation.ModelValidationMessageType.WARNING;
-
 import io.kestros.commons.structuredslingmodels.BaseSlingModel;
 import io.kestros.commons.structuredslingmodels.annotation.StructuredModel;
 import io.kestros.commons.structuredslingmodels.services.ValidationProviderService;
+import io.kestros.commons.structuredslingmodels.validation.ModelValidationMessageType;
 import io.kestros.commons.structuredslingmodels.validation.ModelValidationService;
 import io.kestros.commons.structuredslingmodels.validation.ModelValidator;
 import io.kestros.commons.structuredslingmodels.validation.ModelValidatorBundle;
@@ -159,16 +156,22 @@ public class BaseValidationProviderService implements ValidationProviderService 
   private <T extends BaseSlingModel> void addBasicValidatorMessagesToLists(T model,
       ModelValidator validator) {
     String message = validator.getMessage();
+    ModelValidationMessageType type = validator.getType();
+
     if (validator instanceof ModelValidatorBundle) {
       message = ((ModelValidatorBundle) validator).getBundleMessage();
     }
 
-    if (validator.getType().equals(ERROR)) {
-      model.addErrorMessage(message);
-    } else if (validator.getType().equals(WARNING)) {
-      model.addWarningMessage(message);
-    } else if (validator.getType().equals(INFO)) {
-      model.addInfoMessage(message);
+    switch (type) {
+      case ERROR:
+        model.addErrorMessage(message);
+        break;
+      case WARNING:
+        model.addWarningMessage(message);
+        break;
+      default:
+        model.addInfoMessage(message);
+        break;
     }
   }
 }

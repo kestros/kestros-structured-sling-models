@@ -33,6 +33,7 @@ public abstract class ModelValidatorBundle implements ModelValidator {
    * Constructor.
    */
   public ModelValidatorBundle() {
+    registerValidators();
   }
 
   /**

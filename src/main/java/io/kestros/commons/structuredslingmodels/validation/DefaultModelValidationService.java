@@ -26,7 +26,6 @@ import io.kestros.commons.structuredslingmodels.BaseResource;
  */
 public class DefaultModelValidationService extends ModelValidationService {
 
-  @SuppressWarnings("all")
   @Override
   public BaseResource getModel() {
     if (getGenericModel() instanceof BaseResource) {
