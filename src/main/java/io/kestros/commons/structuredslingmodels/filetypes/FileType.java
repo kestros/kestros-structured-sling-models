@@ -29,5 +29,7 @@ public interface FileType {
 
   List<String> getReadableContentTypes();
 
-  String getFileType();
+  String getName();
+
+  <T extends BaseFile> Class<T> getFileModelClass();
 }

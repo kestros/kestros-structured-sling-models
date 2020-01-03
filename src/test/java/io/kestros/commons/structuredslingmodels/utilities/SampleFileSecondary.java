@@ -57,8 +57,13 @@ public class SampleFileSecondary extends BaseFile {
       }
 
       @Override
-      public String getFileType() {
+      public String getName() {
         return "sample-secondary";
+      }
+
+      @Override
+      public <T extends BaseFile> Class<T> getFileModelClass() {
+        return null;
       }
     };
   }
