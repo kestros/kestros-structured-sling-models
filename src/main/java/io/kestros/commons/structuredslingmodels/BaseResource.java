@@ -167,10 +167,13 @@ public class BaseResource extends BaseSlingModel {
   @Nonnull
   @Property(description = "ResourceType the current resource will be displayed as when requested.")
   public String getResourceType() {
-    if (StringUtils.isEmpty(getSlingResourceType())) {
+    if (StringUtils.isNotEmpty(getSlingResourceType())) {
+      return getSlingResourceType();
+    } else if (StringUtils.isNotEmpty(getResource().getResourceType())) {
+      return getResource().getResourceType();
+    } else {
       return getJcrPrimaryType();
     }
-    return getSlingResourceType();
   }
 
   public String getJcrPrimaryType() {
