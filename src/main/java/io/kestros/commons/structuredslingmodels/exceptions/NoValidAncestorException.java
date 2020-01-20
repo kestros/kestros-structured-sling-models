@@ -27,13 +27,13 @@ public class NoValidAncestorException extends ModelAdaptionException {
   private static final long serialVersionUID = 3666059665007715065L;
 
 
-  public NoValidAncestorException(String resource, Class type) {
-    this(resource, type, "No valid ancestor found.");
+  public NoValidAncestorException(String resourcePath, Class type) {
+    this(resourcePath, type, "No valid ancestor found.");
   }
 
   @SuppressWarnings("WeakerAccess")
-  public NoValidAncestorException(String resource, Class type, String message) {
-    super("Unable to retrieve ancestor of " + type.getSimpleName() + "'" + resource + "': "
-          + message);
+  public NoValidAncestorException(String resourcePath, Class type, String message) {
+    super(String.format("Unable to retrieve ancestor matching type %s for %s: %s", resourcePath,
+        type.getSimpleName(), message));
   }
 }
