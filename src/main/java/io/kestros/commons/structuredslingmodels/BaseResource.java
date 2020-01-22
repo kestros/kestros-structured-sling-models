@@ -103,18 +103,6 @@ public class BaseResource extends BaseSlingModel {
   }
 
   /**
-   * Path to the current Resource, with all `/` characters replaced with `-` characters.
-   *
-   * @return Path to the current Resource, with all `/` characters replaced with `-` characters.
-   */
-  @Nonnull
-  @Property(description = "Path to the current Resource, with all `/` characters replaced with "
-                          + "`-` characters.")
-  public String getPathWithReplacedSlashes() {
-    return getPath().replaceAll("/", "-");
-  }
-
-  /**
    * Property ValueMap associated to the resource the current model was adapted from.
    *
    * @return Property ValueMap associated to the resource the current model was adapted from.
@@ -176,6 +164,8 @@ public class BaseResource extends BaseSlingModel {
     }
   }
 
+  @Nonnull
+  @JsonIgnore
   public String getJcrPrimaryType() {
     return getProperty("jcr:primaryType", StringUtils.EMPTY);
   }
