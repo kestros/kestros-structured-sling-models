@@ -74,6 +74,7 @@ public class BaseSlingModel {
    * @return All error message Strings, as a List.
    */
   @Nonnull
+  @JsonIgnore
   public List<String> getErrorMessages() {
     return errorMessages;
   }
@@ -97,6 +98,7 @@ public class BaseSlingModel {
    * @return All warning message Strings, as a List.
    */
   @Nonnull
+  @JsonIgnore
   public List<String> getWarningMessages() {
     return warningMessages;
   }
@@ -121,6 +123,7 @@ public class BaseSlingModel {
    * @return All info message Strings, as a List.
    */
   @Nonnull
+  @JsonIgnore
   public List<String> getInfoMessages() {
     return infoMessages;
   }
