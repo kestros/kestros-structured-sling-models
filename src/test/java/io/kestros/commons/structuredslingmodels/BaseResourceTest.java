@@ -140,13 +140,6 @@ public class BaseResourceTest {
   }
 
   @Test
-  public void testGetPathWithSlashesReplaced() {
-    baseResource = childResource.adaptTo(BaseResource.class);
-
-    assertEquals("-parent-child", baseResource.getPathWithReplacedSlashes());
-  }
-
-  @Test
   public void testGetProperties() throws Exception {
     Map<String, Object> properties = new HashMap<>();
 
