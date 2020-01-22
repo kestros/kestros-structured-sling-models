@@ -176,6 +176,8 @@ public class BaseResource extends BaseSlingModel {
     }
   }
 
+  @Nonnull
+  @JsonIgnore
   public String getJcrPrimaryType() {
     return getProperty("jcr:primaryType", StringUtils.EMPTY);
   }
