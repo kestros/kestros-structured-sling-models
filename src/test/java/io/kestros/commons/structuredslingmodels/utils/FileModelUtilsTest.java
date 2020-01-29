@@ -54,16 +54,16 @@ public class FileModelUtilsTest {
 
   private Map<String, Object> properties = new HashMap<>();
 
-  Exception exception;
+  private Exception exception;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     context.addModelsForPackage("io.kestros.commons");
     properties.put("jcr:primaryType", "nt:file");
   }
 
   @Test
-  public void testAdaptToFileType() throws Exception {
+  public void testAdaptToFileType() throws InvalidResourceTypeException {
     properties.put("jcr:mimeType", "sample/test");
     resource = context.create().resource("/file.sample", properties);
     resource = spy(resource);
@@ -74,19 +74,27 @@ public class FileModelUtilsTest {
   }
 
   @Test
-  public void testAdaptToFileTypeWhenSecondaryFileType() throws Exception {
+  public void testAdaptToFileTypeWhenSecondaryFileType() throws InvalidResourceTypeException {
     properties.put("jcr:mimeType", "sample-secondary/test");
     resource = context.create().resource("/file.sample-secondary", properties);
 
     assertNotNull(adaptToFileType(resource.adaptTo(BaseResource.class), SampleFileSecondary.class));
   }
 
-  @Test(expected = InvalidResourceTypeException.class)
-  public void testAdaptToFileTypeWhenHasFailedValidation() throws Exception {
+  @Test
+  public void testAdaptToFileTypeWhenHasFailedValidation() {
     properties.put("jcr:mimeType", "sample/test");
     resource = context.create().resource("/file.sample-secondary", properties);
 
-    adaptToFileType(resource.adaptTo(BaseResource.class), SampleFile.class);
+    try {
+      adaptToFileType(resource.adaptTo(BaseResource.class), SampleFile.class);
+    } catch (InvalidResourceTypeException e) {
+      exception = e;
+    }
+    assertEquals(
+        "Unable to adapt '/file.sample-secondary' to SampleFile: Failed validation checks. "
+        + "[invalid file type]",
+        exception.getMessage());
   }
 
   @Test
@@ -98,7 +106,6 @@ public class FileModelUtilsTest {
       adaptToFileType(resource.adaptTo(BaseResource.class), SampleFile.class);
     } catch (InvalidResourceTypeException e) {
       exception = e;
-
     }
     assertEquals(
         "Unable to adapt '/file.sample' to SampleFile: File mimeType 'sample-secondary/test' "
@@ -132,12 +139,13 @@ public class FileModelUtilsTest {
     } catch (InvalidResourceTypeException e) {
       exception = e;
     }
-    assertEquals("Unable to adapt '/file.invalid' to SampleFile: Failed validation checks",
-        exception.getMessage());
+    assertEquals(
+        "Unable to adapt '/file.invalid' to SampleFile: Failed validation checks. [invalid file "
+        + "type]", exception.getMessage());
   }
 
   @Test
-  public void testAdaptToFileTypeWhenPassingResource() throws Exception {
+  public void testAdaptToFileTypeWhenPassingResource() throws InvalidResourceTypeException {
     properties.put("jcr:mimeType", "sample/test");
     resource = context.create().resource("/file.sample", properties);
 
@@ -154,13 +162,14 @@ public class FileModelUtilsTest {
       exception = e;
 
     }
-    assertEquals("Unable to adapt '/file.invalid' to SampleFile: Failed validation checks",
-        exception.getMessage());
+    assertEquals(
+        "Unable to adapt '/file.invalid' to SampleFile: Failed validation checks. [invalid file "
+        + "type]", exception.getMessage());
   }
 
   @Test
   public void testGetResourceAsFileType()
-      throws InvalidResourceTypeException, ResourceNotFoundException {
+      throws ResourceNotFoundException, InvalidResourceTypeException {
     properties.put("jcr:mimeType", "sample/test");
     context.create().resource("/file.sample", properties);
 
@@ -170,7 +179,7 @@ public class FileModelUtilsTest {
 
   @Test
   public void testGetResourceAsFileTypeWhenSecondaryFileType()
-      throws InvalidResourceTypeException, ResourceNotFoundException {
+      throws ResourceNotFoundException, InvalidResourceTypeException {
     properties.put("jcr:mimeType", "sample-secondary/test");
     context.create().resource("/file.sample-secondary", properties);
 
@@ -201,5 +210,4 @@ public class FileModelUtilsTest {
         FileModelUtils.getChildAsFileType("file.sample", resource.adaptTo(BaseResource.class),
             SampleFile.class).getName());
   }
-
 }

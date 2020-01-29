@@ -35,6 +35,7 @@ import static org.mockito.Mockito.when;
 import io.kestros.commons.structuredslingmodels.BaseResource;
 import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFoundException;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
+import io.kestros.commons.structuredslingmodels.exceptions.MatchingResourceTypeNotFoundException;
 import io.kestros.commons.structuredslingmodels.exceptions.NoParentResourceException;
 import io.kestros.commons.structuredslingmodels.exceptions.NoValidAncestorException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
@@ -62,6 +63,7 @@ public class SlingModelUtilsTest {
   private Resource resource;
   private Map<String, Object> properties = new HashMap<>();
   private BaseResource baseResource;
+  private Exception exception;
 
   @Before
   public void initialSetup() {
@@ -92,9 +94,15 @@ public class SlingModelUtilsTest {
     assertNotNull(baseResource);
   }
 
-  @Test(expected = InvalidResourceTypeException.class)
-  public void testAdaptToWhenResourceNullsOnAdaption() throws Exception {
-    baseResource = SlingModelUtils.adaptTo(resource, SampleRequestModel.class);
+  @Test
+  public void testAdaptToWhenResourceNullsOnAdaption() {
+    try {
+      baseResource = SlingModelUtils.adaptTo(resource, SampleRequestModel.class);
+    } catch (InvalidResourceTypeException e) {
+      exception = e;
+    }
+    assertEquals("Unable to adapt '/resource' to SampleRequestModel: Invalid resource type.",
+        exception.getMessage());
   }
 
   @Test
@@ -137,14 +145,21 @@ public class SlingModelUtilsTest {
     assertEquals("/resource-ui-framework", baseResource.getPath());
   }
 
-  @Test(expected = InvalidResourceTypeException.class)
-  public void testAdaptToWhenJcrContentIsInvalid() throws InvalidResourceTypeException {
+  @Test
+  public void testAdaptToWhenJcrContentIsInvalid() {
     properties.put("sling:resourceType", "kestros/commons/component");
 
     resource = context.create().resource("/resource-ui-framework");
     context.create().resource("/resource-ui-framework/jcr:content");
 
-    baseResource = SlingModelUtils.adaptTo(resource, SampleResourceModel.class);
+    try {
+      baseResource = SlingModelUtils.adaptTo(resource, SampleResourceModel.class);
+    } catch (InvalidResourceTypeException e) {
+      exception = e;
+    }
+    assertEquals(
+        "Unable to adapt '/resource-ui-framework/jcr:content' to SampleResourceModel: Invalid "
+        + "resource type.", exception.getMessage());
   }
 
   @Test
@@ -336,35 +351,67 @@ public class SlingModelUtilsTest {
         SlingModelUtils.getChildAsType("ui-framework", resource, SampleResourceModel.class));
   }
 
-  @Test(expected = InvalidResourceTypeException.class)
-  public void testGetChildAsTypeWhenHasJcrContentChildIsInvalid() throws Exception {
+  @Test
+  public void testGetChildAsTypeWhenHasJcrContentChildIsInvalid() {
     properties.put("sling:resourceType", "kestros/commons/component");
 
     resource = context.create().resource("/resource-with-child-framework");
     context.create().resource("/resource-with-child-framework/jcr:content");
     context.create().resource("/resource-with-child-framework/jcr:content/ui-framework");
 
-    SlingModelUtils.getChildAsType("ui-framework", resource, SampleResourceModel.class);
+    try {
+      SlingModelUtils.getChildAsType("ui-framework", resource, SampleResourceModel.class);
+    } catch (InvalidResourceTypeException e) {
+      exception = e;
+    } catch (ChildResourceNotFoundException e) {
+      e.printStackTrace();
+    }
+    assertEquals("Unable to adapt '/resource-with-child-framework/jcr:content/ui-framework' to "
+                 + "SampleResourceModel: Invalid resource type.", exception.getMessage());
   }
 
-  @Test(expected = ChildResourceNotFoundException.class)
-  public void testGetChildAsTypeWhenHasJcrContentChildIsNotFound() throws Exception {
+  @Test
+  public void testGetChildAsTypeWhenHasJcrContentChildIsNotFound() {
     properties.put("sling:resourceType", "kestros/commons/component");
 
     resource = context.create().resource("/resource-with-child-framework");
     context.create().resource("/resource-with-child-framework/jcr:content");
 
-    SlingModelUtils.getChildAsType("missing-resource", resource, SampleResourceModel.class);
+    try {
+      SlingModelUtils.getChildAsType("missing-resource", resource, SampleResourceModel.class);
+    } catch (InvalidResourceTypeException e) {
+
+    } catch (ChildResourceNotFoundException e) {
+      exception = e;
+    }
+    assertEquals(
+        "Unable to adapt 'missing-resource' under '/resource-with-child-framework/jcr:content': "
+        + "Child" + " not found.", exception.getMessage());
   }
 
-  @Test(expected = ChildResourceNotFoundException.class)
-  public void testGetChildAsTypeWhenChildNameIsBlank() throws Exception {
-    SlingModelUtils.getChildAsType("", resource, SampleResourceModel.class);
+  @Test
+  public void testGetChildAsTypeWhenChildNameIsBlank() {
+    try {
+      SlingModelUtils.getChildAsType("", resource, SampleResourceModel.class);
+    } catch (InvalidResourceTypeException e) {
+      e.printStackTrace();
+    } catch (ChildResourceNotFoundException e) {
+      exception = e;
+    }
+    assertEquals("Unable to adapt '' under '/resource': Child name not specified.",
+        exception.getMessage());
   }
 
-  @Test(expected = ChildResourceNotFoundException.class)
-  public void testGetChildAsTypeWhenChildResourceDoesNotExist() throws Exception {
-    SlingModelUtils.getChildAsType("child-does-not-exist", resource, SampleResourceModel.class);
+  @Test
+  public void testGetChildAsTypeWhenChildResourceDoesNotExist() {
+    try {
+      SlingModelUtils.getChildAsType("child-does-not-exist", resource, SampleResourceModel.class);
+    } catch (InvalidResourceTypeException e) {
+    } catch (ChildResourceNotFoundException e) {
+      exception = e;
+    }
+    assertEquals("Unable to adapt 'child-does-not-exist' under '/resource': Child not found.",
+        exception.getMessage());
   }
 
   @Test
@@ -549,16 +596,31 @@ public class SlingModelUtilsTest {
     assertEquals(SampleResourceModel.class, framework.getClass());
   }
 
-  @Test(expected = ResourceNotFoundException.class)
-  public void testGetResourceAsTypeWhenEmptyPath() throws Exception {
-    SlingModelUtils.getResourceAsType("", resource.getResourceResolver(),
-        SampleResourceModel.class);
+  @Test
+  public void testGetResourceAsTypeWhenEmptyPath() {
+    try {
+      SlingModelUtils.getResourceAsType("", resource.getResourceResolver(),
+          SampleResourceModel.class);
+    } catch (InvalidResourceTypeException e) {
+      e.printStackTrace();
+    } catch (ResourceNotFoundException e) {
+      exception = e;
+    }
+    assertEquals("Unable to adapt '': Resource path not specified.", exception.getMessage());
   }
 
-  @Test(expected = ResourceNotFoundException.class)
-  public void testGetResourceAsTypeWhenResourceIsNotFound() throws Exception {
-    SlingModelUtils.getResourceAsType("/content/nonexistent-resource",
-        resource.getResourceResolver(), SampleResourceModel.class);
+  @Test
+  public void testGetResourceAsTypeWhenResourceIsNotFound() {
+    try {
+      SlingModelUtils.getResourceAsType("/content/nonexistent-resource",
+          resource.getResourceResolver(), SampleResourceModel.class);
+    } catch (InvalidResourceTypeException e) {
+      e.printStackTrace();
+    } catch (ResourceNotFoundException e) {
+      exception = e;
+    }
+    assertEquals("Unable to adapt '/content/nonexistent-resource': Resource not found.",
+        exception.getMessage());
   }
 
   @Test
@@ -578,16 +640,29 @@ public class SlingModelUtilsTest {
     assertEquals(SampleResourceModel.class, framework.getClass());
   }
 
-  @Test(expected = ResourceNotFoundException.class)
-  public void testGetResourceAsTypeWhenPathIsEmpty() throws Exception {
-    SlingModelUtils.getResourceAsType("", resource.getResourceResolver(),
-        SampleResourceModel.class);
+  @Test
+  public void testGetResourceAsTypeWhenPathIsEmpty() {
+    try {
+      SlingModelUtils.getResourceAsType("", resource.getResourceResolver(),
+          SampleResourceModel.class);
+    } catch (InvalidResourceTypeException e) {
+    } catch (ResourceNotFoundException e) {
+      exception = e;
+    }
+    assertEquals("Unable to adapt '': Resource path not specified.", exception.getMessage());
   }
 
-  @Test(expected = InvalidResourceTypeException.class)
-  public void testGetResourceAsTypeWhenResourceCannotBeAdapted() throws Exception {
-    SlingModelUtils.getResourceAsType("/resource", resource.getResourceResolver(),
-        SampleRequestModel.class);
+  @Test
+  public void testGetResourceAsTypeWhenResourceCannotBeAdapted() {
+    try {
+      SlingModelUtils.getResourceAsType("/resource", resource.getResourceResolver(),
+          SampleRequestModel.class);
+    } catch (InvalidResourceTypeException e) {
+      exception = e;
+    } catch (ResourceNotFoundException e) {
+    }
+    assertEquals("Unable to adapt '/resource' to SampleRequestModel: Invalid resource type.",
+        exception.getMessage());
   }
 
   @Test
@@ -648,8 +723,8 @@ public class SlingModelUtilsTest {
         SlingModelUtils.getResourceAsType("resource", resolver, BaseResource.class).getPath());
   }
 
-  @Test(expected = ResourceNotFoundException.class)
-  public void testGetResourceAsTypeFromRelativeResourcePathThatDoesNotExist() throws Exception {
+  @Test
+  public void testGetResourceAsTypeFromRelativeResourcePathThatDoesNotExist() {
     Resource syntheticResource = mock(Resource.class);
     when(syntheticResource.getResourceType()).thenReturn("sling:syntheticResourceProviderResource");
 
@@ -658,12 +733,19 @@ public class SlingModelUtilsTest {
 
     when(resolver.getResource("nonexistent-resource")).thenReturn(syntheticResource);
 
-    SlingModelUtils.getResourceAsType("nonexistent-resource", resolver, BaseResource.class);
+    try {
+      SlingModelUtils.getResourceAsType("nonexistent-resource", resolver, BaseResource.class);
+    } catch (InvalidResourceTypeException e) {
+      e.printStackTrace();
+    } catch (ResourceNotFoundException e) {
+      exception = e;
+    }
+    assertEquals("Unable to adapt 'nonexistent-resource': Resource not found.",
+        exception.getMessage());
   }
 
-  @Test(expected = ResourceNotFoundException.class)
-  public void testGetResourceAsTypeFromRelativeResourcePathThatDoesNotExistSyntheticsFound()
-      throws Exception {
+  @Test
+  public void testGetResourceAsTypeFromRelativeResourcePathThatDoesNotExistSyntheticsFound() {
     Resource syntheticResource = mock(Resource.class);
     when(syntheticResource.getResourceType()).thenReturn("sling:syntheticResourceProviderResource");
 
@@ -674,12 +756,18 @@ public class SlingModelUtilsTest {
     when(resolver.getResource("/apps/nonexistent-resource")).thenReturn(syntheticResource);
     when(resolver.getResource("/libs/nonexistent-resource")).thenReturn(syntheticResource);
 
-    SlingModelUtils.getResourceAsType("nonexistent-resource", resolver, BaseResource.class);
+    try {
+      SlingModelUtils.getResourceAsType("nonexistent-resource", resolver, BaseResource.class);
+    } catch (InvalidResourceTypeException e) {
+    } catch (ResourceNotFoundException e) {
+      exception = e;
+    }
+    assertEquals("Unable to adapt 'nonexistent-resource': Resource not found.",
+        exception.getMessage());
   }
 
-  @Test(expected = ResourceNotFoundException.class)
-  public void testGetResourceAsTypeFromRelativeResourcePathThatDoesNotExistLibSyntheticFound()
-      throws Exception {
+  @Test
+  public void testGetResourceAsTypeFromRelativeResourcePathThatDoesNotExistLibSyntheticFound() {
     Resource syntheticResource = mock(Resource.class);
     when(syntheticResource.getResourceType()).thenReturn("sling:syntheticResourceProviderResource");
 
@@ -689,12 +777,18 @@ public class SlingModelUtilsTest {
     when(resolver.getResource("nonexistent-resource")).thenReturn(syntheticResource);
     when(resolver.getResource("/libs/nonexistent-resource")).thenReturn(syntheticResource);
 
-    SlingModelUtils.getResourceAsType("nonexistent-resource", resolver, BaseResource.class);
+    try {
+      SlingModelUtils.getResourceAsType("nonexistent-resource", resolver, BaseResource.class);
+    } catch (InvalidResourceTypeException e) {
+    } catch (ResourceNotFoundException e) {
+      exception = e;
+    }
+    assertEquals("Unable to adapt 'nonexistent-resource': Resource not found.",
+        exception.getMessage());
   }
 
-  @Test(expected = ResourceNotFoundException.class)
-  public void testGetResourceAsTypeFromRelativeResourcePathThatDoesNotExistAppsSyntheticFound()
-      throws Exception {
+  @Test
+  public void testGetResourceAsTypeFromRelativeResourcePathThatDoesNotExistAppsSyntheticFound() {
     Resource syntheticResource = mock(Resource.class);
     when(syntheticResource.getResourceType()).thenReturn("sling:syntheticResourceProviderResource");
 
@@ -704,7 +798,15 @@ public class SlingModelUtilsTest {
     when(resolver.getResource("nonexistent-resource")).thenReturn(syntheticResource);
     when(resolver.getResource("/apps/nonexistent-resource")).thenReturn(syntheticResource);
 
-    SlingModelUtils.getResourceAsType("nonexistent-resource", resolver, BaseResource.class);
+    try {
+      SlingModelUtils.getResourceAsType("nonexistent-resource", resolver, BaseResource.class);
+    } catch (InvalidResourceTypeException e) {
+      e.printStackTrace();
+    } catch (ResourceNotFoundException e) {
+      exception = e;
+    }
+    assertEquals("Unable to adapt 'nonexistent-resource': Resource not found.",
+        exception.getMessage());
   }
 
   @Test
@@ -774,13 +876,20 @@ public class SlingModelUtilsTest {
     verify(resource, times(1)).getPath();
   }
 
-  @Test(expected = NoParentResourceException.class)
-  public void testGetParentResourceAsTypeWhenNoParent() throws Exception {
+  @Test
+  public void testGetParentResourceAsTypeWhenNoParent() {
     resource = context.create().resource("/orphan-resource");
 
     resource = resource.getParent();
 
-    SlingModelUtils.getParentResourceAsType(resource, BaseResource.class);
+    try {
+      SlingModelUtils.getParentResourceAsType(resource, BaseResource.class);
+    } catch (InvalidResourceTypeException e) {
+      e.printStackTrace();
+    } catch (NoParentResourceException e) {
+      exception = e;
+    }
+    assertEquals("Unable to retrieve parent of '/':Parent not found.", exception.getMessage());
   }
 
   @Test
@@ -864,18 +973,31 @@ public class SlingModelUtilsTest {
             SampleResourceModel.class).getPath());
   }
 
-  @Test(expected = NoValidAncestorException.class)
-  public void testGetFirstAncestorOfTypeWhenNoValidResourcesAreFound()
-      throws NoValidAncestorException {
+  @Test
+  public void testGetFirstAncestorOfTypeWhenNoValidResourcesAreFound() {
 
     context.create().resource("/parent");
     context.create().resource("/parent/child");
     context.create().resource("/parent/child/grand-child");
     resource = context.create().resource("/parent/child/grand-child/great-grand-child");
 
-    SlingModelUtils.getFirstAncestorOfType(resource, SampleResourceModel.class);
-    SlingModelUtils.getFirstAncestorOfType(resource.adaptTo(BaseResource.class),
-        SampleResourceModel.class);
+    try {
+      SlingModelUtils.getFirstAncestorOfType(resource, SampleResourceModel.class);
+    } catch (NoValidAncestorException e) {
+      exception = e;
+    }
+    assertEquals("Unable to retrieve ancestor matching type SampleResourceModel for "
+                 + "/parent/child/grand-child/great-grand-child: No valid ancestor found.",
+        exception.getMessage());
+    try {
+      SlingModelUtils.getFirstAncestorOfType(resource.adaptTo(BaseResource.class),
+          SampleResourceModel.class);
+    } catch (NoValidAncestorException e) {
+      exception = e;
+    }
+    assertEquals("Unable to retrieve ancestor matching type SampleResourceModel for "
+                 + "/parent/child/grand-child/great-grand-child: No valid ancestor found.",
+        exception.getMessage());
   }
 
   @Test
@@ -973,10 +1095,9 @@ public class SlingModelUtilsTest {
     assertEquals("SampleResourceModel", SlingModelUtils.getResourceAsClosestType(resource,
         modelAdapterFactory).getClass().getSimpleName());
   }
-  
-  @Test(expected = InvalidResourceTypeException.class)
-  public void testGetResourceAsClosestTypeWhenNotExtendingBaseResource()
-      throws InvalidResourceTypeException {
+
+  @Test
+  public void testGetResourceAsClosestTypeWhenNotExtendingBaseResource() {
 
     properties.put("sling:resourceType", "kestros/commons/component");
     resource = context.create().resource("/sample-resource", properties);
@@ -986,7 +1107,14 @@ public class SlingModelUtilsTest {
     when(modelAdapterFactory.getModelFromResource(resource)).thenReturn(
         resource.adaptTo(Resource.class));
 
-    assertNull(SlingModelUtils.getResourceAsClosestType(resource, modelAdapterFactory));
+    try {
+      assertNull(SlingModelUtils.getResourceAsClosestType(resource, modelAdapterFactory));
+    } catch (MatchingResourceTypeNotFoundException e) {
+      exception = e;
+    }
+    assertEquals(
+        "Unable to retrieve model for /sample-resource: No matching Sling Model type found.",
+        exception.getMessage());
   }
 
   @Test

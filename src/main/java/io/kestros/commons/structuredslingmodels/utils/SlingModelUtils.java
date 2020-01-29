@@ -209,8 +209,11 @@ public final class SlingModelUtils {
           return getChildAsBaseResource(childName, jcrContent);
         }
       }
+      throw new ChildResourceNotFoundException(childName, resource.getPath());
+    } else {
+      throw new ChildResourceNotFoundException(childName, resource.getPath(),
+          "Child name not specified.");
     }
-    throw new ChildResourceNotFoundException(childName, resource);
   }
 
   /**
@@ -333,22 +336,24 @@ public final class SlingModelUtils {
   public static BaseResource getResourceAsBaseResource(@Nonnull String resourcePath,
       @Nonnull ResourceResolver resolver) throws ResourceNotFoundException {
 
-    Resource resource = resolver.getResource(resourcePath);
+    if (StringUtils.isNotEmpty(resourcePath)) {
+      Resource resource = resolver.getResource(resourcePath);
 
-    if (resource != null && StringUtils.isNotEmpty(resourcePath)) {
-      if (RESOURCE_TYPE_SYNTHETIC.equals(resource.getResourceType())) {
-        resource = resolver.getResource(PREFIX_APPS + resourcePath);
-        if (resource == null || RESOURCE_TYPE_SYNTHETIC.equals(resource.getResourceType())) {
-          resource = resolver.getResource(PREFIX_LIBS + resourcePath);
+      if (resource != null) {
+        if (RESOURCE_TYPE_SYNTHETIC.equals(resource.getResourceType())) {
+          resource = resolver.getResource(PREFIX_APPS + resourcePath);
+          if (resource == null || RESOURCE_TYPE_SYNTHETIC.equals(resource.getResourceType())) {
+            resource = resolver.getResource(PREFIX_LIBS + resourcePath);
+          }
+          if (resource == null || RESOURCE_TYPE_SYNTHETIC.equals(resource.getResourceType())) {
+            throw new ResourceNotFoundException(resourcePath);
+          }
         }
-        if (resource == null || RESOURCE_TYPE_SYNTHETIC.equals(resource.getResourceType())) {
-          throw new ResourceNotFoundException(resourcePath);
-        }
+        return adaptToBaseResource(resource);
       }
-      return adaptToBaseResource(resource);
+      throw new ResourceNotFoundException(resourcePath);
     }
-    throw new ResourceNotFoundException(resourcePath);
-
+    throw new ResourceNotFoundException(resourcePath, "Resource path not specified.");
   }
 
   /**
@@ -490,13 +495,13 @@ public final class SlingModelUtils {
     try {
       return getParentResourceAsType(resource, type);
     } catch (InvalidResourceTypeException exception) {
-
       try {
         return getFirstAncestorOfType(getParentResourceAsBaseResource(resource), type);
       } catch (NoParentResourceException e1) {
         throw new NoValidAncestorException(resource.getPath(), type);
+      } catch (NoValidAncestorException exception1) {
+        throw new NoValidAncestorException(resource.getPath(), type);
       }
-
     } catch (NoParentResourceException exception) {
       throw new NoValidAncestorException(resource.getPath(), type);
     }

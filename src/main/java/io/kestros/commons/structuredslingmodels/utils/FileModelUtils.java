@@ -53,7 +53,7 @@ public class FileModelUtils {
     T file = adaptTo(fileResource, type);
     if (!file.getErrorMessages().isEmpty()) {
       throw new InvalidResourceTypeException(fileResource.getPath(), type,
-          "Failed validation checks");
+          "Failed validation checks. " + file.getErrorMessages());
     } else if (!file.getFileType().getReadableContentTypes().contains(file.getMimeType())) {
       file = fileResource.getResource().adaptTo(type);
       if (file != null) {

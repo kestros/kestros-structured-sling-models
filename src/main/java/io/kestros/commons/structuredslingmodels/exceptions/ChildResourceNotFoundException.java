@@ -19,8 +19,6 @@
 
 package io.kestros.commons.structuredslingmodels.exceptions;
 
-import org.apache.sling.api.resource.Resource;
-
 /**
  * Thrown when trying to retrieve a Child of a BaseResource that does not exist or cannot be found
  * (possibly due to permissions).
@@ -33,11 +31,11 @@ public class ChildResourceNotFoundException extends ModelAdaptionException {
     super(message);
   }
 
-  public ChildResourceNotFoundException(String childName, Resource parentResource) {
-    this(childName, parentResource.getPath(), "Child not found");
+  public ChildResourceNotFoundException(String childName, String parentPath) {
+    this(childName, parentPath, "Child not found.");
   }
 
   public ChildResourceNotFoundException(String childName, String parentPath, String message) {
-    super("Unable to adapt " + childName + " under " + parentPath + ": " + message);
+    super(String.format("Unable to adapt '%s' under '%s': %s", childName, parentPath, message));
   }
 }

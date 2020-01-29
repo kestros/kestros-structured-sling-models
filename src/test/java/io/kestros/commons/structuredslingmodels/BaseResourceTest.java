@@ -47,6 +47,8 @@ public class BaseResourceTest {
 
   private Map<String, Object> properties = new HashMap<>();
 
+  private Exception exception;
+
   @Before
   public void setUp() throws Exception {
     context.addModelsForPackage("io.kestros");
@@ -67,18 +69,23 @@ public class BaseResourceTest {
     assertEquals("/resource", baseResource.getParent().getPath());
   }
 
-  @Test(expected = NoParentResourceException.class)
-  public void testGetParentWhenNoParent() throws NoParentResourceException {
+  @Test
+  public void testGetParentWhenNoParent() {
     resource = context.create().resource("/resource");
 
     baseResource = resource.adaptTo(BaseResource.class);
 
-    assertEquals("/", baseResource.getParent().getPath());
-    baseResource.getParent().getParent();
+    try {
+      assertEquals("/", baseResource.getParent().getPath());
+      baseResource.getParent().getParent();
+    } catch (NoParentResourceException e) {
+      exception = e;
+    }
+    assertEquals("Unable to retrieve parent of '/':Parent not found.", exception.getMessage());
   }
 
   @Test
-  public void testGetName() throws Exception {
+  public void testGetName() {
     assertEquals("parent", baseResource.getName());
   }
 
@@ -121,26 +128,26 @@ public class BaseResourceTest {
   }
 
   @Test
-  public void testGetNameWhenNested() throws Exception {
+  public void testGetNameWhenNested() {
     baseResource = childResource.adaptTo(BaseResource.class);
 
     assertEquals("child", baseResource.getName());
   }
 
   @Test
-  public void testGetPath() throws Exception {
+  public void testGetPath() {
     assertEquals("/parent", baseResource.getPath());
   }
 
   @Test
-  public void testGetPathWhenNested() throws Exception {
+  public void testGetPathWhenNested() {
     baseResource = childResource.adaptTo(BaseResource.class);
 
     assertEquals("/parent/child", baseResource.getPath());
   }
 
   @Test
-  public void testGetProperties() throws Exception {
+  public void testGetProperties() {
     Map<String, Object> properties = new HashMap<>();
 
     childResource = context.create().resource("/parent/child-with-properties", properties);
@@ -151,7 +158,7 @@ public class BaseResourceTest {
   }
 
   @Test
-  public void testGetProperty() throws Exception {
+  public void testGetProperty() {
     Map<String, Object> properties = new HashMap<>();
     properties.put("property", "Value");
 
@@ -162,7 +169,7 @@ public class BaseResourceTest {
   }
 
   @Test
-  public void testGetPropertyWhenPropertyIsMissing() throws Exception {
+  public void testGetPropertyWhenPropertyIsMissing() {
     Map<String, Object> properties = new HashMap<>();
 
     childResource = context.create().resource("/parent/child-with-properties", properties);

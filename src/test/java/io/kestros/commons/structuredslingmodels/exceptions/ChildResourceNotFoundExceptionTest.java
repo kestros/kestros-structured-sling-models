@@ -33,8 +33,9 @@ public class ChildResourceNotFoundExceptionTest {
     Resource resource = mock(Resource.class);
     when(resource.getPath()).thenReturn("/parent");
     ChildResourceNotFoundException exception = new ChildResourceNotFoundException("child-name",
-        resource);
-    assertEquals("Unable to adapt child-name under /parent: Child not found", exception.getMessage());
+        resource.getPath());
+    assertEquals("Unable to adapt 'child-name' under '/parent': Child not found.",
+        exception.getMessage());
   }
 
   @Test
@@ -47,7 +48,8 @@ public class ChildResourceNotFoundExceptionTest {
   public void testGetMessageWhenChildAndParentAndMessage() {
     ChildResourceNotFoundException exception = new ChildResourceNotFoundException("child-name",
         "/parent", "My Message");
-    assertEquals("Unable to adapt child-name under /parent: My Message", exception.getMessage());
+    assertEquals("Unable to adapt 'child-name' under '/parent': My Message",
+        exception.getMessage());
   }
 
 }
