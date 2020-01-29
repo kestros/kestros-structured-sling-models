@@ -33,7 +33,7 @@ public class NoValidAncestorException extends ModelAdaptionException {
 
   @SuppressWarnings("WeakerAccess")
   public NoValidAncestorException(String resourcePath, Class type, String message) {
-    super(String.format("Unable to retrieve ancestor matching type %s for %s: %s", resourcePath,
-        type.getSimpleName(), message));
+    super(String.format("Unable to retrieve ancestor matching type %s for %s: %s",
+        type.getSimpleName(), resourcePath, message));
   }
 }
