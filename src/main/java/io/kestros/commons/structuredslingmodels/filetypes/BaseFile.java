@@ -22,6 +22,7 @@ package io.kestros.commons.structuredslingmodels.filetypes;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.apache.jackrabbit.JcrConstants.JCR_DATA;
 import static org.apache.jackrabbit.JcrConstants.JCR_MIMETYPE;
+import static org.apache.jackrabbit.JcrConstants.NT_FILE;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.kestros.commons.structuredslingmodels.BasePage;
@@ -40,13 +41,24 @@ import org.slf4j.LoggerFactory;
  * Baseline class for adapting a nt:file Resources and reading their contents.
  */
 @Model(adaptables = Resource.class,
-       resourceType = "nt:file")
+       resourceType = NT_FILE)
 public abstract class BaseFile extends BasePage {
 
   private static final Logger LOG = LoggerFactory.getLogger(BaseFile.class);
 
+  /**
+   * {@link FileType} associated to the BaseFile implementation model. Used for checking resource
+   * validity when adapting Resources to this File model.
+   *
+   * @return {@link FileType} associated to the BaseFile implementation model.
+   */
   public abstract FileType getFileType();
 
+  /**
+   * jcr:mimeType property value.
+   *
+   * @return jcr:mimeType property value.
+   */
   public String getMimeType() {
     return getProperties().get(JCR_MIMETYPE, StringUtils.EMPTY);
   }

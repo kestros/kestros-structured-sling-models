@@ -115,7 +115,6 @@ public class BaseFileTest {
 
     baseFile = resource.adaptTo(SampleFile.class);
 
-    // TODO add more tests and verification around this.
     assertEquals("38 bytes", baseFile.getFileSize());
   }
 

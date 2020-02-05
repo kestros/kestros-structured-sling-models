@@ -26,11 +26,22 @@ public class NoParentResourceException extends ModelAdaptionException {
 
   private static final long serialVersionUID = 3384037613226888597L;
 
-  public NoParentResourceException(String resource) {
-    this(resource, "Parent not found.");
+  /**
+   * Thrown when no parent Resource can be returned.
+   *
+   * @param resourcePath Absolute path of Resource that could not retrieve a parent Resource.
+   */
+  public NoParentResourceException(final String resourcePath) {
+    this(resourcePath, "Parent not found.");
   }
 
-  protected NoParentResourceException(String resource, String message) {
-    super("Unable to retrieve parent of '" + resource + "':" + message);
+  /**
+   * Thrown when no parent Resource can be returned.
+   *
+   * @param resourcePath Absolute path of Resource that could not retrieve a parent Resource.
+   * @param message Cause message.
+   */
+  protected NoParentResourceException(final String resourcePath, final String message) {
+    super("Unable to retrieve parent of '" + resourcePath + "':" + message);
   }
 }

@@ -26,13 +26,24 @@ public class NoValidAncestorException extends ModelAdaptionException {
 
   private static final long serialVersionUID = 3666059665007715065L;
 
-
-  public NoValidAncestorException(String resourcePath, Class type) {
+  /**
+   * Thrown when no ancestor Resources can be adapted to the passed Sling Model type.
+   *
+   * @param resourcePath Absolute path of the origin Resource.
+   * @param type Model type which no ancestor Resource could be adapted to.
+   */
+  public NoValidAncestorException(final String resourcePath, final Class type) {
     this(resourcePath, type, "No valid ancestor found.");
   }
 
-  @SuppressWarnings("WeakerAccess")
-  public NoValidAncestorException(String resourcePath, Class type, String message) {
+  /**
+   * Thrown when no ancestor Resources can be adapted to the passed Sling Model type.
+   *
+   * @param resourcePath Absolute path of the origin Resource.
+   * @param type Model type which no ancestor Resource could be adapted to.
+   * @param message Cause message.
+   */
+  public NoValidAncestorException(final String resourcePath, final Class type, final String message) {
     super(String.format("Unable to retrieve ancestor matching type %s for %s: %s",
         type.getSimpleName(), resourcePath, message));
   }

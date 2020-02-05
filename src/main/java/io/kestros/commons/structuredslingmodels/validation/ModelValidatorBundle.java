@@ -30,7 +30,7 @@ public abstract class ModelValidatorBundle implements ModelValidator {
   private final List<ModelValidator> validators = new ArrayList<>();
 
   /**
-   * Constructor.
+   * Constructs ModelValidator that holds a set of ModelValidators.
    */
   public ModelValidatorBundle() {
     registerValidators();
@@ -50,6 +50,11 @@ public abstract class ModelValidatorBundle implements ModelValidator {
     }
   }
 
+  /**
+   * Message informing the user what is being validated within the bundle.
+   *
+   * @return Message informing the user what is being validated within the bundle.
+   */
   public abstract String getBundleMessage();
 
   /**

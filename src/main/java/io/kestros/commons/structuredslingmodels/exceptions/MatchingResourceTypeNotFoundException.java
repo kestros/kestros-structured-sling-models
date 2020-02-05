@@ -19,16 +19,39 @@
 
 package io.kestros.commons.structuredslingmodels.exceptions;
 
+import org.apache.sling.api.resource.Resource;
+
+/**
+ * Exception thrown when no matching Sling Model type can be found for a resource while using {@link
+ * org.apache.sling.models.factory.ModelFactory} to
+ * {@link org.apache.sling.models.factory.ModelFactory#getModelFromResource(Resource)}
+ */
 public class MatchingResourceTypeNotFoundException extends InvalidResourceTypeException {
 
   private static final long serialVersionUID = 6639023707837948167L;
 
-  public MatchingResourceTypeNotFoundException(String resource) {
-    this(resource, "No matching Sling Model type found.");
+  /**
+   * Exception thrown when no matching Sling Model type can be found for a resource while using
+   * {@link org.apache.sling.models.factory.ModelFactory} to
+   * {@link org.apache.sling.models.factory.ModelFactory#getModelFromResource(Resource)}
+   *
+   * @param resourcePath Absolute path to the Resource that could not be matched to a Sling
+   *     Model type.
+   */
+  public MatchingResourceTypeNotFoundException(final String resourcePath) {
+    this(resourcePath, "No matching Sling Model type found.");
   }
 
-  @SuppressWarnings("WeakerAccess")
-  public MatchingResourceTypeNotFoundException(String resource, String message) {
-    super("Unable to retrieve model for " + resource + ": " + message);
+  /**
+   * Exception thrown when no matching Sling Model type can be found for a resource while using
+   * {@link org.apache.sling.models.factory.ModelFactory} to
+   * {@link org.apache.sling.models.factory.ModelFactory#getModelFromResource(Resource)}
+   *
+   * @param resourcePath Absolute path to the Resource that could not be matched to a Sling
+   *     Model type.
+   * @param message Cause message.
+   */
+  public MatchingResourceTypeNotFoundException(final String resourcePath, final String message) {
+    super("Unable to retrieve model for " + resourcePath + ": " + message);
   }
 }

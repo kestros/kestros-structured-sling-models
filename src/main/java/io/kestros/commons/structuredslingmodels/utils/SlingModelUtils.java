@@ -115,6 +115,14 @@ public final class SlingModelUtils {
   /**
    * This method is functionally the same as {@link #adaptTo(Resource, Class)} but accepts {@link
    * BaseResource} instead of {@link Resource}.
+   *
+   * @param baseResource Resource to adapt.
+   * @param type Class to adapt the Resource to. Class must extend BaseResource and have the
+   * @param <T> Class to adapt the Resource to. Class must extend BaseResource and have the
+   * @return The current Resource, adapted the specified type.
+   * @throws InvalidResourceTypeException thrown when the Resource cannot be adapted to the
+   *     specified type, due to a mismatch between the resourceType of the Resource, and the
+   *     resourceType value of the type's {@link Model} annotation.
    */
   @Nonnull
   public static <T extends BaseResource> T adaptTo(@Nonnull final BaseResource baseResource,
@@ -142,6 +150,9 @@ public final class SlingModelUtils {
   /**
    * This method is functionally the same as {@link #adaptToBaseResource(Resource)} but accepts
    * {@link BaseResource} instead of {@link Resource}.
+   *
+   * @param baseResource Resource to adapt.
+   * @return The current Resource, adapted to a BaseResource Model.
    */
   @Nonnull
   public static BaseResource adaptToBaseResource(@Nonnull final BaseResource baseResource) {
@@ -179,6 +190,22 @@ public final class SlingModelUtils {
   /**
    * This method is functionally the same as {@link #getChildAsType(String, Resource, Class)} but
    * accepts {@link BaseResource} instead of {@link Resource}.
+   *
+   * @param childName Name of child Resource to retrieve.
+   * @param baseResource Resource to retrieve child from.
+   * @param type Class to adapt the child to. Class must extend BaseResource and have the {@link
+   *     Model} annotation, with the resourceType value set.
+   * @param <T> Class to adapt the child to. Class must extend BaseResource and have the {@link
+   *     Model} annotation, with the resourceType value set.
+   * @return The specified child Resource adapted to the specified type, if it is valid. Will
+   *     automatically check the jcr:content resource is no immediate child is found ( and the
+   *     jcr:content resource is).
+   * @throws InvalidResourceTypeException thrown when the child Resource cannot be adapted to
+   *     the specified type, due to a mismatch between the resourceType of the Resource, and the
+   *     resourceType value of the type's {@link Model} annotation.
+   * @throws ChildResourceNotFoundException thrown when the specified childBaseResource to
+   *     retrieve child of. Resource does not exist, or cannot be found (possibly due to
+   *     permissions).
    */
   @Nonnull
   public static <T extends BaseResource> T getChildAsType(@Nonnull final String childName,
@@ -219,6 +246,11 @@ public final class SlingModelUtils {
   /**
    * This method is functionally the same as {@link #getChildAsBaseResource(String, Resource)} but
    * accepts {@link BaseResource} instead of {@link Resource}.
+   *
+   * @param childName name of the child Resource to return.
+   * @param baseResource Resource to retrieve the child from.
+   * @return Specified child Resource, as a BaseResource.
+   * @throws ChildResourceNotFoundException No resource with the specified name is found.
    */
   @Nonnull
   public static BaseResource getChildAsBaseResource(@Nonnull final String childName,
@@ -245,6 +277,9 @@ public final class SlingModelUtils {
   /**
    * This method is functionally the same as {@link #getChildrenAsBaseResource(Resource)} but
    * accepts {@link BaseResource} instead of {@link Resource}.
+   *
+   * @param resource Resource to retrieve children from.
+   * @return List of all children, adapted to BaseResource.
    */
   @Nonnull
   public static List<BaseResource> getChildrenAsBaseResource(@Nonnull final BaseResource resource) {
@@ -282,6 +317,12 @@ public final class SlingModelUtils {
   /**
    * This method is functionally the same as {@link #getChildrenOfType(Resource, Class)} )} but
    * accepts {@link BaseResource} instead of {@link Resource}.
+   *
+   * @param baseResource Resource to retrieve children from.
+   * @param type Class to adapt the children to. Class must extend BaseResource and have the
+   * @param <T> Class to adapt the children to. Class must extend BaseResource and have the
+   * @return List of all valid children, adapted to the specified type. Resources that fail adaption
+   *     will not be added to the List.
    */
   @Nonnull
   public static <T extends BaseResource> List<T> getChildrenOfType(
@@ -314,6 +355,13 @@ public final class SlingModelUtils {
   /**
    * This method is functionally the same as {@link #getChildrenOfType(Resource, List, Class)} )}
    * but accepts {@link BaseResource} instead of {@link Resource}.
+   *
+   * @param baseResource Resource to retrieve children from.
+   * @param allowedChildNames List of names that are allowed.
+   * @param type Class to adapt the children to. Class must extend BaseResource and have the
+   * @param <T> Class to adapt the children to. Class must extend BaseResource and have the
+   * @return List of all allowed and valid children, adapted to the specified type. Resources that
+   *     fail adaption will not be added to the List.
    */
   @Nonnull
   public static <T extends BaseResource> List<T> getChildrenOfType(
@@ -431,6 +479,11 @@ public final class SlingModelUtils {
   /**
    * This method is functionally the same as {@link #getParentResourceAsBaseResource(Resource)} but
    * accepts {@link BaseResource} instead of {@link Resource}.
+   *
+   * @param baseResource Resource to retrieve the parent of.
+   * @return the specified Resource's parent Resource as a BaseResource.
+   * @throws NoParentResourceException Thrown when no parent of the passed Resource can be
+   *     found.
    */
   @Nonnull
   public static BaseResource getParentResourceAsBaseResource(
@@ -467,6 +520,18 @@ public final class SlingModelUtils {
   /**
    * This method is functionally the same as {@link #getParentResourceAsType(Resource, Class)} but
    * accepts {@link BaseResource} instead of {@link Resource}.
+   *
+   * @param baseResource Resource to get the parent of.
+   * @param type Class to adapt the parent Resource to. Class must extend BaseResource and have
+   *     the
+   * @param <T> Class to adapt the parent Resource to. Class must extend BaseResource and have
+   *     the
+   * @return The parent Resource, adapted to the specified type.
+   * @throws InvalidResourceTypeException thrown when the parent Resource is found, but  cannot
+   *     be adapted to the specified type, due to a mismatch between the resourceType of the
+   *     Resource, and the resourceType value of the type's {@link Model} annotation.
+   * @throws NoParentResourceException thrown when the parent Resource cannot be found.  This
+   *     should only happen at the root level.
    */
   @Nonnull
   public static <T extends BaseResource> T getParentResourceAsType(
@@ -510,6 +575,15 @@ public final class SlingModelUtils {
   /**
    * This method is functionally the same as {@link #getFirstAncestorOfType(Resource, Class)} but
    * accepts {@link BaseResource} instead of {@link Resource}.
+   *
+   * @param baseResource Resource to look for ancestors of
+   * @param type Class to attempt to adapt the ancestor Resource to. Class must extend
+   *     BaseResource and have the {@link Model} annotation, with the resourceType value set.
+   * @param <T> Class to attempt to adapt the ancestor Resource to. Class must extend
+   *     BaseResource and have the {@link Model} annotation, with the resourceType value set.
+   * @return The first ancestor Resource that can be adapted to the specified type.
+   * @throws NoValidAncestorException thrown when ancestry ends without having found a valid
+   *     Resource.
    */
   @Nonnull
   public static <T extends BaseResource> T getFirstAncestorOfType(
@@ -546,6 +620,14 @@ public final class SlingModelUtils {
   /**
    * This method is functionally the same as {@link #getAllDescendantsOfType(Resource, Class)} but
    * accepts {@link BaseResource} instead of {@link Resource}.
+   *
+   * @param baseResource BaseResource to originate JCR traversal from.
+   * @param type Class to adapt the descendants to. Class must extend BaseResource and have the
+   *     {@link Model} annotation, with the resourceType value set.
+   * @param <T> Class to adapt the descendants to. Class must extend BaseResource and have the
+   *     {@link Model} annotation, with the resourceType value set.
+   * @return List of all descendant Resources that can be adapted to the specified type, as the
+   *     specified type.
    */
   @Nonnull
   public static <T extends BaseResource> List<T> getAllDescendantsOfType(
@@ -599,6 +681,15 @@ public final class SlingModelUtils {
   /**
    * This method is functionally the same as {@link #getResourceAsClosestType(Resource,
    * ModelFactory)} but accepts {@link BaseResource} instead of {@link Resource}.
+   *
+   * @param resource Resource to adapt.
+   * @param modelFactory modelFactory used to match the model type to the Resource's
+   *     resourceType.
+   * @param <T> Generic class that extends BaseResource.
+   * @return The passed Resource adapted to the closest matching SlingModel type that extends
+   *     BaseResource.
+   * @throws MatchingResourceTypeNotFoundException Thrown when the passed Resource cannot be
+   *     dynamically adapted to a Model type.
    */
   @Nonnull
   public static <T extends BaseResource> T getResourceAsClosestType(@Nonnull BaseResource resource,
@@ -637,6 +728,12 @@ public final class SlingModelUtils {
   /**
    * This method is functionally the same as {@link #getChildrenAsClosestTypes(Resource,
    * ModelFactory)} but accepts {@link BaseResource} instead of {@link Resource}.
+   *
+   * @param baseResource Resource to retrieve children from.
+   * @param modelFactory modelFactory used to match the model type to the Resource's
+   *     resourceType.
+   * @param <T> Generic class that extends BaseResource.
+   * @return List of all children, adapted to the closest matching SlingModel type that extends
    */
   @Nonnull
   public static <T extends BaseResource> List<T> getChildrenAsClosestTypes(
