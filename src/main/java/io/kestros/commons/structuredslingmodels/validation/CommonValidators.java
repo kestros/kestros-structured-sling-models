@@ -166,9 +166,8 @@ public class CommonValidators {
    * @param <S> Generic model type.
    * @return Validator that checks if a specified child does not fail any ERROR type validators.
    */
-  public static <T extends BaseResource, S extends BaseResource> ModelValidator
-      isChildResourceValidResourceType(final String childName, final Class<S> childType,
-                                   final T model) {
+  public static <T extends BaseResource, S extends BaseResource> ModelValidator isChildResourceValidResourceType(
+      final String childName, final Class<S> childType, final T model) {
 
     return new ModelValidator() {
       @Override
@@ -251,7 +250,6 @@ public class CommonValidators {
           return "Error validator failed for " + model.getPath() + ": " + errorMessage;
         }
 
-        // TODO should there be a version of this that always validates??
         @Override
         public ModelValidationMessageType getType() {
           return ERROR;
@@ -300,9 +298,10 @@ public class CommonValidators {
    * @param list List to check.
    * @param message Validation message.
    * @param type Validation error level.
+   * @param <T> Generic type.
    * @return ModelValidator for null values in a specified list.
    */
-  public static <T extends Object> ModelValidator listContainsNoNulls(@Nonnull final List<T> list,
+  public static <T> ModelValidator listContainsNoNulls(@Nonnull final List<T> list,
       @Nonnull final String message, @Nonnull final ModelValidationMessageType type) {
     return new ModelValidator() {
       @Override

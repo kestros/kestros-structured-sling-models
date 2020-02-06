@@ -27,15 +27,37 @@ public class ChildResourceNotFoundException extends ModelAdaptionException {
 
   private static final long serialVersionUID = 4411171046174043655L;
 
-  protected ChildResourceNotFoundException(String message) {
+  /**
+   * Thrown when trying to retrieve a Child of a BaseResource that does not exist or cannot be found
+   * (possibly due to permissions).
+   *
+   * @param message Cause message.
+   */
+  protected ChildResourceNotFoundException(final String message) {
     super(message);
   }
 
-  public ChildResourceNotFoundException(String childName, String parentPath) {
+  /**
+   * Thrown when trying to retrieve a Child of a BaseResource that does not exist or cannot be found
+   * (possibly due to permissions).
+   *
+   * @param childName Name of expected child Resource.
+   * @param parentPath Path of Resource attempting to retrieve child from.
+   */
+  public ChildResourceNotFoundException(final String childName, final String parentPath) {
     this(childName, parentPath, "Child not found.");
   }
 
-  public ChildResourceNotFoundException(String childName, String parentPath, String message) {
+  /**
+   * Thrown when trying to retrieve a Child of a BaseResource that does not exist or cannot be found
+   * (possibly due to permissions).
+   *
+   * @param childName Name of expected child Resource.
+   * @param parentPath Path of Resource attempting to retrieve child from.
+   * @param message Cause message.
+   */
+  public ChildResourceNotFoundException(
+      final String childName, final String parentPath, final String message) {
     super(String.format("Unable to adapt '%s' under '%s': %s", childName, parentPath, message));
   }
 }

@@ -23,6 +23,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import org.apache.commons.io.IOUtils;
 
+/**
+ * Utility methods working with and retrieving information about Files.
+ */
 public class FileUtils {
 
   private FileUtils() {

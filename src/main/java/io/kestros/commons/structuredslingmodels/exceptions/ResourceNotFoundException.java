@@ -26,11 +26,22 @@ public class ResourceNotFoundException extends ModelAdaptionException {
 
   private static final long serialVersionUID = 6346762327737384698L;
 
-  public ResourceNotFoundException(String resourcePath) {
+  /**
+   * Generic exception for when a desired Resource cannot be found.
+   *
+   * @param resourcePath Expected Resource path.
+   */
+  public ResourceNotFoundException(final String resourcePath) {
     this(resourcePath, "Resource not found.");
   }
 
-  public ResourceNotFoundException(String resourcePath, String message) {
+  /**
+   * Generic exception for when a desired Resource cannot be found.
+   *
+   * @param resourcePath Expected Resource path.
+   * @param message Cause message.
+   */
+  public ResourceNotFoundException(final String resourcePath, final String message) {
     super(resourcePath, message);
   }
 }

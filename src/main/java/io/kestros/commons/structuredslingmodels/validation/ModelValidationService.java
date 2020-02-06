@@ -20,7 +20,6 @@
 package io.kestros.commons.structuredslingmodels.validation;
 
 import io.kestros.commons.structuredslingmodels.BaseSlingModel;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,8 +72,8 @@ public abstract class ModelValidationService {
   }
 
   /**
-   * Add ModelValidator to the current service, to be checked when the model is adapted, or when
-   * detailed validation is called on the model.
+   * Add ModelValidator to the current service to be processed when validation is called on the
+   * model.
    *
    * @param validator Validator to be added to the ValidationService.
    */
@@ -82,11 +81,15 @@ public abstract class ModelValidationService {
     basicValidators.add(validator);
   }
 
+  /**
+   * Add ModelValidator to the current service to be processed when detailed validation is called on
+   * the model.
+   *
+   * @param validator Validator to be added to the ValidationService.
+   */
   public void addDetailedValidator(ModelValidator validator) {
     detailedValidators.add(validator);
   }
-
-  // TODO add referenced validator
 
   /**
    * List of ModelValidators that always run during PostConstruct.

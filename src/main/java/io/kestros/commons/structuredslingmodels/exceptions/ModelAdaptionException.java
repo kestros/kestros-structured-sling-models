@@ -28,19 +28,38 @@ public class ModelAdaptionException extends Exception {
 
   private static final long serialVersionUID = -4857016290098398418L;
 
-  protected ModelAdaptionException(String message) {
+  protected ModelAdaptionException(final String message) {
     super(message);
   }
 
-  public ModelAdaptionException(Resource resource, String message) {
+  /**
+   * Generic exception for when an error occurs when attempting to adapt a Resource.
+   *
+   * @param resource Resource that failed adaption.
+   * @param message Cause message.
+   */
+  public ModelAdaptionException(final Resource resource, final String message) {
     this(resource.getPath(), message);
   }
 
-  public ModelAdaptionException(String resourcePath, String message) {
+  /**
+   * Generic exception for when an error occurs when attempting to adapt a Resource.
+   *
+   * @param resourcePath Absolute path to the Resource that failed adaption.
+   * @param message Cause message.
+   */
+  public ModelAdaptionException(final String resourcePath, final String message) {
     super("Unable to adapt '" + resourcePath + "': " + message);
   }
 
-  public ModelAdaptionException(String resourcePath, Class type, String message) {
+  /**
+   * Generic exception for when an error occurs when attempting to adapt a Resource.
+   *
+   * @param resourcePath Absolute path to the Resource that failed adaption.
+   * @param type Model type that the Resource could not be adapted to.
+   * @param message Cause message.
+   */
+  public ModelAdaptionException(final String resourcePath, final Class type, final String message) {
     this("Unable to adapt '" + resourcePath + "' to " + type.getSimpleName() + ": " + message);
   }
 

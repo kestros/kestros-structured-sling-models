@@ -118,6 +118,7 @@ public class BaseResource extends BaseSlingModel {
    *
    * @param key Property to retrieve
    * @param defaultValue Value to return if no matching property is found.
+   * @param <T> Generic type.
    * @return Property value, or the default value.
    */
   @Nullable
@@ -164,6 +165,11 @@ public class BaseResource extends BaseSlingModel {
     }
   }
 
+  /**
+   * jcr:primaryType value of the Resource.
+   *
+   * @return jcr:primaryType value of the Resource.
+   */
   @Nonnull
   @JsonIgnore
   public String getJcrPrimaryType() {
