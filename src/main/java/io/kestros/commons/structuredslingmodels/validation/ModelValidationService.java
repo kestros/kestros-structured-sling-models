@@ -39,7 +39,7 @@ public abstract class ModelValidationService {
    * @param model model to validate against.
    * @param <T> Model type which extends BaseSlingModel.
    */
-  public <T extends BaseSlingModel> void setModel(T model) {
+  public <T extends BaseSlingModel> void setModel(final T model) {
     this.model = model;
   }
 
@@ -77,7 +77,7 @@ public abstract class ModelValidationService {
    *
    * @param validator Validator to be added to the ValidationService.
    */
-  public void addBasicValidator(ModelValidator validator) {
+  public void addBasicValidator(final ModelValidator validator) {
     basicValidators.add(validator);
   }
 
@@ -87,7 +87,7 @@ public abstract class ModelValidationService {
    *
    * @param validator Validator to be added to the ValidationService.
    */
-  public void addDetailedValidator(ModelValidator validator) {
+  public void addDetailedValidator(final ModelValidator validator) {
     detailedValidators.add(validator);
   }
 

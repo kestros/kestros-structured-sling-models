@@ -47,10 +47,10 @@ public class BaseValidationProviderService implements ValidationProviderService 
 
 
   @Override
-  public <T extends BaseSlingModel> List<ModelValidator> getValidators(T model,
-      ModelValidationService modelValidationService) {
+  public <T extends BaseSlingModel> List<ModelValidator> getValidators(final T model,
+      final ModelValidationService modelValidationService) {
     if (modelValidationService != null) {
-      List<ModelValidator> modelValidators = new ArrayList<>();
+      final List<ModelValidator> modelValidators = new ArrayList<>();
 
       modelValidators.addAll(getBasicValidators(model, modelValidationService));
       modelValidators.addAll(getDetailedValidators(model, modelValidationService));
@@ -61,8 +61,8 @@ public class BaseValidationProviderService implements ValidationProviderService 
   }
 
   @Override
-  public <T extends BaseSlingModel> List<ModelValidator> getBasicValidators(T model,
-      ModelValidationService modelValidationService) {
+  public <T extends BaseSlingModel> List<ModelValidator> getBasicValidators(final T model,
+      final ModelValidationService modelValidationService) {
     if (modelValidationService != null) {
       if (modelValidationService.getBasicValidators().isEmpty()) {
         modelValidationService.setModel(model);
@@ -83,8 +83,8 @@ public class BaseValidationProviderService implements ValidationProviderService 
    * @return Detailed ModelValidators for a given Model.  Model must extend {@link BaseSlingModel}.
    */
   @Override
-  public <T extends BaseSlingModel> List<ModelValidator> getDetailedValidators(T model,
-      ModelValidationService modelValidationService) {
+  public <T extends BaseSlingModel> List<ModelValidator> getDetailedValidators(final T model,
+      final ModelValidationService modelValidationService) {
     if (modelValidationService != null) {
       if (modelValidationService.getDetailedValidators().isEmpty()) {
         modelValidationService.setModel(model);
@@ -104,8 +104,8 @@ public class BaseValidationProviderService implements ValidationProviderService 
    * @param <T> Extends {@link BaseSlingModel}.
    */
   @Override
-  public <T extends BaseSlingModel> void doBasicValidation(T model,
-      ModelValidationService modelValidationService) {
+  public <T extends BaseSlingModel> void doBasicValidation(final T model,
+      final ModelValidationService modelValidationService) {
     validateModelValidatorList(model, getBasicValidators(model, modelValidationService));
   }
 
@@ -118,8 +118,8 @@ public class BaseValidationProviderService implements ValidationProviderService 
    * @param <T> Extends {@link BaseSlingModel}.
    */
   @Override
-  public <T extends BaseSlingModel> void doDetailedValidation(T model,
-      ModelValidationService modelValidationService) {
+  public <T extends BaseSlingModel> void doDetailedValidation(final T model,
+      final ModelValidationService modelValidationService) {
     validateModelValidatorList(model, getBasicValidators(model, modelValidationService));
     validateModelValidatorList(model, getDetailedValidators(model, modelValidationService));
   }
@@ -130,12 +130,12 @@ public class BaseValidationProviderService implements ValidationProviderService 
    *
    * @param validatorList List of validators to perform validation on.
    */
-  private <T extends BaseSlingModel> void validateModelValidatorList(T model,
-      List<ModelValidator> validatorList) {
-    for (ModelValidator validator : validatorList) {
+  private <T extends BaseSlingModel> void validateModelValidatorList(final T model,
+      final List<ModelValidator> validatorList) {
+    for (final ModelValidator validator : validatorList) {
 
       if (validator instanceof ModelValidatorBundle) {
-        ModelValidatorBundle validatorBundle = (ModelValidatorBundle) validator;
+        final ModelValidatorBundle validatorBundle = (ModelValidatorBundle) validator;
 
         if (!validatorBundle.isValid()) {
           addBasicValidatorMessagesToLists(model, validatorBundle);
@@ -148,16 +148,16 @@ public class BaseValidationProviderService implements ValidationProviderService 
 
   @Override
   @Nullable
-  public <T extends BaseSlingModel> ModelValidationService getModelValidationService(T model) {
-    Class<? extends BaseSlingModel> modelClass = model.getClass();
+  public <T extends BaseSlingModel> ModelValidationService getModelValidationService(final T model) {
+    final Class<? extends BaseSlingModel> modelClass = model.getClass();
     try {
       if (modelClass.getAnnotation(StructuredModel.class) != null) {
         return modelClass.getAnnotation(StructuredModel.class).validationService().newInstance();
       }
-    } catch (InstantiationException exception) {
+    } catch (final InstantiationException exception) {
       LOG.warn("Unable to instantiate ModelValidationService {} for {}", modelClass.getAnnotation(
           StructuredModel.class).validationService().getSimpleName(), modelClass.getSimpleName());
-    } catch (IllegalAccessException exception) {
+    } catch (final IllegalAccessException exception) {
       LOG.warn("Unable to retrieve ModelValidationService {} for {} due to IllegalAccessException",
           modelClass.getAnnotation(StructuredModel.class).validationService().getSimpleName(),
           modelClass.getSimpleName());
@@ -171,10 +171,10 @@ public class BaseValidationProviderService implements ValidationProviderService 
    *
    * @param validator Model validator to be performed.
    */
-  private <T extends BaseSlingModel> void addBasicValidatorMessagesToLists(T model,
-      ModelValidator validator) {
+  private <T extends BaseSlingModel> void addBasicValidatorMessagesToLists(final T model,
+      final ModelValidator validator) {
     String message = validator.getMessage();
-    ModelValidationMessageType type = validator.getType();
+    final ModelValidationMessageType type = validator.getType();
 
     if (validator instanceof ModelValidatorBundle) {
       message = ((ModelValidatorBundle) validator).getBundleMessage();

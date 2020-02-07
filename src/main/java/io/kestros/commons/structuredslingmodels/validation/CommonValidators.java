@@ -306,7 +306,7 @@ public class CommonValidators {
     return new ModelValidator() {
       @Override
       public boolean isValid() {
-        for (Object object : list) {
+        for (final Object object : list) {
           if (object == null) {
             return false;
           }

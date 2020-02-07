@@ -93,9 +93,9 @@ public abstract class BaseFile extends BasePage {
    */
   @JsonIgnore
   public String getOutput() throws IOException {
-    StringBuilder builder = new StringBuilder();
+    final StringBuilder builder = new StringBuilder();
 
-    BufferedReader bufferedReader = getBufferedReader();
+    final BufferedReader bufferedReader = getBufferedReader();
 
     String line;
     int lineNumber = 0;
@@ -119,7 +119,7 @@ public abstract class BaseFile extends BasePage {
   public String getFileSize() {
     try {
       return FileUtils.getReadableFileSize(getJcrDataInputStream());
-    } catch (IOException exception) {
+    } catch (final IOException exception) {
       LOG.error("Unable to retrieve fileSize of {} due to IOException", getPath());
     }
     return StringUtils.EMPTY;

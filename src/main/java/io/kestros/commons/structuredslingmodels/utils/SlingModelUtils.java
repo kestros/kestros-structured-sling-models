@@ -75,10 +75,10 @@ public final class SlingModelUtils {
   @Nonnull
   public static <T extends BaseResource> T adaptTo(@Nonnull final Resource resource,
       @Nonnull final Class<T> type) throws InvalidResourceTypeException {
-    String resourcePath = resource.getPath();
+    final String resourcePath = resource.getPath();
 
     if (isValidResourceType(resource, type)) {
-      T model = resource.adaptTo(type);
+      final T model = resource.adaptTo(type);
 
       if (model != null) {
         return model;
@@ -95,7 +95,7 @@ public final class SlingModelUtils {
     try {
       // Calling getChildAsType to catch exception if jcr:content is not found.
       getChildAsType(JCR_CONTENT, resource, type);
-      T model = resource.adaptTo(type);
+      final T model = resource.adaptTo(type);
       if (model != null) {
         return model;
       } else {
@@ -103,7 +103,7 @@ public final class SlingModelUtils {
             type.getSimpleName());
       }
 
-    } catch (ChildResourceNotFoundException exception) {
+    } catch (final ChildResourceNotFoundException exception) {
       LOG.trace(
           "Unable to find jcr:content resource to fall back to while adapting {} to {}, throwing "
           + "InvalidResourceTypeException", resourcePath, type.getSimpleName());
@@ -142,7 +142,7 @@ public final class SlingModelUtils {
   public static BaseResource adaptToBaseResource(@Nonnull final Resource resource) {
     try {
       return adaptTo(resource, BaseResource.class);
-    } catch (InvalidResourceTypeException exception) {
+    } catch (final InvalidResourceTypeException exception) {
       throw new IllegalStateException();
     }
   }
@@ -227,11 +227,11 @@ public final class SlingModelUtils {
       @Nonnull final Resource resource) throws ChildResourceNotFoundException {
 
     if (StringUtils.isNotBlank(childName)) {
-      Resource child = resource.getChild(childName);
+      final Resource child = resource.getChild(childName);
       if (child != null) {
         return adaptToBaseResource(child);
       } else {
-        Resource jcrContent = resource.getChild(JCR_CONTENT);
+        final Resource jcrContent = resource.getChild(JCR_CONTENT);
         if (jcrContent != null) {
           return getChildAsBaseResource(childName, jcrContent);
         }
@@ -267,8 +267,8 @@ public final class SlingModelUtils {
    */
   @Nonnull
   public static List<BaseResource> getChildrenAsBaseResource(@Nonnull final Resource resource) {
-    List<BaseResource> children = new ArrayList<>();
-    for (Resource child : resource.getChildren()) {
+    final List<BaseResource> children = new ArrayList<>();
+    for (final Resource child : resource.getChildren()) {
       children.add(adaptToBaseResource(child));
     }
     return children;
@@ -300,11 +300,11 @@ public final class SlingModelUtils {
   public static <T extends BaseResource> List<T> getChildrenOfType(@Nonnull final Resource resource,
       @Nonnull final Class<T> type) {
 
-    List<T> children = new ArrayList<>();
-    for (Resource child : resource.getChildren()) {
+    final List<T> children = new ArrayList<>();
+    for (final Resource child : resource.getChildren()) {
       try {
         children.add(adaptTo(child, type));
-      } catch (InvalidResourceTypeException exception) {
+      } catch (final InvalidResourceTypeException exception) {
         LOG.debug("Unable to adapt resource {} to {} due to "
                   + "InvalidResourceType while getting children" + " of {}", child.getPath(),
             type.getSimpleName(), resource.getPath());
@@ -343,8 +343,8 @@ public final class SlingModelUtils {
   @Nonnull
   public static <T extends BaseResource> List<T> getChildrenOfType(@Nonnull final Resource resource,
       @Nonnull final List<String> allowedChildNames, @Nonnull final Class<T> type) {
-    List<T> filteredChildren = new ArrayList<>();
-    for (T child : getChildrenOfType(resource, type)) {
+    final List<T> filteredChildren = new ArrayList<>();
+    for (final T child : getChildrenOfType(resource, type)) {
       if (allowedChildNames.contains(child.getName())) {
         filteredChildren.add(child);
       }
@@ -381,8 +381,8 @@ public final class SlingModelUtils {
    *     Resource does not exist, or cannot be found (possibly due to permissions).
    */
   @Nonnull
-  public static BaseResource getResourceAsBaseResource(@Nonnull String resourcePath,
-      @Nonnull ResourceResolver resolver) throws ResourceNotFoundException {
+  public static BaseResource getResourceAsBaseResource(@Nonnull final String resourcePath,
+      @Nonnull final ResourceResolver resolver) throws ResourceNotFoundException {
 
     if (StringUtils.isNotEmpty(resourcePath)) {
       Resource resource = resolver.getResource(resourcePath);
@@ -439,18 +439,18 @@ public final class SlingModelUtils {
    * @return The requested resources, adapted to the specified type.
    */
   public static <T extends BaseResource> List<T> getResourcesAsType(
-      @Nonnull List<String> resourcePaths, @Nonnull ResourceResolver resolver,
-      @Nonnull Class<T> type) {
+      @Nonnull final List<String> resourcePaths, @Nonnull final ResourceResolver resolver,
+      @Nonnull final Class<T> type) {
 
-    List<T> models = new ArrayList<>();
-    for (String path : resourcePaths) {
+    final List<T> models = new ArrayList<>();
+    for (final String path : resourcePaths) {
       try {
         models.add(getResourceAsType(path, resolver, type));
-      } catch (InvalidResourceTypeException exception) {
+      } catch (final InvalidResourceTypeException exception) {
         LOG.warn("Unable to adapt {} to {} while adapting list of paths to {} due to "
                  + "InvalidResourceTypeException", path, type.getSimpleName(),
             type.getSimpleName());
-      } catch (ResourceNotFoundException exception) {
+      } catch (final ResourceNotFoundException exception) {
         LOG.warn("Unable to adapt {} to {} while adapting list of paths to {} due to "
                  + "ResourceNotFoundException", path, type.getSimpleName(), type.getSimpleName());
       }
@@ -469,7 +469,7 @@ public final class SlingModelUtils {
   @Nonnull
   public static BaseResource getParentResourceAsBaseResource(@Nonnull final Resource resource)
       throws NoParentResourceException {
-    Resource parentResource = resource.getParent();
+    final Resource parentResource = resource.getParent();
     if (parentResource != null) {
       return adaptToBaseResource(parentResource);
     }
@@ -509,7 +509,7 @@ public final class SlingModelUtils {
   @Nonnull
   public static <T extends BaseResource> T getParentResourceAsType(@Nonnull final Resource resource,
       @Nonnull final Class<T> type) throws InvalidResourceTypeException, NoParentResourceException {
-    Resource parentResource = resource.getParent();
+    final Resource parentResource = resource.getParent();
     if (parentResource != null) {
       return adaptTo(parentResource, type);
     }
@@ -559,15 +559,15 @@ public final class SlingModelUtils {
 
     try {
       return getParentResourceAsType(resource, type);
-    } catch (InvalidResourceTypeException exception) {
+    } catch (final InvalidResourceTypeException exception) {
       try {
         return getFirstAncestorOfType(getParentResourceAsBaseResource(resource), type);
-      } catch (NoParentResourceException e1) {
+      } catch (final NoParentResourceException e1) {
         throw new NoValidAncestorException(resource.getPath(), type);
-      } catch (NoValidAncestorException exception1) {
+      } catch (final NoValidAncestorException exception1) {
         throw new NoValidAncestorException(resource.getPath(), type);
       }
-    } catch (NoParentResourceException exception) {
+    } catch (final NoParentResourceException exception) {
       throw new NoValidAncestorException(resource.getPath(), type);
     }
   }
@@ -608,9 +608,9 @@ public final class SlingModelUtils {
   public static <T extends BaseResource> List<T> getAllDescendantsOfType(
       @Nonnull final Resource resource, @Nonnull final Class<T> type) {
 
-    List<T> descendants = getChildrenOfType(resource, type);
+    final List<T> descendants = getChildrenOfType(resource, type);
 
-    for (BaseResource child : getChildrenOfType(resource, BaseResource.class)) {
+    for (final BaseResource child : getChildrenOfType(resource, BaseResource.class)) {
       descendants.addAll(getAllDescendantsOfType(child.getResource(), type));
     }
 
@@ -649,24 +649,24 @@ public final class SlingModelUtils {
    */
   @SuppressWarnings("unchecked")
   @Nonnull
-  public static <T extends BaseResource> T getResourceAsClosestType(@Nonnull Resource resource,
-      @Nonnull ModelFactory modelFactory) throws MatchingResourceTypeNotFoundException {
+  public static <T extends BaseResource> T getResourceAsClosestType(@Nonnull final Resource resource,
+      @Nonnull final ModelFactory modelFactory) throws MatchingResourceTypeNotFoundException {
     Object model = null;
     try {
       model = modelFactory.getModelFromResource(resource);
 
-    } catch (Exception exception) {
+    } catch (final Exception exception) {
       LOG.debug("Unable to retrieve adapted model for resource {}.", resource.getPath());
     }
     if (model instanceof BaseResource) {
       try {
-        BaseResource contentResource = getChildAsBaseResource("jcr:content", resource);
+        final BaseResource contentResource = getChildAsBaseResource("jcr:content", resource);
         if (modelFactory.isModelAvailableForResource(contentResource.getResource())) {
-          T contentResourceModel = (T) modelFactory.getModelFromResource(
+          final T contentResourceModel = (T) modelFactory.getModelFromResource(
               contentResource.getResource());
           model = adaptTo((T) contentResourceModel, contentResourceModel.getClass());
         }
-      } catch (InvalidResourceTypeException | ChildResourceNotFoundException exception) {
+      } catch (final InvalidResourceTypeException | ChildResourceNotFoundException exception) {
         if (resource.getPath().endsWith("jcr:content")) {
           throw new MatchingResourceTypeNotFoundException(resource.getPath());
         }
@@ -692,8 +692,8 @@ public final class SlingModelUtils {
    *     dynamically adapted to a Model type.
    */
   @Nonnull
-  public static <T extends BaseResource> T getResourceAsClosestType(@Nonnull BaseResource resource,
-      @Nonnull ModelFactory modelFactory) throws MatchingResourceTypeNotFoundException {
+  public static <T extends BaseResource> T getResourceAsClosestType(@Nonnull final BaseResource resource,
+      @Nonnull final ModelFactory modelFactory) throws MatchingResourceTypeNotFoundException {
     return getResourceAsClosestType(resource.getResource(), modelFactory);
   }
 
@@ -709,13 +709,13 @@ public final class SlingModelUtils {
    */
   @Nonnull
   public static <T extends BaseResource> List<T> getChildrenAsClosestTypes(
-      @Nonnull Resource resource, @Nonnull ModelFactory modelFactory) {
-    List<T> children = new ArrayList<>();
+      @Nonnull final Resource resource, @Nonnull final ModelFactory modelFactory) {
+    final List<T> children = new ArrayList<>();
 
-    for (BaseResource child : getChildrenOfType(resource, BaseResource.class)) {
+    for (final BaseResource child : getChildrenOfType(resource, BaseResource.class)) {
       try {
         children.add(getResourceAsClosestType(child.getResource(), modelFactory));
-      } catch (InvalidResourceTypeException exception) {
+      } catch (final InvalidResourceTypeException exception) {
         LOG.debug("Unable to Unable to retrieve adapted model for resource {} while retrieving "
                   + "children for {}, this resource will not be included.", child.getName(),
             resource.getPath());
@@ -737,14 +737,14 @@ public final class SlingModelUtils {
    */
   @Nonnull
   public static <T extends BaseResource> List<T> getChildrenAsClosestTypes(
-      @Nonnull BaseResource baseResource, @Nonnull ModelFactory modelFactory) {
+      @Nonnull final BaseResource baseResource, @Nonnull final ModelFactory modelFactory) {
     return getChildrenAsClosestTypes(baseResource.getResource(), modelFactory);
   }
 
   private static boolean isValidResourceTypeBasedOnSuperTypes(@Nonnull final Resource resource,
-      @Nonnull List<String> validResourceTypes) {
+      @Nonnull final List<String> validResourceTypes) {
 
-    Resource resourceTypeResource = resource.getResourceResolver().getResource(
+    final Resource resourceTypeResource = resource.getResourceResolver().getResource(
         resource.getResourceType());
 
     if (resourceTypeResource != null) {
@@ -761,7 +761,7 @@ public final class SlingModelUtils {
           currentResourceTypeResource = getResourceAsType(
               currentResourceTypeResource.getResourceSuperType(), resource.getResourceResolver(),
               BaseResource.class);
-        } catch (ModelAdaptionException exception) {
+        } catch (final ModelAdaptionException exception) {
           LOG.debug("Resource {} not found while checking if it is a valid resourceType based on "
                     + "superTypes. Returning false.", resource.getPath());
           currentResourceTypeResource = null;
@@ -786,7 +786,7 @@ public final class SlingModelUtils {
    */
   static <T extends BaseSlingModel> boolean isValidResourceType(@Nonnull final Resource resource,
       @Nonnull final Class<T> type) {
-    List<String> validResourceTypes = Arrays.asList(type.getAnnotation(Model.class).resourceType());
+    final List<String> validResourceTypes = Arrays.asList(type.getAnnotation(Model.class).resourceType());
 
     if (validResourceTypes.contains("sling/servlet/default")) {
       return true;
@@ -803,7 +803,7 @@ public final class SlingModelUtils {
     return isValidResourceTypeBasedOnSuperTypes(resource, validResourceTypes);
   }
 
-  static String getResourceTypePath(BaseResource resourceTypeResource) {
+  static String getResourceTypePath(final BaseResource resourceTypeResource) {
     String resourceType = resourceTypeResource.getPath();
     if (resourceType.startsWith(PREFIX_APPS)) {
       resourceType = resourceType.split(PREFIX_APPS)[1];

@@ -76,7 +76,7 @@ public abstract class ModelValidatorBundle implements ModelValidator {
    *
    * @param validator ModelValidator to add to the bundle.
    */
-  public void addBasicValidator(ModelValidator validator) {
+  public void addBasicValidator(final ModelValidator validator) {
     validators.add(validator);
   }
 
@@ -85,7 +85,7 @@ public abstract class ModelValidatorBundle implements ModelValidator {
    *
    * @param validatorList ModelValidator List to add to the bundle.
    */
-  public void addAllValidators(List<ModelValidator> validatorList) {
+  public void addAllValidators(final List<ModelValidator> validatorList) {
     validators.addAll(validatorList);
   }
 
@@ -98,7 +98,7 @@ public abstract class ModelValidatorBundle implements ModelValidator {
     if (validators.isEmpty()) {
       registerValidators();
     }
-    for (ModelValidator validator : getValidators()) {
+    for (final ModelValidator validator : getValidators()) {
       if (isAllMustBeTrue() && !validator.isValid()) {
         return false;
       } else if (!isAllMustBeTrue() && validator.isValid()) {
