@@ -118,7 +118,6 @@ public class BaseFileTest {
     assertEquals("38 bytes", baseFile.getFileSize());
   }
 
-
   @Test
   public void testGetFileSizeWhenIoException() throws IOException {
     properties.put("jcr:primaryType", "nt:file");
@@ -131,7 +130,6 @@ public class BaseFileTest {
     baseFile = spy(baseFile);
     doReturn(inputStream).when(baseFile).getJcrDataInputStream();
 
-    // TODO add more tests and verification around this.
     assertEquals("", baseFile.getFileSize());
   }
 

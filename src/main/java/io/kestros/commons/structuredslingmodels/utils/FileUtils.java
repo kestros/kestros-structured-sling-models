@@ -39,7 +39,6 @@ public class FileUtils {
    * @throws IOException InputStream could not be read.
    */
   public static String getReadableFileSize(InputStream inputStream) throws IOException {
-    // TODO file size is close, but off by a few KB
     byte[] bytes = IOUtils.toByteArray(inputStream);
     return getReadableFileSize(bytes.length);
   }
