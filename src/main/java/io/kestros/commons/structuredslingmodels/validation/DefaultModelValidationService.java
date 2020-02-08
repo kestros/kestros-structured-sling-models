@@ -29,7 +29,8 @@ public class DefaultModelValidationService extends ModelValidationService {
   @Override
   public BaseResource getModel() {
     if (getGenericModel() instanceof BaseResource) {
-      return (BaseResource) getGenericModel();
+      BaseResource model = (BaseResource) getGenericModel();
+      return model;
     }
     throw new IllegalStateException();
   }
