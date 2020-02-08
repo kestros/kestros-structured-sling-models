@@ -29,6 +29,7 @@ import io.kestros.commons.structuredslingmodels.validation.ModelValidatorBundle;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
@@ -47,7 +48,7 @@ public class BaseValidationProviderService implements ValidationProviderService 
 
 
   @Override
-  public <T extends BaseSlingModel> List<ModelValidator> getValidators(final T model,
+  public <T extends BaseSlingModel> List<ModelValidator> getValidators(@Nonnull final T model,
       final ModelValidationService modelValidationService) {
     if (modelValidationService != null) {
       final List<ModelValidator> modelValidators = new ArrayList<>();
@@ -61,7 +62,7 @@ public class BaseValidationProviderService implements ValidationProviderService 
   }
 
   @Override
-  public <T extends BaseSlingModel> List<ModelValidator> getBasicValidators(final T model,
+  public <T extends BaseSlingModel> List<ModelValidator> getBasicValidators(@Nonnull final T model,
       final ModelValidationService modelValidationService) {
     if (modelValidationService != null) {
       if (modelValidationService.getBasicValidators().isEmpty()) {
@@ -83,7 +84,7 @@ public class BaseValidationProviderService implements ValidationProviderService 
    * @return Detailed ModelValidators for a given Model.  Model must extend {@link BaseSlingModel}.
    */
   @Override
-  public <T extends BaseSlingModel> List<ModelValidator> getDetailedValidators(final T model,
+  public <T extends BaseSlingModel> List<ModelValidator> getDetailedValidators(@Nonnull final T model,
       final ModelValidationService modelValidationService) {
     if (modelValidationService != null) {
       if (modelValidationService.getDetailedValidators().isEmpty()) {
@@ -104,7 +105,7 @@ public class BaseValidationProviderService implements ValidationProviderService 
    * @param <T> Extends {@link BaseSlingModel}.
    */
   @Override
-  public <T extends BaseSlingModel> void doBasicValidation(final T model,
+  public <T extends BaseSlingModel> void doBasicValidation(@Nonnull final T model,
       final ModelValidationService modelValidationService) {
     validateModelValidatorList(model, getBasicValidators(model, modelValidationService));
   }
@@ -118,7 +119,7 @@ public class BaseValidationProviderService implements ValidationProviderService 
    * @param <T> Extends {@link BaseSlingModel}.
    */
   @Override
-  public <T extends BaseSlingModel> void doDetailedValidation(final T model,
+  public <T extends BaseSlingModel> void doDetailedValidation(@Nonnull final T model,
       final ModelValidationService modelValidationService) {
     validateModelValidatorList(model, getBasicValidators(model, modelValidationService));
     validateModelValidatorList(model, getDetailedValidators(model, modelValidationService));
