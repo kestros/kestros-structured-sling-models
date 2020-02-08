@@ -19,6 +19,7 @@
 
 package io.kestros.commons.structuredslingmodels.validation;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.kestros.commons.structuredslingmodels.BaseResource;
 
 /**
@@ -26,11 +27,11 @@ import io.kestros.commons.structuredslingmodels.BaseResource;
  */
 public class DefaultModelValidationService extends ModelValidationService {
 
+  @SuppressFBWarnings("BC_UNCONFIRMED_CAST_OF_RETURN_VALUE")
   @Override
   public BaseResource getModel() {
     if (getGenericModel() instanceof BaseResource) {
-      BaseResource model = (BaseResource) getGenericModel();
-      return model;
+      return (BaseResource) getGenericModel();
     }
     throw new IllegalStateException();
   }
