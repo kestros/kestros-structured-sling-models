@@ -52,7 +52,7 @@ public class FileModelUtils {
    * @throws InvalidResourceTypeException Thrown when the Resource cannot be adapted to the
    *     passed type, or has an error after adaption.
    */
-  public static <T extends BaseFile> T adaptToFileType(BaseResource fileResource, Class<T> type)
+  public static <T extends BaseFile> T adaptToFileType(final BaseResource fileResource, final Class<T> type)
       throws InvalidResourceTypeException {
     T file = adaptTo(fileResource, type);
     if (!file.getErrorMessages().isEmpty()) {
@@ -81,7 +81,7 @@ public class FileModelUtils {
    * @throws InvalidResourceTypeException Thrown when the Resource cannot be adapted to the
    *     passed type, or has an error after adaption.
    */
-  public static <T extends BaseFile> T adaptToFileType(Resource fileResource, Class<T> type)
+  public static <T extends BaseFile> T adaptToFileType(final Resource fileResource, final Class<T> type)
       throws InvalidResourceTypeException {
     return adaptToFileType(adaptToBaseResource(fileResource), type);
   }
@@ -98,8 +98,9 @@ public class FileModelUtils {
    * @throws InvalidResourceTypeException Resource was found at the specified path, but could
    *     not be adapted to the expected BaseFile implementation Model type.
    */
-  public static <T extends BaseFile> T getResourceAsFileType(String path, ResourceResolver resolver,
-      Class<T> type) throws ResourceNotFoundException, InvalidResourceTypeException {
+  public static <T extends BaseFile> T getResourceAsFileType(
+      final String path, final ResourceResolver resolver,
+      final Class<T> type) throws ResourceNotFoundException, InvalidResourceTypeException {
     return adaptToFileType(getResourceAsBaseResource(path, resolver), type);
   }
 
@@ -117,8 +118,8 @@ public class FileModelUtils {
    *     be adapted to the expected BaseFile implementation Model. Most likely caused by an invalid
    *     jcr:mimeType value.
    */
-  public static <T extends BaseFile> T getChildAsFileType(String name, Resource resource,
-      Class<T> type) throws ChildResourceNotFoundException, InvalidResourceTypeException {
+  public static <T extends BaseFile> T getChildAsFileType(final String name, final Resource resource,
+      final Class<T> type) throws ChildResourceNotFoundException, InvalidResourceTypeException {
     return adaptToFileType(getChildAsBaseResource(name, resource), type);
   }
 
@@ -136,8 +137,8 @@ public class FileModelUtils {
    *     be adapted to the expected BaseFile implementation Model. Most likely caused by an invalid
    *     jcr:mimeType value.
    */
-  public static <T extends BaseFile> T getChildAsFileType(String name, BaseResource baseResource,
-      Class<T> type) throws ChildResourceNotFoundException, InvalidResourceTypeException {
+  public static <T extends BaseFile> T getChildAsFileType(final String name, final BaseResource baseResource,
+      final Class<T> type) throws ChildResourceNotFoundException, InvalidResourceTypeException {
     return getChildAsFileType(name, baseResource.getResource(), type);
   }
 

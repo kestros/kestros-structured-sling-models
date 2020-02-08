@@ -122,7 +122,7 @@ public class BaseResource extends BaseSlingModel {
    * @return Property value, or the default value.
    */
   @Nullable
-  public <T> T getProperty(@Nonnull String key, T defaultValue) {
+  public <T> T getProperty(@Nonnull final String key, final T defaultValue) {
     return getProperties().get(key, defaultValue);
   }
 
@@ -195,7 +195,7 @@ public class BaseResource extends BaseSlingModel {
   @JsonIgnore
   @Nonnull
   public String getResourceSuperType() {
-    String resourceSuperType = getResource().getResourceSuperType();
+    final String resourceSuperType = getResource().getResourceSuperType();
     if (resourceSuperType != null) {
       return resourceSuperType;
     }

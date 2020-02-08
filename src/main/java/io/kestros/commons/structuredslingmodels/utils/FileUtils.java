@@ -38,9 +38,8 @@ public class FileUtils {
    * @return Size of an input stream, in a readable format.
    * @throws IOException InputStream could not be read.
    */
-  public static String getReadableFileSize(InputStream inputStream) throws IOException {
-    // TODO file size is close, but off by a few KB
-    byte[] bytes = IOUtils.toByteArray(inputStream);
+  public static String getReadableFileSize(final InputStream inputStream) throws IOException {
+    final byte[] bytes = IOUtils.toByteArray(inputStream);
     return getReadableFileSize(bytes.length);
   }
 
@@ -50,7 +49,7 @@ public class FileUtils {
    * @param size Number to convert to readable file size format.
    * @return Long to a readable file size format (B,kB, MB,GB,TB ).
    */
-  private static String getReadableFileSize(long size) {
+  private static String getReadableFileSize(final long size) {
     return org.apache.commons.io.FileUtils.byteCountToDisplaySize(size);
   }
 
