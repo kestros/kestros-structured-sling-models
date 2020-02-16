@@ -24,7 +24,7 @@ import org.apache.sling.api.resource.Resource;
 /**
  * Exception thrown when no matching Sling Model type can be found for a resource while using {@link
  * org.apache.sling.models.factory.ModelFactory} to
- * {@link org.apache.sling.models.factory.ModelFactory#getModelFromResource(Resource)}
+ * {@link org.apache.sling.models.factory.ModelFactory#getModelFromResource(Resource)}.
  */
 public class MatchingResourceTypeNotFoundException extends InvalidResourceTypeException {
 
@@ -33,7 +33,7 @@ public class MatchingResourceTypeNotFoundException extends InvalidResourceTypeEx
   /**
    * Exception thrown when no matching Sling Model type can be found for a resource while using
    * {@link org.apache.sling.models.factory.ModelFactory} to
-   * {@link org.apache.sling.models.factory.ModelFactory#getModelFromResource(Resource)}
+   * {@link org.apache.sling.models.factory.ModelFactory#getModelFromResource(Resource)}.
    *
    * @param resourcePath Absolute path to the Resource that could not be matched to a Sling
    *     Model type.
@@ -45,7 +45,7 @@ public class MatchingResourceTypeNotFoundException extends InvalidResourceTypeEx
   /**
    * Exception thrown when no matching Sling Model type can be found for a resource while using
    * {@link org.apache.sling.models.factory.ModelFactory} to
-   * {@link org.apache.sling.models.factory.ModelFactory#getModelFromResource(Resource)}
+   * {@link org.apache.sling.models.factory.ModelFactory#getModelFromResource(Resource)}.
    *
    * @param resourcePath Absolute path to the Resource that could not be matched to a Sling
    *     Model type.

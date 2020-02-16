@@ -56,8 +56,8 @@ public class ChildResourceNotFoundException extends ModelAdaptionException {
    * @param parentPath Path of Resource attempting to retrieve child from.
    * @param message Cause message.
    */
-  public ChildResourceNotFoundException(
-      final String childName, final String parentPath, final String message) {
+  public ChildResourceNotFoundException(final String childName, final String parentPath,
+      final String message) {
     super(String.format("Unable to adapt '%s' under '%s': %s", childName, parentPath, message));
   }
 }

@@ -649,8 +649,9 @@ public final class SlingModelUtils {
    */
   @SuppressWarnings("unchecked")
   @Nonnull
-  public static <T extends BaseResource> T getResourceAsClosestType(@Nonnull final Resource resource,
-      @Nonnull final ModelFactory modelFactory) throws MatchingResourceTypeNotFoundException {
+  public static <T extends BaseResource> T getResourceAsClosestType(
+      @Nonnull final Resource resource, @Nonnull final ModelFactory modelFactory)
+      throws MatchingResourceTypeNotFoundException {
     Object model = null;
     try {
       model = modelFactory.getModelFromResource(resource);
@@ -692,8 +693,9 @@ public final class SlingModelUtils {
    *     dynamically adapted to a Model type.
    */
   @Nonnull
-  public static <T extends BaseResource> T getResourceAsClosestType(@Nonnull final BaseResource resource,
-      @Nonnull final ModelFactory modelFactory) throws MatchingResourceTypeNotFoundException {
+  public static <T extends BaseResource> T getResourceAsClosestType(
+      @Nonnull final BaseResource resource, @Nonnull final ModelFactory modelFactory)
+      throws MatchingResourceTypeNotFoundException {
     return getResourceAsClosestType(resource.getResource(), modelFactory);
   }
 
@@ -786,7 +788,8 @@ public final class SlingModelUtils {
    */
   static <T extends BaseSlingModel> boolean isValidResourceType(@Nonnull final Resource resource,
       @Nonnull final Class<T> type) {
-    final List<String> validResourceTypes = Arrays.asList(type.getAnnotation(Model.class).resourceType());
+    final List<String> validResourceTypes = Arrays.asList(
+        type.getAnnotation(Model.class).resourceType());
 
     if (validResourceTypes.contains("sling/servlet/default")) {
       return true;
