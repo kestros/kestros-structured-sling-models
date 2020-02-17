@@ -166,8 +166,9 @@ public class CommonValidators {
    * @param <S> Generic model type.
    * @return Validator that checks if a specified child does not fail any ERROR type validators.
    */
-  public static <T extends BaseResource, S extends BaseResource> ModelValidator isChildResourceValidResourceType(
-      final String childName, final Class<S> childType, final T model) {
+  public static <T extends BaseResource, S extends BaseResource> ModelValidator
+      isChildResourceValidResourceType(final String childName, final Class<S> childType,
+      final T model) {
 
     return new ModelValidator() {
       @Override

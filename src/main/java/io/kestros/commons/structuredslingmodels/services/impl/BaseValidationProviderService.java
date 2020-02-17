@@ -84,8 +84,8 @@ public class BaseValidationProviderService implements ValidationProviderService 
    * @return Detailed ModelValidators for a given Model.  Model must extend {@link BaseSlingModel}.
    */
   @Override
-  public <T extends BaseSlingModel> List<ModelValidator> getDetailedValidators(@Nonnull final T model,
-      final ModelValidationService modelValidationService) {
+  public <T extends BaseSlingModel> List<ModelValidator> getDetailedValidators(
+      @Nonnull final T model, final ModelValidationService modelValidationService) {
     if (modelValidationService != null) {
       if (modelValidationService.getDetailedValidators().isEmpty()) {
         modelValidationService.setModel(model);
@@ -149,7 +149,8 @@ public class BaseValidationProviderService implements ValidationProviderService 
 
   @Override
   @Nullable
-  public <T extends BaseSlingModel> ModelValidationService getModelValidationService(final T model) {
+  public <T extends BaseSlingModel> ModelValidationService getModelValidationService(
+      final T model) {
     final Class<? extends BaseSlingModel> modelClass = model.getClass();
     try {
       if (modelClass.getAnnotation(StructuredModel.class) != null) {

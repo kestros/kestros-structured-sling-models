@@ -72,7 +72,8 @@ public class InvalidResourceTypeException extends ModelAdaptionException {
    * @param type Model type that the Resource could not be adapted to.
    * @param message Cause message.
    */
-  public InvalidResourceTypeException(final String resourcePath, final Class type, final String message) {
+  public InvalidResourceTypeException(final String resourcePath, final Class type,
+      final String message) {
     super(resourcePath, type, message);
   }
 }
