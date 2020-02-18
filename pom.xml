@@ -25,8 +25,7 @@ under the License.
   <parent>
     <groupId>io.kestros.commons</groupId>
     <artifactId>kestros-parent-strict</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
-    <relativePath/>
+    <version>0.0.2</version>
   </parent>
 
   <groupId>io.kestros.commons</groupId>
