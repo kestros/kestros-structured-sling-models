@@ -786,11 +786,21 @@ public final class SlingModelUtils {
    * @return Whether the passed BaseResource is valid, based on the `resourceType` value of the
    *     type's {@link Model} annotation.
    */
-  static <T extends BaseSlingModel> boolean isValidResourceType(@Nonnull final Resource resource,
+  static <T extends BaseSlingModel> boolean isValidResourceType(@Nonnull Resource resource,
       @Nonnull final Class<T> type) {
     final List<String> validResourceTypes = Arrays.asList(
         type.getAnnotation(Model.class).resourceType());
 
+    if (resource.getPath().startsWith("/apps/") && "nt:folder".equals(resource.getResourceType())) {
+      String libsResourcePath = resource.getPath().replaceFirst("/apps/", "/libs/");
+      try {
+        resource = getResourceAsBaseResource(libsResourcePath,
+            resource.getResourceResolver()).getResource();
+      } catch (ResourceNotFoundException e) {
+        LOG.trace("Attempted to retrieve /libs resource matching {}, but none could be found.",
+            resource.getPath());
+      }
+    }
     if (validResourceTypes.contains("sling/servlet/default")) {
       return true;
     }
