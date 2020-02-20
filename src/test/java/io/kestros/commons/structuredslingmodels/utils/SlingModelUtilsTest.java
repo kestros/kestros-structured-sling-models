@@ -123,7 +123,7 @@ public class SlingModelUtilsTest {
     } catch (InvalidResourceTypeException exception) {
     }
 
-    verify(resource, times(6)).getPath();
+    verify(resource, times(7)).getPath();
     assertNull(baseResource);
   }
 
@@ -141,7 +141,7 @@ public class SlingModelUtilsTest {
     assertNotNull(resource);
     assertNotNull(baseResource);
 
-    verify(resource, times(3)).getPath();
+    verify(resource, times(4)).getPath();
     assertEquals("/resource-ui-framework", baseResource.getPath());
   }
 
@@ -177,7 +177,7 @@ public class SlingModelUtilsTest {
 
     }
 
-    verify(resource, times(3)).getPath();
+    verify(resource, times(4)).getPath();
     assertNull(baseResource);
   }
 
@@ -237,6 +237,7 @@ public class SlingModelUtilsTest {
     Map<String, Object> resourceTypeProperties = new HashMap<>();
     resourceTypeProperties.put("sling:resourceSuperType", "kestros/commons/component");
 
+    properties.put("jcr:primaryType", "nt:unstructured");
     properties.put("sling:resourceType", "extending-resource-type");
 
     resource = context.create().resource("/apps/extending-resource-type", resourceTypeProperties);
@@ -552,7 +553,7 @@ public class SlingModelUtilsTest {
 
     SlingModelUtils.getChildrenOfType(resource, SampleResourceModel.class);
 
-    verify(childResource, times(7)).getPath();
+    verify(childResource, times(8)).getPath();
     assertEquals(0, SlingModelUtils.getChildrenOfType(resource, SampleResourceModel.class).size());
   }
 
