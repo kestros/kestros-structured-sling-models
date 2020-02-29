@@ -24,6 +24,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Designated the annotated method as a property. Can be used for documentation purposes.
@@ -39,4 +40,26 @@ public @interface Property {
    * @return Description of the annotated method.
    */
   String description();
+
+
+  /**
+   * JCR Property used to configure the property.
+   *
+   * @return JCR Property used to configure the property.
+   */
+  String jcrPropertyName() default StringUtils.EMPTY;
+
+  /**
+   * Property's default value.
+   *
+   * @return Property's default value.
+   */
+  String defaultValue() default StringUtils.EMPTY;
+
+  /**
+   * Whether to mark the property as configurable, for documentation purposes.
+   *
+   * @return Whether to mark the property as configurable, for documentation purposes.
+   */
+  boolean configurable() default false;
 }
