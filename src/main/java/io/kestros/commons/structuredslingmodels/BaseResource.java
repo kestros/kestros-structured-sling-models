@@ -132,7 +132,9 @@ public class BaseResource extends BaseSlingModel {
    * @return Title of the current Resource.
    */
   @Nonnull
-  @Property(description = "Title of the current resource.")
+  @Property(description = "Title of the current resource.",
+            jcrPropertyName = JCR_TITLE,
+            configurable = true)
   public String getTitle() {
     return getProperty(JCR_TITLE, getName());
   }
@@ -143,7 +145,10 @@ public class BaseResource extends BaseSlingModel {
    * @return Description of the current Resource.
    */
   @Nonnull
-  @Property(description = "Description of the current Resource.")
+  @Property(description = "Description of the current Resource.",
+            jcrPropertyName = JCR_DESCRIPTION,
+            defaultValue = "",
+            configurable = true)
   public String getDescription() {
     return getProperty(JCR_DESCRIPTION, StringUtils.EMPTY);
   }
