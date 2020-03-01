@@ -76,7 +76,7 @@ To retrieve a child Resource as a specific type, use `SlingModelUtils.getChildAs
 try {
       SlingModelUtils.getChildAsType("child", this, MyResource.class);
     } catch (InvalidResourceTypeException exception) {
-      `child` was found, but could not be adapted to `MyResource.class`
+      // `child` was found, but could not be adapted to `MyResource.class`
     } catch (ChildResourceNotFoundException exception) {
       // No child with the name `child` was found. 
     }

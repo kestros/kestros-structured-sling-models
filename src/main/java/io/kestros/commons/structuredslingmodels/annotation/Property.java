@@ -41,7 +41,6 @@ public @interface Property {
    */
   String description();
 
-
   /**
    * JCR Property used to configure the property.
    *
@@ -62,4 +61,11 @@ public @interface Property {
    * @return Whether to mark the property as configurable, for documentation purposes.
    */
   boolean configurable() default false;
+
+  /**
+   * Sample value of the JCR Property, to be used for documentation purposes.
+   *
+   * @return Sample value of the JCR Property, to be used for documentation purposes.
+   */
+  String sampleValue() default StringUtils.EMPTY;
 }
