@@ -562,9 +562,7 @@ public final class SlingModelUtils {
     } catch (final InvalidResourceTypeException exception) {
       try {
         return getFirstAncestorOfType(getParentResourceAsBaseResource(resource), type);
-      } catch (final NoParentResourceException e1) {
-        throw new NoValidAncestorException(resource.getPath(), type);
-      } catch (final NoValidAncestorException exception1) {
+      } catch (final NoParentResourceException | NoValidAncestorException e1) {
         throw new NoValidAncestorException(resource.getPath(), type);
       }
     } catch (final NoParentResourceException exception) {
