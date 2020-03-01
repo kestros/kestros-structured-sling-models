@@ -9,7 +9,7 @@ To add this bundle to a project, add the following dependency to your `pom.xml`.
 <dependencies>
   <dependency>
     <groupId>io.kestros.commons</groupId>
-      <artifactId>structured-sling-models</artifactId>
+      <artifactId>kestros-structured-sling-models</artifactId>
     <version>--version--</version>
   </dependency>
 </dependencies>
