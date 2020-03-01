@@ -20,6 +20,7 @@
 package io.kestros.commons.structuredslingmodels;
 
 import static org.apache.jackrabbit.JcrConstants.JCR_LASTMODIFIED;
+import static org.apache.jackrabbit.JcrConstants.JCR_PRIMARYTYPE;
 import static org.apache.jackrabbit.vault.util.JcrConstants.JCR_DESCRIPTION;
 import static org.apache.jackrabbit.vault.util.JcrConstants.JCR_TITLE;
 import static org.apache.sling.api.resource.ResourceResolver.PROPERTY_RESOURCE_TYPE;
@@ -178,7 +179,7 @@ public class BaseResource extends BaseSlingModel {
   @Nonnull
   @JsonIgnore
   public String getJcrPrimaryType() {
-    return getProperty("jcr:primaryType", StringUtils.EMPTY);
+    return getProperty(JCR_PRIMARYTYPE, StringUtils.EMPTY);
   }
 
   /**
@@ -201,7 +202,7 @@ public class BaseResource extends BaseSlingModel {
   @Nonnull
   public String getResourceSuperType() {
     final String resourceSuperType = getResource().getResourceSuperType();
-    if (resourceSuperType != null) {
+    if (StringUtils.isNotEmpty(resourceSuperType)) {
       return resourceSuperType;
     }
     return StringUtils.EMPTY;
