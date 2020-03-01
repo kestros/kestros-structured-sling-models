@@ -419,14 +419,16 @@ public class SlingModelUtilsTest {
   public void testGetChildAsTypeBaseResource() throws Exception {
     context.create().resource("/resource/child");
 
-    SlingModelUtils.getChildAsBaseResource("child", resource);
+    assertEquals("child", SlingModelUtils.getChildAsBaseResource("child", resource).getName());
+
   }
 
   @Test
   public void testGetChildAsTypeBaseResourceWhenPassingBaseResource() throws Exception {
     context.create().resource("/resource/child");
 
-    SlingModelUtils.getChildAsBaseResource("child", resource.adaptTo(BaseResource.class));
+    assertEquals("child", SlingModelUtils.getChildAsBaseResource("child",
+        resource.adaptTo(BaseResource.class)).getName());
   }
 
   @Test
