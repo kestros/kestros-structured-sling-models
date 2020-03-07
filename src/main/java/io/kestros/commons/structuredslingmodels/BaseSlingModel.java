@@ -20,7 +20,7 @@
 package io.kestros.commons.structuredslingmodels;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.kestros.commons.structuredslingmodels.annotation.StructuredModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
 import io.kestros.commons.structuredslingmodels.services.ValidationProviderService;
 import io.kestros.commons.structuredslingmodels.validation.ModelValidationService;
 import io.kestros.commons.structuredslingmodels.validation.ModelValidator;
@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * are not added. Messages are generally used for communicating Model status to developers and
  * content authors.
  */
-@StructuredModel(docPaths = {"/content/guide-articles/kestros-commons/model-validation",
+@KestrosModel(docPaths = {"/content/guide-articles/kestros-commons/model-validation",
     "/content/guide-articles/kestros-commons/model-exceptions"})
 public class BaseSlingModel {
 

@@ -20,7 +20,7 @@
 package io.kestros.commons.structuredslingmodels.services.impl;
 
 import io.kestros.commons.structuredslingmodels.BaseSlingModel;
-import io.kestros.commons.structuredslingmodels.annotation.StructuredModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
 import io.kestros.commons.structuredslingmodels.services.ValidationProviderService;
 import io.kestros.commons.structuredslingmodels.validation.ModelValidationMessageType;
 import io.kestros.commons.structuredslingmodels.validation.ModelValidationService;
@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * Provides uncached Model validation to {@link StructuredModel} instances.
+ * Provides uncached Model validation to {@link KestrosModel} instances.
  */
 @Component(immediate = true,
            service = ValidationProviderService.class,
@@ -153,15 +153,15 @@ public class BaseValidationProviderService implements ValidationProviderService 
       final T model) {
     final Class<? extends BaseSlingModel> modelClass = model.getClass();
     try {
-      if (modelClass.getAnnotation(StructuredModel.class) != null) {
-        return modelClass.getAnnotation(StructuredModel.class).validationService().newInstance();
+      if (modelClass.getAnnotation(KestrosModel.class) != null) {
+        return modelClass.getAnnotation(KestrosModel.class).validationService().newInstance();
       }
     } catch (final InstantiationException exception) {
       LOG.warn("Unable to instantiate ModelValidationService {} for {}", modelClass.getAnnotation(
-          StructuredModel.class).validationService().getSimpleName(), modelClass.getSimpleName());
+          KestrosModel.class).validationService().getSimpleName(), modelClass.getSimpleName());
     } catch (final IllegalAccessException exception) {
       LOG.warn("Unable to retrieve ModelValidationService {} for {} due to IllegalAccessException",
-          modelClass.getAnnotation(StructuredModel.class).validationService().getSimpleName(),
+          modelClass.getAnnotation(KestrosModel.class).validationService().getSimpleName(),
           modelClass.getSimpleName());
     }
     return null;
