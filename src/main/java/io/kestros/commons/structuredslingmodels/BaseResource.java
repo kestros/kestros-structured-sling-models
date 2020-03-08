@@ -26,8 +26,8 @@ import static org.apache.jackrabbit.vault.util.JcrConstants.JCR_TITLE;
 import static org.apache.sling.api.resource.ResourceResolver.PROPERTY_RESOURCE_TYPE;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
 import io.kestros.commons.structuredslingmodels.exceptions.NoParentResourceException;
 import io.kestros.commons.structuredslingmodels.utils.SlingModelUtils;
 import java.util.Date;
@@ -160,7 +160,8 @@ public class BaseResource extends BaseSlingModel {
    * @return ResourceType of the current Resource.
    */
   @Nonnull
-  @KestrosProperty(description = "ResourceType the current resource will be displayed as when requested.")
+  @KestrosProperty(description = "ResourceType the current resource will be displayed as when "
+                                 + "requested.")
   public String getResourceType() {
     if (StringUtils.isNotEmpty(getSlingResourceType())) {
       return getSlingResourceType();
