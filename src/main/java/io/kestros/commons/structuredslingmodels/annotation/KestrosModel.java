@@ -19,53 +19,37 @@
 
 package io.kestros.commons.structuredslingmodels.annotation;
 
+import io.kestros.commons.structuredslingmodels.validation.DefaultModelValidationService;
+import io.kestros.commons.structuredslingmodels.validation.ModelValidationService;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.apache.commons.lang3.StringUtils;
 
 /**
- * Designated the annotated method as a property. Can be used for documentation purposes.
+ * Annotation used for assigning a ModelValidatorService and documentation Resource paths to a Sling
+ * Model type.
  */
-@Target({ElementType.METHOD})
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface Property {
+public @interface KestrosModel {
 
   /**
-   * Description of the annotated method.
+   * The ModelValidationService assigned to the current Sling Model type, or the
+   * DefaultModelValidationService if none exist.
    *
-   * @return Description of the annotated method.
+   * @return The ModelValidationService assigned to the current Sling Model type, or the
+   *     DefaultModelValidationService if none exist.
    */
-  String description();
+  Class<? extends ModelValidationService> validationService()
+      default DefaultModelValidationService.class;
 
   /**
-   * JCR Property used to configure the property.
+   * Array of documentation Resource paths.
    *
-   * @return JCR Property used to configure the property.
+   * @return Array of documentation Resource paths.
    */
-  String jcrPropertyName() default StringUtils.EMPTY;
-
-  /**
-   * Property's default value.
-   *
-   * @return Property's default value.
-   */
-  String defaultValue() default StringUtils.EMPTY;
-
-  /**
-   * Whether to mark the property as configurable, for documentation purposes.
-   *
-   * @return Whether to mark the property as configurable, for documentation purposes.
-   */
-  boolean configurable() default false;
-
-  /**
-   * Sample value of the JCR Property, to be used for documentation purposes.
-   *
-   * @return Sample value of the JCR Property, to be used for documentation purposes.
-   */
-  String sampleValue() default StringUtils.EMPTY;
+  String[] docPaths() default {};
 }

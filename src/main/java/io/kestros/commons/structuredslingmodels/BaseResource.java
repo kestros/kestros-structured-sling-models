@@ -26,8 +26,8 @@ import static org.apache.jackrabbit.vault.util.JcrConstants.JCR_TITLE;
 import static org.apache.sling.api.resource.ResourceResolver.PROPERTY_RESOURCE_TYPE;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.kestros.commons.structuredslingmodels.annotation.Property;
-import io.kestros.commons.structuredslingmodels.annotation.StructuredModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
 import io.kestros.commons.structuredslingmodels.exceptions.NoParentResourceException;
 import io.kestros.commons.structuredslingmodels.utils.SlingModelUtils;
 import java.util.Date;
@@ -43,7 +43,7 @@ import org.apache.sling.models.annotations.injectorspecific.Self;
 /**
  * Baseline Sling Model to extend all Resource Models from.
  */
-@StructuredModel(docPaths = {
+@KestrosModel(docPaths = {
     "/content/guide-articles/kestros/structured-models/extending-base-resource",
     "/content/guide-articles/kestros/structured-models/model-validation",
     "/content/guide-articles/kestros/structured-models/using-sling-model-utils",
@@ -87,7 +87,7 @@ public class BaseResource extends BaseSlingModel {
    * @return Resource name the current model was adapted from.
    */
   @Nonnull
-  @Property(description = "Name of the current Resource.")
+  @KestrosProperty(description = "Name of the current Resource.")
   public String getName() {
     return resource.getName();
   }
@@ -98,7 +98,7 @@ public class BaseResource extends BaseSlingModel {
    * @return Path to the resource the current model was adapted from.
    */
   @Nonnull
-  @Property(description = "Path to the current Resource.")
+  @KestrosProperty(description = "Path to the current Resource.")
   public String getPath() {
     return resource.getPath();
   }
@@ -133,9 +133,9 @@ public class BaseResource extends BaseSlingModel {
    * @return Title of the current Resource.
    */
   @Nonnull
-  @Property(description = "Title of the current resource.",
-            jcrPropertyName = JCR_TITLE,
-            configurable = true)
+  @KestrosProperty(description = "Title of the current resource.",
+                   jcrPropertyName = JCR_TITLE,
+                   configurable = true)
   public String getTitle() {
     return getProperty(JCR_TITLE, getName());
   }
@@ -146,10 +146,10 @@ public class BaseResource extends BaseSlingModel {
    * @return Description of the current Resource.
    */
   @Nonnull
-  @Property(description = "Description of the current Resource.",
-            jcrPropertyName = JCR_DESCRIPTION,
-            defaultValue = "",
-            configurable = true)
+  @KestrosProperty(description = "Description of the current Resource.",
+                   jcrPropertyName = JCR_DESCRIPTION,
+                   defaultValue = "",
+                   configurable = true)
   public String getDescription() {
     return getProperty(JCR_DESCRIPTION, StringUtils.EMPTY);
   }
@@ -160,7 +160,7 @@ public class BaseResource extends BaseSlingModel {
    * @return ResourceType of the current Resource.
    */
   @Nonnull
-  @Property(description = "ResourceType the current resource will be displayed as when requested.")
+  @KestrosProperty(description = "ResourceType the current resource will be displayed as when requested.")
   public String getResourceType() {
     if (StringUtils.isNotEmpty(getSlingResourceType())) {
       return getSlingResourceType();
