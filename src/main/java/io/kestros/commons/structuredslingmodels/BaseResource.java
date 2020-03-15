@@ -49,7 +49,8 @@ import org.apache.sling.models.annotations.injectorspecific.Self;
     "/content/guide-articles/kestros/structured-models/using-sling-model-utils",
     "/content/guide-articles/kestros/structured-models/using-common-validators"})
 @Model(adaptables = Resource.class,
-       resourceType = "sling/servlet/default")
+       resourceType = "sling/servlet/default",
+       cache = true)
 public class BaseResource extends BaseSlingModel {
 
   /**
