@@ -46,7 +46,6 @@ public class BaseValidationProviderService implements ValidationProviderService 
 
   private static final Logger LOG = LoggerFactory.getLogger(BaseValidationProviderService.class);
 
-
   @Override
   public <T extends BaseSlingModel> List<ModelValidator> getValidators(@Nonnull final T model,
       final ModelValidationService modelValidationService) {

@@ -128,7 +128,6 @@ public final class SlingModelUtils {
   @Nonnull
   public static <T extends BaseResource> T adaptTo(@Nonnull final BaseResource baseResource,
       @Nonnull final Class<T> type) throws InvalidResourceTypeException {
-
     return adaptTo(baseResource.getResource(), type);
   }
 
@@ -258,7 +257,6 @@ public final class SlingModelUtils {
       @Nonnull final BaseResource baseResource) throws ChildResourceNotFoundException {
     return getChildAsBaseResource(childName, baseResource.getResource());
   }
-
 
   /**
    * List of all children, adapted to BaseResource.
@@ -673,7 +671,6 @@ public final class SlingModelUtils {
       }
 
       return (T) model;
-
     }
     throw new MatchingResourceTypeNotFoundException(resource.getPath());
   }
