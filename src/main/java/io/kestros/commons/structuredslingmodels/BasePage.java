@@ -34,8 +34,7 @@ import org.slf4j.LoggerFactory;
  * Base Sling Model for any page type.  Dynamically handles jcr:content resources, to allow method
  * calls to be consistent whether the Model was adapted from the root or jcr:content resource.
  */
-@Model(adaptables = Resource.class,
-       cache = true)
+@Model(adaptables = Resource.class)
 public class BasePage extends BaseResource {
 
   private static final Logger LOG = LoggerFactory.getLogger(BasePage.class);
