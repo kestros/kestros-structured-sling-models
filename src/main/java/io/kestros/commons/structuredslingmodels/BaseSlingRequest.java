@@ -71,7 +71,6 @@ public class BaseSlingRequest extends BaseSlingModel {
     return response;
   }
 
-
   /**
    * ResourceResolver associated to the current request.
    *
