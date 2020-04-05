@@ -154,6 +154,11 @@ public class BaseValidationProviderService implements ValidationProviderService 
     try {
       if (modelClass.getAnnotation(KestrosModel.class) != null) {
         return modelClass.getAnnotation(KestrosModel.class).validationService().newInstance();
+      } else {
+        if (modelClass.getSuperclass() != null) {
+          Class<T> superClass = (Class<T>) modelClass.getSuperclass();
+          return getModelValidationService(castModel(superClass, model));
+        }
       }
     } catch (final InstantiationException exception) {
       LOG.warn("Unable to instantiate ModelValidationService {} for {}", modelClass.getAnnotation(
@@ -192,5 +197,10 @@ public class BaseValidationProviderService implements ValidationProviderService 
         model.addInfoMessage(message);
         break;
     }
+  }
+  
+  private <T> T castModel(Class<T> clazz, Object model)
+      throws IllegalAccessException, InstantiationException {
+    return clazz.newInstance();
   }
 }
