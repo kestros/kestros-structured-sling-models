@@ -19,6 +19,7 @@
 
 package io.kestros.commons.structuredslingmodels;
 
+import static org.apache.jackrabbit.JcrConstants.JCR_CREATED;
 import static org.apache.jackrabbit.JcrConstants.JCR_LASTMODIFIED;
 import static org.apache.jackrabbit.JcrConstants.JCR_PRIMARYTYPE;
 import static org.apache.jackrabbit.vault.util.JcrConstants.JCR_DESCRIPTION;
@@ -229,5 +230,16 @@ public class BaseResource extends BaseSlingModel {
   @JsonIgnore
   public Date getLastModifiedDate() {
     return getProperties().get(JCR_LASTMODIFIED, Date.class);
+  }
+
+  /**
+   * Date when the current Resource was created, or null if the property is not found.
+   *
+   * @return Date when the current Resource was created.
+   */
+  @Nullable
+  @JsonIgnore
+  public Date getCreatedDate() {
+    return getProperties().get(JCR_CREATED, Date.class);
   }
 }
