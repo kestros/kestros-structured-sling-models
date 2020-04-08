@@ -235,7 +235,7 @@ public class BaseResource extends BaseSlingModel {
   /**
    * Date when the current Resource was created, or null if the property is not found.
    *
-   * @return Date when the current Resource was last modified.
+   * @return Date when the current Resource was created.
    */
   @Nullable
   @JsonIgnore
