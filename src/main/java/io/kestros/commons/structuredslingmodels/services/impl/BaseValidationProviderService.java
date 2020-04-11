@@ -159,7 +159,7 @@ public class BaseValidationProviderService implements ValidationProviderService 
       } else {
         if (modelClass.getSuperclass() != null) {
           Class<T> superClass = (Class<T>) modelClass.getSuperclass();
-          return getModelValidationService(castModel(superClass, model));
+          return getModelValidationService(castModel(superClass));
         }
       }
     } catch (final InstantiationException exception) {
@@ -203,8 +203,7 @@ public class BaseValidationProviderService implements ValidationProviderService 
     }
   }
 
-  private <T> T castModel(Class<T> clazz, Object model)
-      throws IllegalAccessException, InstantiationException {
+  private <T> T castModel(Class<T> clazz) throws IllegalAccessException, InstantiationException {
     return clazz.newInstance();
   }
 }
