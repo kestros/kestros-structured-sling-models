@@ -137,6 +137,7 @@ public final class SlingModelUtils {
    *
    * @param resource Resource to adapt.
    * @return The current Resource, adapted to a BaseResource Model.
+   * @throws IllegalStateException BaseResource should never be considered invalid.
    */
   @Nonnull
   public static BaseResource adaptToBaseResource(@Nonnull final Resource resource) {

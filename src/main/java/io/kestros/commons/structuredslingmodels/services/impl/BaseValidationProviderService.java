@@ -128,6 +128,8 @@ public class BaseValidationProviderService implements ValidationProviderService 
    * Validates of list of validators against the current Model. If a validator bundle fails, child
    * validators will not be performed.
    *
+   * @param <T> extends BaseSlingModel.
+   * @param model model to validate.
    * @param validatorList List of validators to perform validation on.
    */
   private <T extends BaseSlingModel> void validateModelValidatorList(final T model,
@@ -175,6 +177,8 @@ public class BaseValidationProviderService implements ValidationProviderService 
    * Performs a Model Validator, and adds the message to the appropriate message list. ( ERROR,
    * WARNING, INFO).
    *
+   * @param <T> extends BaseSlingModel.
+   * @param model model to add basic validators to.
    * @param validator Model validator to be performed.
    */
   private <T extends BaseSlingModel> void addBasicValidatorMessagesToLists(final T model,
@@ -198,7 +202,7 @@ public class BaseValidationProviderService implements ValidationProviderService 
         break;
     }
   }
-  
+
   private <T> T castModel(Class<T> clazz, Object model)
       throws IllegalAccessException, InstantiationException {
     return clazz.newInstance();
