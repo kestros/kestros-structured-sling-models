@@ -37,9 +37,6 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class CommonValidators {
 
-  CommonValidators() {
-  }
-
   /**
    * Validator that checks if the current Resource has a title value.
    *

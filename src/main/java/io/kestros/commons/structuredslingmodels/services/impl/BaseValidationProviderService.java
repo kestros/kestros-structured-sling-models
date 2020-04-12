@@ -150,6 +150,7 @@ public class BaseValidationProviderService implements ValidationProviderService 
 
   @Override
   @Nullable
+  @SuppressWarnings("unchecked")
   public <T extends BaseSlingModel> ModelValidationService getModelValidationService(
       final T model) {
     final Class<? extends BaseSlingModel> modelClass = model.getClass();

@@ -715,7 +715,7 @@ public final class SlingModelUtils {
       try {
         children.add(getResourceAsClosestType(child.getResource(), modelFactory));
       } catch (final InvalidResourceTypeException exception) {
-        LOG.debug("Unable to Unable to retrieve adapted model for resource {} while retrieving "
+        LOG.debug("Unable to retrieve adapted model for resource {} while retrieving "
                   + "children for {}, this resource will not be included.", child.getName(),
             resource.getPath());
       }

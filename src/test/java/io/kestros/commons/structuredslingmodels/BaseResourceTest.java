@@ -26,6 +26,7 @@ import io.kestros.commons.structuredslingmodels.exceptions.NoParentResourceExcep
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
@@ -39,8 +40,6 @@ public class BaseResourceTest {
 
   private Resource resource;
 
-  private Resource parentResource;
-
   private Resource childResource;
 
   private BaseResource baseResource;
@@ -50,10 +49,10 @@ public class BaseResourceTest {
   private Exception exception;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     context.addModelsForPackage("io.kestros");
 
-    parentResource = context.create().resource("/parent");
+    Resource parentResource = context.create().resource("/parent");
     childResource = context.create().resource("/parent/child");
 
     baseResource = parentResource.adaptTo(BaseResource.class);
@@ -66,7 +65,7 @@ public class BaseResourceTest {
 
     baseResource = resource.adaptTo(BaseResource.class);
 
-    assertEquals("/resource", baseResource.getParent().getPath());
+    assertEquals("/resource", Objects.requireNonNull(baseResource).getParent().getPath());
   }
 
   @Test
@@ -76,7 +75,7 @@ public class BaseResourceTest {
     baseResource = resource.adaptTo(BaseResource.class);
 
     try {
-      assertEquals("/", baseResource.getParent().getPath());
+      assertEquals("/", Objects.requireNonNull(baseResource).getParent().getPath());
       baseResource.getParent().getParent();
     } catch (NoParentResourceException e) {
       exception = e;
@@ -96,7 +95,7 @@ public class BaseResourceTest {
 
     baseResource = resource.adaptTo(BaseResource.class);
 
-    assertEquals("Title", baseResource.getTitle());
+    assertEquals("Title", Objects.requireNonNull(baseResource).getTitle());
   }
 
   @Test
@@ -105,7 +104,7 @@ public class BaseResourceTest {
 
     baseResource = resource.adaptTo(BaseResource.class);
 
-    assertEquals("resource-without-title", baseResource.getTitle());
+    assertEquals("resource-without-title", Objects.requireNonNull(baseResource).getTitle());
   }
 
   @Test
@@ -115,7 +114,7 @@ public class BaseResourceTest {
 
     baseResource = resource.adaptTo(BaseResource.class);
 
-    assertEquals("Description", baseResource.getDescription());
+    assertEquals("Description", Objects.requireNonNull(baseResource).getDescription());
   }
 
   @Test
@@ -124,14 +123,14 @@ public class BaseResourceTest {
 
     baseResource = resource.adaptTo(BaseResource.class);
 
-    assertEquals("", baseResource.getDescription());
+    assertEquals("", Objects.requireNonNull(baseResource).getDescription());
   }
 
   @Test
   public void testGetNameWhenNested() {
     baseResource = childResource.adaptTo(BaseResource.class);
 
-    assertEquals("child", baseResource.getName());
+    assertEquals("child", Objects.requireNonNull(baseResource).getName());
   }
 
   @Test
@@ -143,7 +142,7 @@ public class BaseResourceTest {
   public void testGetPathWhenNested() {
     baseResource = childResource.adaptTo(BaseResource.class);
 
-    assertEquals("/parent/child", baseResource.getPath());
+    assertEquals("/parent/child", Objects.requireNonNull(baseResource).getPath());
   }
 
   @Test
@@ -153,7 +152,7 @@ public class BaseResourceTest {
     childResource = context.create().resource("/parent/child-with-properties", properties);
     baseResource = childResource.adaptTo(BaseResource.class);
 
-    assertNotNull(baseResource.getProperties());
+    assertNotNull(Objects.requireNonNull(baseResource).getProperties());
     assertEquals(properties, baseResource.getProperties());
   }
 
@@ -165,7 +164,7 @@ public class BaseResourceTest {
     childResource = context.create().resource("/parent/child-with-properties", properties);
     baseResource = childResource.adaptTo(BaseResource.class);
 
-    assertEquals("Value", baseResource.getProperty("property", null));
+    assertEquals("Value", Objects.requireNonNull(baseResource).getProperty("property", null));
   }
 
   @Test
@@ -175,7 +174,7 @@ public class BaseResourceTest {
     childResource = context.create().resource("/parent/child-with-properties", properties);
     baseResource = childResource.adaptTo(BaseResource.class);
 
-    assertEquals("Default", baseResource.getProperty("property", "Default"));
+    assertEquals("Default", Objects.requireNonNull(baseResource).getProperty("property", "Default"));
   }
 
   @Test
@@ -185,7 +184,7 @@ public class BaseResourceTest {
 
     baseResource = resource.adaptTo(BaseResource.class);
 
-    assertEquals("resource-type", baseResource.getResourceType());
+    assertEquals("resource-type", Objects.requireNonNull(baseResource).getResourceType());
   }
 
   @Test
@@ -195,7 +194,7 @@ public class BaseResourceTest {
 
     baseResource = resource.adaptTo(BaseResource.class);
 
-    assertEquals("jcr-primary-type", baseResource.getResourceType());
+    assertEquals("jcr-primary-type", Objects.requireNonNull(baseResource).getResourceType());
   }
 
   @Test
@@ -205,7 +204,7 @@ public class BaseResourceTest {
 
     baseResource = resource.adaptTo(BaseResource.class);
 
-    assertEquals("jcr-primary-type", baseResource.getJcrPrimaryType());
+    assertEquals("jcr-primary-type", Objects.requireNonNull(baseResource).getJcrPrimaryType());
   }
 
   @Test
@@ -214,7 +213,7 @@ public class BaseResourceTest {
 
     baseResource = resource.adaptTo(BaseResource.class);
 
-    assertEquals("", baseResource.getJcrPrimaryType());
+    assertEquals("", Objects.requireNonNull(baseResource).getJcrPrimaryType());
   }
 
   @Test
@@ -224,7 +223,7 @@ public class BaseResourceTest {
 
     baseResource = resource.adaptTo(BaseResource.class);
 
-    assertEquals("resource-type", baseResource.getSlingResourceType());
+    assertEquals("resource-type", Objects.requireNonNull(baseResource).getSlingResourceType());
   }
 
   @Test
@@ -233,7 +232,7 @@ public class BaseResourceTest {
 
     baseResource = resource.adaptTo(BaseResource.class);
 
-    assertEquals("", baseResource.getSlingResourceType());
+    assertEquals("", Objects.requireNonNull(baseResource).getSlingResourceType());
   }
 
   @Test
@@ -248,7 +247,7 @@ public class BaseResourceTest {
 
     baseResource = resource.adaptTo(BaseResource.class);
 
-    assertEquals("resource-type", baseResource.getResourceSuperType());
+    assertEquals("resource-type", Objects.requireNonNull(baseResource).getResourceSuperType());
   }
 
   @Test
@@ -263,7 +262,7 @@ public class BaseResourceTest {
 
     baseResource = resource.adaptTo(BaseResource.class);
 
-    assertEquals(new Date(0), baseResource.getLastModifiedDate());
+    assertEquals(new Date(0), Objects.requireNonNull(baseResource).getLastModifiedDate());
   }
 
 
