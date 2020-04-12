@@ -95,6 +95,56 @@ public class SlingModelUtilsTest {
   }
 
   @Test
+  public void testAdaptToWhenUsingSpecificSlingResourceTypeWhenUsingAppsPath() throws Exception {
+    context.create().resource("/apps/kestros/commons/component");
+
+    properties.put("sling:resourceType", "/apps/kestros/commons/component");
+
+    resource = context.create().resource("/resource-ui-framework", properties);
+
+    baseResource = SlingModelUtils.adaptTo(resource, SampleResourceModel.class);
+
+    assertNotNull(resource);
+    assertNotNull(baseResource);
+  }
+
+  @Test(expected = InvalidResourceTypeException.class)
+  public void testAdaptToWhenUsingSpecificSlingResourceTypeWhenUsingAppsPathButOnlyLibsExists() throws Exception {
+    context.create().resource("/libs/kestros/commons/component");
+    properties.put("sling:resourceType", "/apps/kestros/commons/component");
+
+    resource = context.create().resource("/resource-ui-framework", properties);
+
+    baseResource = SlingModelUtils.adaptTo(resource, SampleResourceModel.class);
+  }
+
+  @Test
+  public void testAdaptToWhenUsingSpecificSlingResourceTypeWhenUsingLibsPath() throws Exception {
+    context.create().resource("/libs/kestros/commons/component");
+
+    properties.put("sling:resourceType", "/libs/kestros/commons/component");
+
+    resource = context.create().resource("/resource-ui-framework", properties);
+
+    baseResource = SlingModelUtils.adaptTo(resource, SampleResourceModel.class);
+
+    assertNotNull(resource);
+    assertNotNull(baseResource);
+  }
+
+  @Test(expected = InvalidResourceTypeException.class)
+  public void testAdaptToWhenUsingSpecificSlingResourceTypeWhenUsingLibsPathButOnlyAppsExists() throws Exception {
+    context.create().resource("/apps/kestros/commons/component");
+
+    properties.put("sling:resourceType", "/libs/kestros/commons/component");
+
+    resource = context.create().resource("/resource-ui-framework", properties);
+
+    baseResource = SlingModelUtils.adaptTo(resource, SampleResourceModel.class);
+  }
+
+
+  @Test
   public void testAdaptToWhenResourceNullsOnAdaption() {
     try {
       baseResource = SlingModelUtils.adaptTo(resource, SampleRequestModel.class);
@@ -419,14 +469,16 @@ public class SlingModelUtilsTest {
   public void testGetChildAsTypeBaseResource() throws Exception {
     context.create().resource("/resource/child");
 
-    SlingModelUtils.getChildAsBaseResource("child", resource);
+    assertEquals("child", SlingModelUtils.getChildAsBaseResource("child", resource).getName());
+
   }
 
   @Test
   public void testGetChildAsTypeBaseResourceWhenPassingBaseResource() throws Exception {
     context.create().resource("/resource/child");
 
-    SlingModelUtils.getChildAsBaseResource("child", resource.adaptTo(BaseResource.class));
+    assertEquals("child", SlingModelUtils.getChildAsBaseResource("child",
+        resource.adaptTo(BaseResource.class)).getName());
   }
 
   @Test

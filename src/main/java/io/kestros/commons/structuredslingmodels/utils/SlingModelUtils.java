@@ -36,6 +36,7 @@ import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nonnull;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.jackrabbit.JcrConstants;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.models.annotations.Model;
@@ -127,7 +128,6 @@ public final class SlingModelUtils {
   @Nonnull
   public static <T extends BaseResource> T adaptTo(@Nonnull final BaseResource baseResource,
       @Nonnull final Class<T> type) throws InvalidResourceTypeException {
-
     return adaptTo(baseResource.getResource(), type);
   }
 
@@ -257,7 +257,6 @@ public final class SlingModelUtils {
       @Nonnull final BaseResource baseResource) throws ChildResourceNotFoundException {
     return getChildAsBaseResource(childName, baseResource.getResource());
   }
-
 
   /**
    * List of all children, adapted to BaseResource.
@@ -562,9 +561,7 @@ public final class SlingModelUtils {
     } catch (final InvalidResourceTypeException exception) {
       try {
         return getFirstAncestorOfType(getParentResourceAsBaseResource(resource), type);
-      } catch (final NoParentResourceException e1) {
-        throw new NoValidAncestorException(resource.getPath(), type);
-      } catch (final NoValidAncestorException exception1) {
+      } catch (final NoParentResourceException | NoValidAncestorException e1) {
         throw new NoValidAncestorException(resource.getPath(), type);
       }
     } catch (final NoParentResourceException exception) {
@@ -661,20 +658,19 @@ public final class SlingModelUtils {
     }
     if (model instanceof BaseResource) {
       try {
-        final BaseResource contentResource = getChildAsBaseResource("jcr:content", resource);
+        final BaseResource contentResource = getChildAsBaseResource(JCR_CONTENT, resource);
         if (modelFactory.isModelAvailableForResource(contentResource.getResource())) {
           final T contentResourceModel = (T) modelFactory.getModelFromResource(
               contentResource.getResource());
-          model = adaptTo((T) contentResourceModel, contentResourceModel.getClass());
+          model = adaptTo(contentResourceModel, contentResourceModel.getClass());
         }
       } catch (final InvalidResourceTypeException | ChildResourceNotFoundException exception) {
-        if (resource.getPath().endsWith("jcr:content")) {
+        if (resource.getPath().endsWith(JCR_CONTENT)) {
           throw new MatchingResourceTypeNotFoundException(resource.getPath());
         }
       }
 
       return (T) model;
-
     }
     throw new MatchingResourceTypeNotFoundException(resource.getPath());
   }
@@ -791,12 +787,13 @@ public final class SlingModelUtils {
     final List<String> validResourceTypes = Arrays.asList(
         type.getAnnotation(Model.class).resourceType());
 
-    if (resource.getPath().startsWith("/apps/") && "nt:folder".equals(resource.getResourceType())) {
-      String libsResourcePath = resource.getPath().replaceFirst("/apps/", "/libs/");
+    if (resource.getPath().startsWith(PREFIX_APPS) && JcrConstants.NT_FOLDER.equals(
+        resource.getResourceType())) {
+      final String libsResourcePath = resource.getPath().replaceFirst(PREFIX_APPS, PREFIX_LIBS);
       try {
         resource = getResourceAsBaseResource(libsResourcePath,
             resource.getResourceResolver()).getResource();
-      } catch (ResourceNotFoundException e) {
+      } catch (final ResourceNotFoundException e) {
         LOG.trace("Attempted to retrieve /libs resource matching {}, but none could be found.",
             resource.getPath());
       }
