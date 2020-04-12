@@ -20,6 +20,7 @@
 package io.kestros.commons.structuredslingmodels.services;
 
 import io.kestros.commons.structuredslingmodels.BaseSlingModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
 import io.kestros.commons.structuredslingmodels.validation.ModelValidationService;
 import io.kestros.commons.structuredslingmodels.validation.ModelValidator;
 import java.util.List;
@@ -27,7 +28,7 @@ import javax.annotation.Nonnull;
 
 /**
  * Service that providers validation messages to Sling Models with the {@link
- * io.kestros.commons.structuredslingmodels.annotation.StructuredModel} annotation.
+ * KestrosModel} annotation.
  */
 public interface ValidationProviderService {
 

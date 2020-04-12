@@ -62,7 +62,8 @@ public class FileModelUtils {
       file = fileResource.getResource().adaptTo(type);
       if (file != null) {
         throw new InvalidResourceTypeException(fileResource.getPath(), type,
-            "File mimeType '" + file.getMimeType() + "' did not match any expected types.");
+            String.format("File mimeType '%s' did not match any expected types.",
+                file.getMimeType()));
       } else {
         throw new InvalidResourceTypeException(fileResource.getPath(), type);
       }

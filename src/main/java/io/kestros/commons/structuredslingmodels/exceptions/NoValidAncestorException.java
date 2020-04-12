@@ -32,7 +32,7 @@ public class NoValidAncestorException extends ModelAdaptionException {
    * @param resourcePath Absolute path of the origin Resource.
    * @param type Model type which no ancestor Resource could be adapted to.
    */
-  public NoValidAncestorException(final String resourcePath, final Class type) {
+  public NoValidAncestorException(final String resourcePath, final Class<?> type) {
     this(resourcePath, type, "No valid ancestor found.");
   }
 
@@ -43,7 +43,7 @@ public class NoValidAncestorException extends ModelAdaptionException {
    * @param type Model type which no ancestor Resource could be adapted to.
    * @param message Cause message.
    */
-  public NoValidAncestorException(final String resourcePath, final Class type,
+  public NoValidAncestorException(final String resourcePath, final Class<?> type,
       final String message) {
     super(String.format("Unable to retrieve ancestor matching type %s for %s: %s",
         type.getSimpleName(), resourcePath, message));

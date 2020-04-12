@@ -59,7 +59,8 @@ public class ModelAdaptionException extends Exception {
    * @param type Model type that the Resource could not be adapted to.
    * @param message Cause message.
    */
-  public ModelAdaptionException(final String resourcePath, final Class type, final String message) {
+  public ModelAdaptionException(final String resourcePath,
+      final Class<?> type, final String message) {
     this("Unable to adapt '" + resourcePath + "' to " + type.getSimpleName() + ": " + message);
   }
 

@@ -20,7 +20,7 @@
 package io.kestros.commons.structuredslingmodels.services.impl;
 
 import io.kestros.commons.structuredslingmodels.BaseSlingModel;
-import io.kestros.commons.structuredslingmodels.annotation.StructuredModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
 import io.kestros.commons.structuredslingmodels.services.ValidationProviderService;
 import io.kestros.commons.structuredslingmodels.validation.ModelValidationMessageType;
 import io.kestros.commons.structuredslingmodels.validation.ModelValidationService;
@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * Provides uncached Model validation to {@link StructuredModel} instances.
+ * Provides uncached Model validation to {@link KestrosModel} instances.
  */
 @Component(immediate = true,
            service = ValidationProviderService.class,
@@ -45,7 +45,6 @@ import org.slf4j.LoggerFactory;
 public class BaseValidationProviderService implements ValidationProviderService {
 
   private static final Logger LOG = LoggerFactory.getLogger(BaseValidationProviderService.class);
-
 
   @Override
   public <T extends BaseSlingModel> List<ModelValidator> getValidators(@Nonnull final T model,
@@ -129,6 +128,8 @@ public class BaseValidationProviderService implements ValidationProviderService 
    * Validates of list of validators against the current Model. If a validator bundle fails, child
    * validators will not be performed.
    *
+   * @param <T> extends BaseSlingModel.
+   * @param model model to validate.
    * @param validatorList List of validators to perform validation on.
    */
   private <T extends BaseSlingModel> void validateModelValidatorList(final T model,
@@ -149,19 +150,25 @@ public class BaseValidationProviderService implements ValidationProviderService 
 
   @Override
   @Nullable
+  @SuppressWarnings("unchecked")
   public <T extends BaseSlingModel> ModelValidationService getModelValidationService(
       final T model) {
     final Class<? extends BaseSlingModel> modelClass = model.getClass();
     try {
-      if (modelClass.getAnnotation(StructuredModel.class) != null) {
-        return modelClass.getAnnotation(StructuredModel.class).validationService().newInstance();
+      if (modelClass.getAnnotation(KestrosModel.class) != null) {
+        return modelClass.getAnnotation(KestrosModel.class).validationService().newInstance();
+      } else {
+        if (modelClass.getSuperclass() != null) {
+          Class<T> superClass = (Class<T>) modelClass.getSuperclass();
+          return getModelValidationService(castModel(superClass));
+        }
       }
     } catch (final InstantiationException exception) {
       LOG.warn("Unable to instantiate ModelValidationService {} for {}", modelClass.getAnnotation(
-          StructuredModel.class).validationService().getSimpleName(), modelClass.getSimpleName());
+          KestrosModel.class).validationService().getSimpleName(), modelClass.getSimpleName());
     } catch (final IllegalAccessException exception) {
       LOG.warn("Unable to retrieve ModelValidationService {} for {} due to IllegalAccessException",
-          modelClass.getAnnotation(StructuredModel.class).validationService().getSimpleName(),
+          modelClass.getAnnotation(KestrosModel.class).validationService().getSimpleName(),
           modelClass.getSimpleName());
     }
     return null;
@@ -171,6 +178,8 @@ public class BaseValidationProviderService implements ValidationProviderService 
    * Performs a Model Validator, and adds the message to the appropriate message list. ( ERROR,
    * WARNING, INFO).
    *
+   * @param <T> extends BaseSlingModel.
+   * @param model model to add basic validators to.
    * @param validator Model validator to be performed.
    */
   private <T extends BaseSlingModel> void addBasicValidatorMessagesToLists(final T model,
@@ -193,5 +202,9 @@ public class BaseValidationProviderService implements ValidationProviderService 
         model.addInfoMessage(message);
         break;
     }
+  }
+
+  private <T> T castModel(Class<T> clazz) throws IllegalAccessException, InstantiationException {
+    return clazz.newInstance();
   }
 }

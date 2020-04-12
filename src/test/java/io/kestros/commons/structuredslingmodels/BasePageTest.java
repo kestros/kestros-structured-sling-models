@@ -28,6 +28,7 @@ import org.mockito.Mockito;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.given;
@@ -47,41 +48,41 @@ public class BasePageTest {
     private Map<String, Object> properties = new HashMap<>();
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         context.addModelsForPackage("io.kestros");
         context.create().resource("/content");
     }
 
     @Test
-    public void testGetName() throws Exception {
+    public void testGetName() {
         resource = context.create().resource("/content/page");
 
         basePage = resource.adaptTo(BasePage.class);
 
-        assertEquals("page", basePage.getName());
+        assertEquals("page", Objects.requireNonNull(basePage).getName());
     }
 
     @Test
-    public void testGetNameWhenAdaptedFromJcrContent() throws Exception {
+    public void testGetNameWhenAdaptedFromJcrContent() {
         context.create().resource("/content/page");
         resource = context.create().resource("/content/page/jcr:content");
 
         basePage = resource.adaptTo(BasePage.class);
 
-        assertEquals("page", basePage.getName());
+        assertEquals("page", Objects.requireNonNull(basePage).getName());
     }
 
     @Test
-    public void testGetNameWhenAdaptedFromJcrContentAtRootLevel() throws Exception {
+    public void testGetNameWhenAdaptedFromJcrContentAtRootLevel() {
         resource = context.create().resource("/jcr:content");
 
         basePage = resource.adaptTo(BasePage.class);
 
-        assertEquals("", basePage.getName());
+        assertEquals("", Objects.requireNonNull(basePage).getName());
     }
 
     @Test
-    public void testGetNameWhenAdaptedFromJcrContentWhenParentIsNull() throws Exception {
+    public void testGetNameWhenAdaptedFromJcrContentWhenParentIsNull() {
         resource = context.create().resource("/jcr:content");
         resource = spy(resource);
 
@@ -89,41 +90,41 @@ public class BasePageTest {
 
         basePage = resource.adaptTo(BasePage.class);
 
-        assertEquals("jcr:content", basePage.getName());
+        assertEquals("jcr:content", Objects.requireNonNull(basePage).getName());
     }
 
 
     @Test
-    public void testGetPath() throws Exception {
+    public void testGetPath() {
         resource = context.create().resource("/content/page");
         context.create().resource("/content/page/jcr:content");
 
         basePage = resource.adaptTo(BasePage.class);
 
-        assertEquals("/content/page", basePage.getPath());
+        assertEquals("/content/page", Objects.requireNonNull(basePage).getPath());
     }
 
     @Test
-    public void testGetPathWhenAdaptedFromJcrContent() throws Exception {
+    public void testGetPathWhenAdaptedFromJcrContent() {
         resource = context.create().resource("/content/page");
         resource = context.create().resource("/content/page/jcr:content");
 
         basePage = resource.adaptTo(BasePage.class);
 
-        assertEquals("/content/page", basePage.getPath());
+        assertEquals("/content/page", Objects.requireNonNull(basePage).getPath());
     }
 
     @Test
-    public void testGetPathWhenAdaptedFromJcrContentAtRootLevel() throws Exception {
+    public void testGetPathWhenAdaptedFromJcrContentAtRootLevel() {
         resource = context.create().resource("/jcr:content");
 
         basePage = resource.adaptTo(BasePage.class);
 
-        assertEquals("/", basePage.getPath());
+        assertEquals("/", Objects.requireNonNull(basePage).getPath());
     }
 
     @Test
-    public void testGetPathWhenAdaptedFromJcrContentWhenParentIsNull() throws Exception {
+    public void testGetPathWhenAdaptedFromJcrContentWhenParentIsNull() {
         resource = context.create().resource("/jcr:content");
         resource = spy(resource);
 
@@ -131,12 +132,12 @@ public class BasePageTest {
 
         basePage = resource.adaptTo(BasePage.class);
 
-        assertEquals("/jcr:content", basePage.getPath());
+        assertEquals("/jcr:content", Objects.requireNonNull(basePage).getPath());
     }
 
 
     @Test
-    public void testGetTitle() throws Exception {
+    public void testGetTitle() {
         properties.put("jcr:title", "Page Title");
 
         resource = context.create().resource("/content/page-with-title");
@@ -144,22 +145,22 @@ public class BasePageTest {
 
         basePage = resource.adaptTo(BasePage.class);
 
-        assertEquals("Page Title", basePage.getTitle());
+        assertEquals("Page Title", Objects.requireNonNull(basePage).getTitle());
     }
 
     @Test
-    public void testGetTitleWhenNoneSet() throws Exception {
+    public void testGetTitleWhenNoneSet() {
         properties.put("jcr:title", "Page Title");
 
         resource = context.create().resource("/content/page-without-title");
 
         basePage = resource.adaptTo(BasePage.class);
 
-        assertEquals("page-without-title", basePage.getTitle());
+        assertEquals("page-without-title", Objects.requireNonNull(basePage).getTitle());
     }
 
     @Test
-    public void testGetProperties() throws Exception {
+    public void testGetProperties() {
         properties.put("jcr:title", "Page Title");
 
         resource = context.create().resource("/content/page-with-properties");
@@ -167,12 +168,12 @@ public class BasePageTest {
 
         basePage = resource.adaptTo(BasePage.class);
 
-        assertNull(basePage.getResource().getValueMap().get("jcr:title"));
+        assertNull(Objects.requireNonNull(basePage).getResource().getValueMap().get("jcr:title"));
         assertEquals(properties, basePage.getProperties());
     }
 
     @Test
-    public void testGetPropertiesWhenAdaptedFromJcrContent() throws Exception {
+    public void testGetPropertiesWhenAdaptedFromJcrContent() {
         properties.put("jcr:title", "Page Title");
 
         context.create().resource("/content/page-with-properties");
@@ -180,18 +181,18 @@ public class BasePageTest {
 
         basePage = resource.adaptTo(BasePage.class);
 
-        assertEquals("Page Title", basePage.getProperties().get("jcr:title"));
+        assertEquals("Page Title", Objects.requireNonNull(basePage).getProperties().get("jcr:title"));
         assertEquals(properties, basePage.getProperties());
     }
 
     @Test
-    public void testGetPropertiesWhenNoJcrContent() throws Exception {
+    public void testGetPropertiesWhenNoJcrContent() {
         properties.put("jcr:title", "Page Title");
 
         resource = context.create().resource("/content/page-with-properties", properties);
 
         basePage = resource.adaptTo(BasePage.class);
-        basePage = Mockito.spy(basePage);
+        basePage = Mockito.spy(Objects.requireNonNull(basePage));
 
         assertEquals(properties, basePage.getProperties());
         verify(basePage, times(1)).getPath();

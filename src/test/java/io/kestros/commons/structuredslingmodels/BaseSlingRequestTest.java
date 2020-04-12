@@ -27,6 +27,8 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+import java.util.Objects;
+
 public class BaseSlingRequestTest {
     @Rule
     public SlingContext context = new SlingContext();
@@ -34,21 +36,21 @@ public class BaseSlingRequestTest {
     private BaseSlingRequest requestModel;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         context.addModelsForPackage("io.kestros");
 
         requestModel = context.request().adaptTo(BaseSlingRequest.class);
     }
 
     @Test
-    public void testGetRequest() throws Exception {
+    public void testGetRequest() {
         assertNotNull(requestModel);
         assertNotNull(requestModel.getRequest());
         assertEquals(context.request(), requestModel.getRequest());
     }
 
     @Test
-    public void testGetResponse() throws Exception {
+    public void testGetResponse() {
         assertNotNull(requestModel);
         assertNotNull(requestModel.getResponse());
         assertEquals(context.response(), requestModel.getResponse());
@@ -67,6 +69,6 @@ public class BaseSlingRequestTest {
 
         requestModel = context.request().adaptTo(BaseSlingRequest.class);
 
-        assertEquals("/resource", requestModel.getBaseResource().getPath());
+        assertEquals("/resource", Objects.requireNonNull(requestModel).getBaseResource().getPath());
     }
 }

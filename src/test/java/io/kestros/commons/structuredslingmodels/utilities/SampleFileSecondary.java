@@ -21,7 +21,7 @@ package io.kestros.commons.structuredslingmodels.utilities;
 
 import io.kestros.commons.structuredslingmodels.filetypes.BaseFile;
 import io.kestros.commons.structuredslingmodels.filetypes.FileType;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import org.apache.sling.api.resource.Resource;
@@ -53,7 +53,7 @@ public class SampleFileSecondary extends BaseFile {
 
       @Override
       public List<String> getReadableContentTypes() {
-        return Arrays.asList("sample-secondary/test");
+        return Collections.singletonList("sample-secondary/test");
       }
 
       @Override
