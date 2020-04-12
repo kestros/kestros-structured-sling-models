@@ -1,0 +1,79 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+package io.kestros.commons.structuredslingmodels.exceptions;
+
+/**
+ * Thrown when a Resource cannot be adapted to a Sling Model class because the sling:resourceType or
+ * jcr:primaryType does not match the expected value (based on the `resourceType` value of the
+ * Model's `@Model` annotation).
+ */
+public class InvalidResourceTypeException extends ModelAdaptionException {
+
+  private static final long serialVersionUID = 8669249118588546600L;
+
+  /**
+   * Thrown when a Resource cannot be adapted to a Sling Model class because the sling:resourceType
+   * or jcr:primaryType does not match the expected value (based on the `resourceType` value of the
+   * Model's `@Model` annotation).
+   *
+   * @param message Cause message.
+   */
+  protected InvalidResourceTypeException(final String message) {
+    super(message);
+  }
+
+  /**
+   * Thrown when a Resource cannot be adapted to a Sling Model class because the sling:resourceType
+   * or jcr:primaryType does not match the expected value (based on the `resourceType` value of the
+   * Model's `@Model` annotation).
+   *
+   * @param resourcePath Absolute path of Resource that failed adaption.
+   * @param message Cause message.
+   */
+  protected InvalidResourceTypeException(final String resourcePath, final String message) {
+    super(resourcePath, message);
+  }
+
+  /**
+   * Thrown when a Resource cannot be adapted to a Sling Model class because the sling:resourceType
+   * or jcr:primaryType does not match the expected value (based on the `resourceType` value of the
+   * Model's `@Model` annotation).
+   *
+   * @param resourcePath Absolute path of Resource that failed adaption.
+   * @param type Model type that the Resource could not be adapted to.
+   */
+  public InvalidResourceTypeException(final String resourcePath, final Class type) {
+    super(resourcePath, type, "Invalid resource type.");
+  }
+
+  /**
+   * Thrown when a Resource cannot be adapted to a Sling Model class because the sling:resourceType
+   * or jcr:primaryType does not match the expected value (based on the `resourceType` value of the
+   * Model's `@Model` annotation).
+   *
+   * @param resourcePath Absolute path of Resource that failed adaption.
+   * @param type Model type that the Resource could not be adapted to.
+   * @param message Cause message.
+   */
+  public InvalidResourceTypeException(final String resourcePath, final Class type,
+      final String message) {
+    super(resourcePath, type, message);
+  }
+}
