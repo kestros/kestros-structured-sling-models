@@ -37,6 +37,11 @@ public abstract class ModelValidatorBundle implements ModelValidator {
   }
 
   /**
+   * Registers ModelValidators.
+   */
+  public abstract void registerValidators();
+
+  /**
    * Message informing the user what is being validated.  For ModelValidatorBundles, it is either
    * all must be true, or one must be true.
    *
@@ -56,11 +61,6 @@ public abstract class ModelValidatorBundle implements ModelValidator {
    * @return Message informing the user what is being validated within the bundle.
    */
   public abstract String getBundleMessage();
-
-  /**
-   * Registers ModelValidators.
-   */
-  public abstract void registerValidators();
 
   /**
    * Whether ModelValidators assigned to the bundle must be true to be considered valid, or just

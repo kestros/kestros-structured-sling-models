@@ -137,6 +137,7 @@ public final class SlingModelUtils {
    *
    * @param resource Resource to adapt.
    * @return The current Resource, adapted to a BaseResource Model.
+   * @throws IllegalStateException BaseResource should never be considered invalid.
    */
   @Nonnull
   public static BaseResource adaptToBaseResource(@Nonnull final Resource resource) {
@@ -714,7 +715,7 @@ public final class SlingModelUtils {
       try {
         children.add(getResourceAsClosestType(child.getResource(), modelFactory));
       } catch (final InvalidResourceTypeException exception) {
-        LOG.debug("Unable to Unable to retrieve adapted model for resource {} while retrieving "
+        LOG.debug("Unable to retrieve adapted model for resource {} while retrieving "
                   + "children for {}, this resource will not be included.", child.getName(),
             resource.getPath());
       }

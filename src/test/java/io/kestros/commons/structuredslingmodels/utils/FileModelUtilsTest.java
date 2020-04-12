@@ -36,6 +36,7 @@ import io.kestros.commons.structuredslingmodels.utilities.SampleFile;
 import io.kestros.commons.structuredslingmodels.utilities.SampleFileSecondary;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
@@ -47,8 +48,6 @@ public class FileModelUtilsTest {
 
   @Rule
   public SlingContext context = new SlingContext();
-
-  private SampleFile sampleFile;
 
   private Resource resource;
 
@@ -207,7 +206,7 @@ public class FileModelUtilsTest {
     context.create().resource("/resource/file.sample", properties);
 
     assertEquals("file.sample",
-        FileModelUtils.getChildAsFileType("file.sample", resource.adaptTo(BaseResource.class),
-            SampleFile.class).getName());
+        FileModelUtils.getChildAsFileType("file.sample",
+            Objects.requireNonNull(resource.adaptTo(BaseResource.class)), SampleFile.class).getName());
   }
 }

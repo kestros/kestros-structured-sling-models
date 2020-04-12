@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
@@ -53,12 +54,12 @@ public class BaseFileTest {
   private Map<String, Object> jcrContentProperties = new HashMap<>();
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     context.addModelsForPackage("io.kestros");
   }
 
   @Test
-  public void testGetBufferedReader() throws Exception {
+  public void testGetBufferedReader() {
     properties.put("jcr:primaryType", "nt:file");
     InputStream inputStream = new ByteArrayInputStream("file-contents".getBytes());
 
@@ -68,7 +69,7 @@ public class BaseFileTest {
     context.create().resource("/file/jcr:content", jcrContentProperties);
     baseFile = resource.adaptTo(SampleFile.class);
 
-    assertNotNull(baseFile.getBufferedReader());
+    assertNotNull(Objects.requireNonNull(baseFile).getBufferedReader());
   }
 
   @Test
@@ -83,7 +84,7 @@ public class BaseFileTest {
 
     baseFile = resource.adaptTo(SampleFile.class);
 
-    assertEquals("file-contents", baseFile.getOutput());
+    assertEquals("file-contents", Objects.requireNonNull(baseFile).getFileContent());
   }
 
   @Test
@@ -99,7 +100,7 @@ public class BaseFileTest {
 
     baseFile = resource.adaptTo(SampleFile.class);
 
-    assertEquals("file-contents\nmore-contents\nthird-line", baseFile.getOutput());
+    assertEquals("file-contents\nmore-contents\nthird-line", Objects.requireNonNull(baseFile).getFileContent());
   }
 
   @Test
@@ -115,7 +116,7 @@ public class BaseFileTest {
 
     baseFile = resource.adaptTo(SampleFile.class);
 
-    assertEquals("38 bytes", baseFile.getFileSize());
+    assertEquals("38 bytes", Objects.requireNonNull(baseFile).getFileSize());
   }
 
   @Test
@@ -127,7 +128,7 @@ public class BaseFileTest {
     resource = context.create().resource("/file.txt", properties);
 
     baseFile = resource.adaptTo(SampleFile.class);
-    baseFile = spy(baseFile);
+    baseFile = spy(Objects.requireNonNull(baseFile));
     doReturn(inputStream).when(baseFile).getJcrDataInputStream();
 
     assertEquals("", baseFile.getFileSize());

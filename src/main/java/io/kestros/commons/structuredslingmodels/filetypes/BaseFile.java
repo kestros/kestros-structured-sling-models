@@ -92,7 +92,7 @@ public abstract class BaseFile extends BasePage {
    * @throws IOException Thrown when there is an error reading contents of the File.
    */
   @JsonIgnore
-  public String getOutput() throws IOException {
+  public String getFileContent() throws IOException {
     final StringBuilder builder = new StringBuilder();
 
     final BufferedReader bufferedReader = getBufferedReader();
