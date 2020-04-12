@@ -34,7 +34,7 @@ public class FileUtilsTest {
   public SlingContext context = new SlingContext();
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
   }
 
   @Test

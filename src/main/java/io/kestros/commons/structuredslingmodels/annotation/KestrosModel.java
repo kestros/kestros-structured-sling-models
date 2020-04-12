@@ -19,6 +19,8 @@
 
 package io.kestros.commons.structuredslingmodels.annotation;
 
+import io.kestros.commons.structuredslingmodels.validation.DefaultModelValidationService;
+import io.kestros.commons.structuredslingmodels.validation.ModelValidationService;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -26,17 +28,28 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Designated the annotated method as a property. Can be used for documentation purposes.
+ * Annotation used for assigning a ModelValidatorService and documentation Resource paths to a Sling
+ * Model type.
  */
-@Target({ElementType.METHOD})
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface Property {
+public @interface KestrosModel {
 
   /**
-   * Description of the annotated method.
+   * The ModelValidationService assigned to the current Sling Model type, or the
+   * DefaultModelValidationService if none exist.
    *
-   * @return Description of the annotated method.
+   * @return The ModelValidationService assigned to the current Sling Model type, or the
+   *     DefaultModelValidationService if none exist.
    */
-  String description();
+  Class<? extends ModelValidationService> validationService()
+      default DefaultModelValidationService.class;
+
+  /**
+   * Array of documentation Resource paths.
+   *
+   * @return Array of documentation Resource paths.
+   */
+  String[] docPaths() default {};
 }

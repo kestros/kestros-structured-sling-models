@@ -24,6 +24,7 @@ import static org.junit.Assert.assertEquals;
 import io.kestros.commons.structuredslingmodels.BaseResource;
 import io.kestros.commons.structuredslingmodels.BaseSlingModel;
 import io.kestros.commons.structuredslingmodels.validation.DefaultModelValidationService;
+import java.util.Objects;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
 import org.junit.Rule;
@@ -39,7 +40,7 @@ public class BaseValidationProviderServiceTest {
   private BaseResource baseResource;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     context.addModelsForPackage("io.kestros");
     baseValidationProviderService = new BaseValidationProviderService();
   }
@@ -48,13 +49,15 @@ public class BaseValidationProviderServiceTest {
   public void testGetModelValidationServiceWhenNull() {
     baseResource = new BaseResource();
     assertEquals(DefaultModelValidationService.class,
-        baseValidationProviderService.getModelValidationService(baseResource).getClass());
+        Objects.requireNonNull(
+            baseValidationProviderService.getModelValidationService(baseResource)).getClass());
   }
 
   @Test
   public void testGetModelValidationServiceWhenNoStructuredModelAnnotation() {
     assertEquals(DefaultModelValidationService.class,
-        baseValidationProviderService.getModelValidationService(new BaseSlingModel()).getClass());
+        Objects.requireNonNull(
+            baseValidationProviderService.getModelValidationService(new BaseSlingModel())).getClass());
   }
 
   @Test
