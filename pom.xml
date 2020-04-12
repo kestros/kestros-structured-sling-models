@@ -25,11 +25,10 @@ under the License.
   <parent>
     <groupId>io.kestros.commons</groupId>
     <artifactId>kestros-parent-strict</artifactId>
-    <version>0.0.5</version>
+    <version>0.0.6</version>
     <relativePath/>
   </parent>
 
-  <groupId>io.kestros.commons</groupId>
   <artifactId>kestros-structured-sling-models</artifactId>
   <version>0.0.2</version>
 

@@ -149,7 +149,6 @@ public class BaseResource extends BaseSlingModel {
   @Nonnull
   @KestrosProperty(description = "Description of the current Resource.",
                    jcrPropertyName = JCR_DESCRIPTION,
-                   defaultValue = "",
                    configurable = true)
   public String getDescription() {
     return getProperty(JCR_DESCRIPTION, StringUtils.EMPTY);
