@@ -39,8 +39,6 @@ import org.slf4j.LoggerFactory;
  * are not added. Messages are generally used for communicating Model status to developers and
  * content authors.
  */
-@KestrosModel(docPaths = {"/content/guide-articles/kestros-commons/model-validation",
-    "/content/guide-articles/kestros-commons/model-exceptions"})
 public class BaseSlingModel {
 
   private static final Logger LOG = LoggerFactory.getLogger(BaseSlingModel.class);

@@ -20,7 +20,6 @@
 package io.kestros.commons.structuredslingmodels;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -32,11 +31,9 @@ import org.apache.sling.models.annotations.injectorspecific.SlingObject;
 /**
  * Baseline Sling Model for extending Request based Models.
  */
-@KestrosModel(docPaths = {
-    "/content/guide-articles/kestros-commons/extending-base-request-model"})
 @Model(adaptables = SlingHttpServletRequest.class,
        resourceType = "sling/servlet/default")
-public class BaseSlingRequest extends BaseSlingModel {
+public class BaseRequestContext extends BaseSlingModel {
 
   /**
    * SlingHttpServletRequest the current Model was adapted from.

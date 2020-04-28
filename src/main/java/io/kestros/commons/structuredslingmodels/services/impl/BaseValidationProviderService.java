@@ -22,6 +22,7 @@ package io.kestros.commons.structuredslingmodels.services.impl;
 import io.kestros.commons.structuredslingmodels.BaseSlingModel;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
 import io.kestros.commons.structuredslingmodels.services.ValidationProviderService;
+import io.kestros.commons.structuredslingmodels.validation.DefaultModelValidationService;
 import io.kestros.commons.structuredslingmodels.validation.ModelValidationMessageType;
 import io.kestros.commons.structuredslingmodels.validation.ModelValidationService;
 import io.kestros.commons.structuredslingmodels.validation.ModelValidator;
@@ -30,7 +31,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -149,7 +149,7 @@ public class BaseValidationProviderService implements ValidationProviderService 
   }
 
   @Override
-  @Nullable
+  @Nonnull
   @SuppressWarnings("unchecked")
   public <T extends BaseSlingModel> ModelValidationService getModelValidationService(
       final T model) {
@@ -158,7 +158,7 @@ public class BaseValidationProviderService implements ValidationProviderService 
       if (modelClass.getAnnotation(KestrosModel.class) != null) {
         return modelClass.getAnnotation(KestrosModel.class).validationService().newInstance();
       } else {
-        if (modelClass.getSuperclass() != null) {
+        if (modelClass.getSuperclass() != null && modelClass.getSuperclass() != Object.class) {
           Class<T> superClass = (Class<T>) modelClass.getSuperclass();
           return getModelValidationService(castModel(superClass));
         }
@@ -171,7 +171,7 @@ public class BaseValidationProviderService implements ValidationProviderService 
           modelClass.getAnnotation(KestrosModel.class).validationService().getSimpleName(),
           modelClass.getSimpleName());
     }
-    return null;
+    return new DefaultModelValidationService();
   }
 
   /**
