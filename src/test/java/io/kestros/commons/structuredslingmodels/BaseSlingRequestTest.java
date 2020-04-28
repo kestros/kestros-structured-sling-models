@@ -33,13 +33,13 @@ public class BaseSlingRequestTest {
     @Rule
     public SlingContext context = new SlingContext();
 
-    private BaseSlingRequest requestModel;
+    private BaseRequestContext requestModel;
 
     @Before
     public void setUp() {
         context.addModelsForPackage("io.kestros");
 
-        requestModel = context.request().adaptTo(BaseSlingRequest.class);
+        requestModel = context.request().adaptTo(BaseRequestContext.class);
     }
 
     @Test
@@ -67,7 +67,7 @@ public class BaseSlingRequestTest {
 
         context.request().setResource(resource);
 
-        requestModel = context.request().adaptTo(BaseSlingRequest.class);
+        requestModel = context.request().adaptTo(BaseRequestContext.class);
 
         assertEquals("/resource", Objects.requireNonNull(requestModel).getBaseResource().getPath());
     }
