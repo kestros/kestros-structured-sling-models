@@ -740,6 +740,45 @@ public final class SlingModelUtils {
     return getChildrenAsClosestTypes(baseResource.getResource(), modelFactory);
   }
 
+  /**
+   * Traverses the descendant resources in the JCR (using the passed Resource as the origin) and
+   * returns them as their closest matching Sling Model that extends BaseResource.
+   *
+   * @param resource Resource to retrieve children from.
+   * @param modelFactory modelFactory used to match model types to the Resource's resourceType.
+   * @param <T> Generic class that extends BaseResource.
+   * @return All descendant resources, as their closest matching Sling Model.
+   */
+  @Nonnull
+  public static <T extends BaseResource> List<T> getAllDescendantsAsClosestType(
+      @Nonnull final Resource resource, @Nonnull final ModelFactory modelFactory) {
+
+    final List<T> descendants = getChildrenAsClosestTypes(resource, modelFactory);
+
+    for (final BaseResource child : getChildrenOfType(resource, BaseResource.class)) {
+      descendants.addAll(getAllDescendantsAsClosestType(child.getResource(), modelFactory));
+    }
+
+    return descendants;
+  }
+
+  /**
+   * This method is functionally the same as {@link #getAllDescendantsAsClosestType(Resource,
+   * ModelFactory)}but accepts {@link BaseResource} instead of {@link Resource}.
+   *
+   * @param baseResource Resource to retrieve children from.
+   * @param modelFactory modelFactory used to match the model type to the Resource's
+   *     resourceType.
+   * @param <T> Generic class that extends BaseResource.
+   * @return List of all children, adapted to the closest matching SlingModel type that extends
+   */
+  @Nonnull
+  public static <T extends BaseResource> List<T> getAllDescendantsAsClosestType(
+      @Nonnull final BaseResource baseResource, @Nonnull final ModelFactory modelFactory) {
+    return getAllDescendantsAsClosestType(baseResource.getResource(), modelFactory);
+  }
+
+
   private static boolean isValidResourceTypeBasedOnSuperTypes(@Nonnull final Resource resource,
       @Nonnull final List<String> validResourceTypes) {
 
