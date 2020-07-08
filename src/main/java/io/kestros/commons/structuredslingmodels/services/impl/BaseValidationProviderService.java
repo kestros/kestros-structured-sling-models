@@ -164,8 +164,9 @@ public class BaseValidationProviderService implements ValidationProviderService 
         }
       }
     } catch (final InstantiationException exception) {
-      LOG.warn("Unable to instantiate ModelValidationService {} for {}", modelClass.getAnnotation(
-          KestrosModel.class).validationService().getSimpleName(), modelClass.getSimpleName());
+      LOG.warn(
+          "Unable to instantiate ModelValidationService {}. Using default validation service.",
+          modelClass.getSimpleName());
     } catch (final IllegalAccessException exception) {
       LOG.warn("Unable to retrieve ModelValidationService {} for {} due to IllegalAccessException",
           modelClass.getAnnotation(KestrosModel.class).validationService().getSimpleName(),
