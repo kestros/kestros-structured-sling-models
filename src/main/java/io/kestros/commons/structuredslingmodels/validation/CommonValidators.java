@@ -163,9 +163,9 @@ public class CommonValidators {
    * @param <S> Generic model type.
    * @return Validator that checks if a specified child does not fail any ERROR type validators.
    */
-  public static <T extends BaseResource, S extends BaseResource> ModelValidator
-      isChildResourceValidResourceType(final String childName, final Class<S> childType,
-      final T model) {
+  public static <T extends BaseResource, S extends BaseResource>
+      ModelValidator isChildResourceValidResourceType(final String childName,
+      final Class<S> childType, final T model) {
 
     return new ModelValidator() {
       @Override
@@ -323,4 +323,61 @@ public class CommonValidators {
       }
     };
   }
+
+  /**
+   * Validates whether a specified list of models has any error messages.
+   *
+   * @param modelList models to check for errors.
+   * @param message Validation message
+   * @param <T> Extends base Resource.
+   * @return Validates whether a specified list of models has any error messages.
+   */
+  public static <T extends BaseResource> ModelValidator modelListHasNoErrors(List<T> modelList,
+      String message) {
+    return modeListHasNoFailedValidatorsOfType(modelList, message, ERROR);
+  }
+
+  /**
+   * Validates whether a specified list of models has any warning messages.
+   *
+   * @param modelList models to check for warnings.
+   * @param message Validation message
+   * @param <T> Extends base Resource.
+   * @return Validates whether a specified list of models has any warning messages.
+   */
+  public static <T extends BaseResource> ModelValidator modelListHasNoWarnings(List<T> modelList,
+      String message) {
+    return modeListHasNoFailedValidatorsOfType(modelList, message, WARNING);
+  }
+
+  private static <T extends BaseResource> ModelValidator modeListHasNoFailedValidatorsOfType(
+      List<T> modelList, String message, ModelValidationMessageType type) {
+    return new ModelValidator() {
+      @Override
+      public boolean isValid() {
+        for (T model : modelList) {
+          model.validate();
+          if (ERROR.equals(type)) {
+            if (!model.getErrorMessages().isEmpty()) {
+              return false;
+            }
+          } else if (WARNING.equals(type) && !model.getWarningMessages().isEmpty()) {
+            return false;
+          }
+        }
+        return true;
+      }
+
+      @Override
+      public String getMessage() {
+        return message;
+      }
+
+      @Override
+      public ModelValidationMessageType getType() {
+        return type;
+      }
+    };
+  }
+
 }
