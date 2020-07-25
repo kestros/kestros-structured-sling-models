@@ -29,6 +29,8 @@ import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFound
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
 import io.kestros.commons.structuredslingmodels.filetypes.BaseFile;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 
@@ -145,5 +147,21 @@ public class FileModelUtils {
     return getChildAsFileType(name, baseResource.getResource(), type);
   }
 
+  public static <T extends BaseFile> List<T> getChildrenOfFileType(final Resource resource,
+      final Class<T> type) {
+    List<T> children = new ArrayList<>();
+    for (Resource child : resource.getChildren()) {
+      try {
+        children.add(adaptToFileType(child, type));
+      } catch (InvalidResourceTypeException e) {
+      }
+    }
+    return children;
+  }
+
+  public static <T extends BaseFile> List<T> getChildrenOfFileType(final BaseResource baseResource,
+      final Class<T> type) {
+    return getChildrenOfFileType(baseResource.getResource(), type);
+  }
 
 }
