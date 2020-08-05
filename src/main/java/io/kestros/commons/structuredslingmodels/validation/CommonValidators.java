@@ -334,7 +334,7 @@ public class CommonValidators {
    */
   public static <T extends BaseResource> ModelValidator modelListHasNoErrors(List<T> modelList,
       String message) {
-    return modeListHasNoFailedValidatorsOfType(modelList, message, ERROR);
+    return modelListHasNoFailedValidatorsOfType(modelList, message, ERROR);
   }
 
   /**
@@ -347,10 +347,10 @@ public class CommonValidators {
    */
   public static <T extends BaseResource> ModelValidator modelListHasNoWarnings(List<T> modelList,
       String message) {
-    return modeListHasNoFailedValidatorsOfType(modelList, message, WARNING);
+    return modelListHasNoFailedValidatorsOfType(modelList, message, WARNING);
   }
 
-  private static <T extends BaseResource> ModelValidator modeListHasNoFailedValidatorsOfType(
+  private static <T extends BaseResource> ModelValidator modelListHasNoFailedValidatorsOfType(
       List<T> modelList, String message, ModelValidationMessageType type) {
     return new ModelValidator() {
       @Override
