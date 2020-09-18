@@ -303,7 +303,10 @@ public final class SlingModelUtils {
     final List<T> children = new ArrayList<>();
     for (final Resource child : resource.getChildren()) {
       try {
-        children.add(adaptTo(child, type));
+        T adaptedChild = adaptTo(child, type);
+        if (!adaptedChild.getPath().equals(resource.getPath())) {
+          children.add(adaptedChild);
+        }
       } catch (final InvalidResourceTypeException exception) {
         LOG.debug("Unable to adapt resource {} to {} due to "
                   + "InvalidResourceType while getting children" + " of {}", child.getPath(),
