@@ -29,14 +29,20 @@ import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFound
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
 import io.kestros.commons.structuredslingmodels.filetypes.BaseFile;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility methods for retrieving nt:file Resources as Sling Models (which extend {@link
  * BaseFile}).
  */
 public class FileModelUtils {
+
+  private static final Logger LOG = LoggerFactory.getLogger(FileModelUtils.class);
 
   private FileModelUtils() {
   }
@@ -145,5 +151,38 @@ public class FileModelUtils {
     return getChildAsFileType(name, baseResource.getResource(), type);
   }
 
+  /**
+   * Retrieves a list of child resources which are of a specified file type.
+   *
+   * @param resource resource to retrieve children of.
+   * @param type FileType
+   * @param <T> extends BaseFile
+   * @return A list of child resources which are of a specified file type.
+   */
+  public static <T extends BaseFile> List<T> getChildrenOfFileType(final Resource resource,
+      final Class<T> type) {
+    List<T> children = new ArrayList<>();
+    for (Resource child : resource.getChildren()) {
+      try {
+        children.add(adaptToFileType(child, type));
+      } catch (InvalidResourceTypeException e) {
+        LOG.trace("Attempted to adapt {} to {} but failed.", child.getPath(), type.getName());
+      }
+    }
+    return children;
+  }
+
+  /**
+   * Retrieves a list of child resources which are of a specified file type.
+   *
+   * @param baseResource resource to retrieve children of.
+   * @param type FileType
+   * @param <T> extends BaseFile
+   * @return A list of child resources which are of a specified file type.
+   */
+  public static <T extends BaseFile> List<T> getChildrenOfFileType(final BaseResource baseResource,
+      final Class<T> type) {
+    return getChildrenOfFileType(baseResource.getResource(), type);
+  }
 
 }

@@ -19,6 +19,7 @@
 
 package io.kestros.commons.structuredslingmodels.annotation;
 
+import io.kestros.commons.structuredslingmodels.BaseRequestContext;
 import io.kestros.commons.structuredslingmodels.validation.DefaultModelValidationService;
 import io.kestros.commons.structuredslingmodels.validation.ModelValidationService;
 import java.lang.annotation.Documented;
@@ -45,6 +46,21 @@ public @interface KestrosModel {
    */
   Class<? extends ModelValidationService> validationService()
       default DefaultModelValidationService.class;
+
+  /**
+   * The request context associated to the current Resource type. Must adapt from {@link
+   * org.apache.sling.api.SlingHttpServletRequest} and extend {@link BaseRequestContext}.
+   *
+   * @return The request context associated to the current Resource type.
+   */
+  Class<? extends BaseRequestContext> contextModel() default BaseRequestContext.class;
+
+  /**
+   * Whether the Resource type uses a jcr:content child resource.
+   *
+   * @return Whether the Resource type uses a jcr:content child resource.
+   */
+  boolean usesJcrContent() default false;
 
   /**
    * Array of documentation Resource paths.

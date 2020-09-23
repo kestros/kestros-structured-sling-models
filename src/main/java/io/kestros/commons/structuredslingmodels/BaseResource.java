@@ -44,11 +44,12 @@ import org.apache.sling.models.annotations.injectorspecific.Self;
 /**
  * Baseline Sling Model to extend all Resource Models from.
  */
-@KestrosModel(docPaths = {
-    "/content/guide-articles/kestros/structured-models/extending-base-resource",
-    "/content/guide-articles/kestros/structured-models/model-validation",
-    "/content/guide-articles/kestros/structured-models/using-sling-model-utils",
-    "/content/guide-articles/kestros/structured-models/using-common-validators"})
+@KestrosModel(contextModel = BaseRequestContext.class,
+              docPaths = {
+                  "/content/guide-articles/kestros/structured-models/extending-base-resource",
+                  "/content/guide-articles/kestros/structured-models/model-validation",
+                  "/content/guide-articles/kestros/structured-models/using-sling-model-utils",
+                  "/content/guide-articles/kestros/structured-models/using-common-validators"})
 @Model(adaptables = Resource.class,
        resourceType = "sling/servlet/default")
 public class BaseResource extends BaseSlingModel {

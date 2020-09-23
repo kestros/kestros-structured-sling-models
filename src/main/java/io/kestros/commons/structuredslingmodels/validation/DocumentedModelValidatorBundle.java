@@ -17,18 +17,18 @@
  * under the License.
  */
 
-package io.kestros.commons.structuredslingmodels.utilities;
+package io.kestros.commons.structuredslingmodels.validation;
 
-import io.kestros.commons.structuredslingmodels.BaseRequestContext;
-import io.kestros.commons.structuredslingmodels.BaseResource;
-import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.models.annotations.Model;
+/**
+ * Model validator bundle which can also provide a resourceType for contextual troubleshooting
+ * documentation.
+ */
+public abstract class DocumentedModelValidatorBundle extends ModelValidatorBundle {
 
-@KestrosModel(validationService = SampleModelValidationService.class,
-              contextModel = BaseRequestContext.class)
-@Model(adaptables = Resource.class,
-       resourceType = "kestros/commons/component")
-public class SampleResourceModel extends BaseResource {
-
+  /**
+   * ResourceType of contextual troubleshooting component to show.
+   *
+   * @return ResourceType of contextual troubleshooting component to show.
+   */
+  public abstract String getResourceType();
 }
