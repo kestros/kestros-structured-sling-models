@@ -27,7 +27,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-import io.kestros.commons.structuredslingmodels.utilities.SampleFile;
+import io.kestros.commons.structuredslingmodels.utils.SampleFile;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;

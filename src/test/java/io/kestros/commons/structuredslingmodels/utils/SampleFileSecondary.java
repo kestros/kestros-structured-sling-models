@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package io.kestros.commons.structuredslingmodels.utilities;
+package io.kestros.commons.structuredslingmodels.utils;
 
 import io.kestros.commons.structuredslingmodels.filetypes.BaseFile;
 import io.kestros.commons.structuredslingmodels.filetypes.FileType;
@@ -34,7 +34,7 @@ public class SampleFileSecondary extends BaseFile {
   @PostConstruct
   public void validate() {
     if (!getName().endsWith(".sample-secondary")) {
-      addErrorMessage("invalid file type");
+      //      addErrorMessage("invalid file type");
     }
   }
 

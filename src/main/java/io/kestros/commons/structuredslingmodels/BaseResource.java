@@ -52,7 +52,7 @@ import org.apache.sling.models.annotations.injectorspecific.Self;
                   "/content/guide-articles/kestros/structured-models/using-common-validators"})
 @Model(adaptables = Resource.class,
        resourceType = "sling/servlet/default")
-public class BaseResource extends BaseSlingModel {
+public class BaseResource implements BaseSlingModel {
 
   /**
    * Original Resource the current Model was adapted from.

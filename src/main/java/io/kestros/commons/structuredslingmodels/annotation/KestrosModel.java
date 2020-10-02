@@ -20,8 +20,6 @@
 package io.kestros.commons.structuredslingmodels.annotation;
 
 import io.kestros.commons.structuredslingmodels.BaseRequestContext;
-import io.kestros.commons.structuredslingmodels.validation.DefaultModelValidationService;
-import io.kestros.commons.structuredslingmodels.validation.ModelValidationService;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -36,16 +34,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface KestrosModel {
-
-  /**
-   * The ModelValidationService assigned to the current Sling Model type, or the
-   * DefaultModelValidationService if none exist.
-   *
-   * @return The ModelValidationService assigned to the current Sling Model type, or the
-   *     DefaultModelValidationService if none exist.
-   */
-  Class<? extends ModelValidationService> validationService()
-      default DefaultModelValidationService.class;
 
   /**
    * The request context associated to the current Resource type. Must adapt from {@link
@@ -68,4 +56,5 @@ public @interface KestrosModel {
    * @return Array of documentation Resource paths.
    */
   String[] docPaths() default {};
+
 }
