@@ -22,6 +22,7 @@ package io.kestros.commons.structuredslingmodels;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.Optional;
@@ -33,7 +34,7 @@ import org.apache.sling.models.annotations.injectorspecific.SlingObject;
  */
 @Model(adaptables = SlingHttpServletRequest.class,
        resourceType = "sling/servlet/default")
-public class BaseRequestContext extends BaseSlingModel {
+public class BaseRequestContext implements BaseSlingModel {
 
   /**
    * SlingHttpServletRequest the current Model was adapted from.
@@ -86,5 +87,10 @@ public class BaseRequestContext extends BaseSlingModel {
   @JsonIgnore
   public BaseResource getBaseResource() {
     return request.getResource().adaptTo(BaseResource.class);
+  }
+
+  @Override
+  public Resource getResource() {
+    return request.getResource();
   }
 }

@@ -61,20 +61,22 @@ public class FileModelUtils {
   public static <T extends BaseFile> T adaptToFileType(final BaseResource fileResource,
       final Class<T> type) throws InvalidResourceTypeException {
     T file = adaptTo(fileResource, type);
-    if (!file.getErrorMessages().isEmpty()) {
-      throw new InvalidResourceTypeException(fileResource.getPath(), type,
-          "Failed validation checks. " + file.getErrorMessages());
-    } else if (!file.getFileType().getReadableContentTypes().contains(file.getMimeType())) {
-      file = fileResource.getResource().adaptTo(type);
-      if (file != null) {
-        throw new InvalidResourceTypeException(fileResource.getPath(), type,
-            String.format("File mimeType '%s' did not match any expected types.",
-                file.getMimeType()));
+    if (fileResource.getName().endsWith(file.getFileType().getExtension())) {
+      if (fileResource.getResource().adaptTo(type) != null) {
+        if (file.getFileType().getReadableContentTypes().contains(file.getMimeType())) {
+          return file;
+        } else {
+          throw new InvalidResourceTypeException(fileResource.getPath(), type,
+              String.format("File mimeType '%s' did not match any expected types.",
+                  file.getMimeType()));
+        }
       } else {
         throw new InvalidResourceTypeException(fileResource.getPath(), type);
       }
+    } else {
+      throw new InvalidResourceTypeException(file.getPath(), type,
+          String.format("File did not have extension `%s`.", file.getFileType().getExtension()));
     }
-    return file;
   }
 
   /**

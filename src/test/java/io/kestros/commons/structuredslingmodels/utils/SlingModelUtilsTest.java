@@ -39,7 +39,6 @@ import io.kestros.commons.structuredslingmodels.exceptions.MatchingResourceTypeN
 import io.kestros.commons.structuredslingmodels.exceptions.NoParentResourceException;
 import io.kestros.commons.structuredslingmodels.exceptions.NoValidAncestorException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
-import io.kestros.commons.structuredslingmodels.utilities.SampleFile;
 import io.kestros.commons.structuredslingmodels.utilities.SampleRequestModel;
 import io.kestros.commons.structuredslingmodels.utilities.SampleResourceModel;
 import java.util.ArrayList;
