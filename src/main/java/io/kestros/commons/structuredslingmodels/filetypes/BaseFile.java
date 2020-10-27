@@ -31,6 +31,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.models.annotations.Model;
@@ -53,6 +54,17 @@ public abstract class BaseFile extends BasePage {
    * @return {@link FileType} associated to the BaseFile implementation model.
    */
   public abstract FileType getFileType();
+
+  /**
+   * Extension of the current file resource.
+   *
+   * @return Extension of the current file resource.
+   */
+  public String getExtension() {
+    String filename = getName();
+    return Optional.ofNullable(filename).filter(f -> f.contains(".")).map(
+        f -> f.substring(filename.lastIndexOf(".") + 1)).get();
+  }
 
   /**
    * jcr:mimeType property value.
