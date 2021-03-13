@@ -565,12 +565,77 @@ public final class SlingModelUtils {
     } catch (final InvalidResourceTypeException exception) {
       try {
         return getFirstAncestorOfType(getParentResourceAsBaseResource(resource), type);
-      } catch (final NoParentResourceException | NoValidAncestorException e1) {
+      } catch (final NoParentResourceException e1) {
+        throw new NoValidAncestorException(resource.getPath(), type);
+      } catch (NoValidAncestorException e1) {
         throw new NoValidAncestorException(resource.getPath(), type);
       }
     } catch (final NoParentResourceException exception) {
       throw new NoValidAncestorException(resource.getPath(), type);
     }
+  }
+
+  /**
+   * The first ancestor Resource that can be adapted to the specified type.
+   *
+   * @param resource Resource to look for ancestors of
+   * @param type Class to attempt to adapt the ancestor Resource to. Class must extend
+   *     BaseResource and have the {@link Model} annotation, with the resourceType value set.
+   * @param <T> Class to attempt to adapt the ancestor Resource to. Class must extend
+   *     BaseResource and have the {@link Model} annotation, with the resourceType value set.
+   * @param resolveToLibs Whether to look to libs if no valid ancestor is found.
+   * @return The first ancestor Resource that can be adapted to the specified type.
+   * @throws NoValidAncestorException thrown when ancestry ends without having found a valid
+   *     Resource.
+   */
+  @Nonnull
+  public static <T extends BaseResource> T getFirstAncestorOfType(@Nonnull final Resource resource,
+      @Nonnull final Class<T> type, boolean resolveToLibs) throws NoValidAncestorException {
+    try {
+      return getFirstAncestorOfType(resource, type);
+    } catch (NoValidAncestorException exception) {
+      if (resolveToLibs) {
+        String libsPath;
+        Resource parentResource = resource.getParent();
+        Resource libsResource = null;
+        while (libsResource == null && parentResource != null) {
+          libsPath = parentResource.getPath().replaceFirst("/apps/", "/libs/");
+          libsResource = resource.getResourceResolver().getResource(libsPath);
+          if (libsResource == null) {
+            parentResource = parentResource.getParent();
+          }
+        }
+        if (libsResource != null) {
+          try {
+            return adaptTo(libsResource, type);
+          } catch (InvalidResourceTypeException e) {
+            return getFirstAncestorOfType(libsResource, type);
+          }
+        }
+      }
+    }
+    throw new NoValidAncestorException(resource.getPath(), type);
+  }
+
+
+  /**
+   * The first ancestor Resource that can be adapted to the specified type.
+   *
+   * @param resource Resource to look for ancestors of
+   * @param type Class to attempt to adapt the ancestor Resource to. Class must extend
+   *     BaseResource and have the {@link Model} annotation, with the resourceType value set.
+   * @param <T> Class to attempt to adapt the ancestor Resource to. Class must extend
+   *     BaseResource and have the {@link Model} annotation, with the resourceType value set.
+   * @return The first ancestor Resource that can be adapted to the specified type.
+   * @param resolveToLibs Whether to look to libs if no valid ancestor is found.
+   * @throws NoValidAncestorException thrown when ancestry ends without having found a valid
+   *     Resource.
+   */
+  @Nonnull
+  public static <T extends BaseResource> T getFirstAncestorOfType(
+      @Nonnull final BaseResource resource, @Nonnull final Class<T> type, boolean resolveToLibs)
+      throws NoValidAncestorException {
+    return getFirstAncestorOfType(resource.getResource(), type, resolveToLibs);
   }
 
   /**
