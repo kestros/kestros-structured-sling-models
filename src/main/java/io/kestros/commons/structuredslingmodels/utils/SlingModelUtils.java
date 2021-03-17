@@ -431,6 +431,27 @@ public final class SlingModelUtils {
   }
 
   /**
+   * Returns a List of Resources paths as BaseResources.
+   *
+   * @param resourcePaths Resources to lookup and adapt.
+   * @param resolver Resource Resolver
+   * @return The requested resources, adapted to the specified type.
+   */
+  public static List<BaseResource> getResourcesAsBaseResource(
+      @Nonnull final List<String> resourcePaths, @Nonnull final ResourceResolver resolver) {
+    final List<BaseResource> models = new ArrayList<>();
+    for (final String path : resourcePaths) {
+      try {
+        models.add(getResourceAsBaseResource(path, resolver));
+      } catch (final ResourceNotFoundException exception) {
+        LOG.warn("Unable to retrieve {} while retrieving list of paths due to "
+                 + "ResourceNotFoundException", path);
+      }
+    }
+    return models;
+  }
+
+  /**
    * Returns a List of Resources paths adapted to the specified SlingModel type.
    *
    * @param resourcePaths Resources to lookup and adapt.
@@ -626,8 +647,8 @@ public final class SlingModelUtils {
    *     BaseResource and have the {@link Model} annotation, with the resourceType value set.
    * @param <T> Class to attempt to adapt the ancestor Resource to. Class must extend
    *     BaseResource and have the {@link Model} annotation, with the resourceType value set.
-   * @return The first ancestor Resource that can be adapted to the specified type.
    * @param resolveToLibs Whether to look to libs if no valid ancestor is found.
+   * @return The first ancestor Resource that can be adapted to the specified type.
    * @throws NoValidAncestorException thrown when ancestry ends without having found a valid
    *     Resource.
    */
