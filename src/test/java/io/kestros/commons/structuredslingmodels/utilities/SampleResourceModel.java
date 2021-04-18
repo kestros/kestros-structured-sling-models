@@ -25,8 +25,8 @@ import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.models.annotations.Model;
 
-@KestrosModel(validationService = SampleModelValidationService.class,
-              contextModel = BaseRequestContext.class)
+//@KestrosModel(validationService = SampleModelValidationService.class,
+//              contextModel = BaseRequestContext.class)
 @Model(adaptables = Resource.class,
        resourceType = "kestros/commons/component")
 public class SampleResourceModel extends BaseResource {

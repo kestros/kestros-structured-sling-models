@@ -431,6 +431,27 @@ public final class SlingModelUtils {
   }
 
   /**
+   * Returns a List of Resources paths as BaseResources.
+   *
+   * @param resourcePaths Resources to lookup and adapt.
+   * @param resolver Resource Resolver
+   * @return The requested resources, adapted to the specified type.
+   */
+  public static List<BaseResource> getResourcesAsBaseResource(
+      @Nonnull final List<String> resourcePaths, @Nonnull final ResourceResolver resolver) {
+    final List<BaseResource> models = new ArrayList<>();
+    for (final String path : resourcePaths) {
+      try {
+        models.add(getResourceAsBaseResource(path, resolver));
+      } catch (final ResourceNotFoundException exception) {
+        LOG.warn("Unable to retrieve {} while retrieving list of paths due to "
+                 + "ResourceNotFoundException", path);
+      }
+    }
+    return models;
+  }
+
+  /**
    * Returns a List of Resources paths adapted to the specified SlingModel type.
    *
    * @param resourcePaths Resources to lookup and adapt.
@@ -565,12 +586,77 @@ public final class SlingModelUtils {
     } catch (final InvalidResourceTypeException exception) {
       try {
         return getFirstAncestorOfType(getParentResourceAsBaseResource(resource), type);
-      } catch (final NoParentResourceException | NoValidAncestorException e1) {
+      } catch (final NoParentResourceException e1) {
+        throw new NoValidAncestorException(resource.getPath(), type);
+      } catch (NoValidAncestorException e1) {
         throw new NoValidAncestorException(resource.getPath(), type);
       }
     } catch (final NoParentResourceException exception) {
       throw new NoValidAncestorException(resource.getPath(), type);
     }
+  }
+
+  /**
+   * The first ancestor Resource that can be adapted to the specified type.
+   *
+   * @param resource Resource to look for ancestors of
+   * @param type Class to attempt to adapt the ancestor Resource to. Class must extend
+   *     BaseResource and have the {@link Model} annotation, with the resourceType value set.
+   * @param <T> Class to attempt to adapt the ancestor Resource to. Class must extend
+   *     BaseResource and have the {@link Model} annotation, with the resourceType value set.
+   * @param resolveToLibs Whether to look to libs if no valid ancestor is found.
+   * @return The first ancestor Resource that can be adapted to the specified type.
+   * @throws NoValidAncestorException thrown when ancestry ends without having found a valid
+   *     Resource.
+   */
+  @Nonnull
+  public static <T extends BaseResource> T getFirstAncestorOfType(@Nonnull final Resource resource,
+      @Nonnull final Class<T> type, boolean resolveToLibs) throws NoValidAncestorException {
+    try {
+      return getFirstAncestorOfType(resource, type);
+    } catch (NoValidAncestorException exception) {
+      if (resolveToLibs) {
+        String libsPath;
+        Resource parentResource = resource.getParent();
+        Resource libsResource = null;
+        while (libsResource == null && parentResource != null) {
+          libsPath = parentResource.getPath().replaceFirst("/apps/", "/libs/");
+          libsResource = resource.getResourceResolver().getResource(libsPath);
+          if (libsResource == null) {
+            parentResource = parentResource.getParent();
+          }
+        }
+        if (libsResource != null) {
+          try {
+            return adaptTo(libsResource, type);
+          } catch (InvalidResourceTypeException e) {
+            return getFirstAncestorOfType(libsResource, type);
+          }
+        }
+      }
+    }
+    throw new NoValidAncestorException(resource.getPath(), type);
+  }
+
+
+  /**
+   * The first ancestor Resource that can be adapted to the specified type.
+   *
+   * @param resource Resource to look for ancestors of
+   * @param type Class to attempt to adapt the ancestor Resource to. Class must extend
+   *     BaseResource and have the {@link Model} annotation, with the resourceType value set.
+   * @param <T> Class to attempt to adapt the ancestor Resource to. Class must extend
+   *     BaseResource and have the {@link Model} annotation, with the resourceType value set.
+   * @param resolveToLibs Whether to look to libs if no valid ancestor is found.
+   * @return The first ancestor Resource that can be adapted to the specified type.
+   * @throws NoValidAncestorException thrown when ancestry ends without having found a valid
+   *     Resource.
+   */
+  @Nonnull
+  public static <T extends BaseResource> T getFirstAncestorOfType(
+      @Nonnull final BaseResource resource, @Nonnull final Class<T> type, boolean resolveToLibs)
+      throws NoValidAncestorException {
+    return getFirstAncestorOfType(resource.getResource(), type, resolveToLibs);
   }
 
   /**

@@ -24,21 +24,16 @@ import static io.kestros.commons.structuredslingmodels.utils.FileModelUtils.adap
 import static io.kestros.commons.structuredslingmodels.utils.FileModelUtils.getResourceAsFileType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
 import io.kestros.commons.structuredslingmodels.BaseResource;
 import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFoundException;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
-import io.kestros.commons.structuredslingmodels.utilities.SampleFile;
-import io.kestros.commons.structuredslingmodels.utilities.SampleFileSecondary;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
 import org.junit.Rule;
@@ -91,8 +86,8 @@ public class FileModelUtilsTest {
       exception = e;
     }
     assertEquals(
-        "Unable to adapt '/file.sample-secondary' to SampleFile: Failed validation checks. "
-        + "[invalid file type]",
+        "Unable to adapt '/file.sample-secondary' to SampleFile: File did not have extension "
+        + "`sample`.",
         exception.getMessage());
   }
 
@@ -116,8 +111,6 @@ public class FileModelUtilsTest {
     properties.put("jcr:mimeType", "sample-secondary/test");
     resource = context.create().resource("/file.sample", properties);
     resource = spy(resource);
-    doReturn(resource.adaptTo(BaseResource.class), resource.adaptTo(SampleFile.class),
-        resource.adaptTo(ValueMap.class), null).when(resource).adaptTo(any());
 
     try {
       adaptToFileType(resource, SampleFile.class);
@@ -125,7 +118,9 @@ public class FileModelUtilsTest {
       exception = e;
     }
     assertEquals("InvalidResourceTypeException", exception.getClass().getSimpleName());
-    assertEquals("Unable to adapt '/file.sample' to SampleFile: Invalid resource type.",
+    assertEquals(
+        "Unable to adapt '/file.sample' to SampleFile: File mimeType 'sample-secondary/test' did "
+        + "not match any expected types.",
         exception.getMessage());
   }
 
@@ -139,8 +134,8 @@ public class FileModelUtilsTest {
       exception = e;
     }
     assertEquals(
-        "Unable to adapt '/file.invalid' to SampleFile: Failed validation checks. [invalid file "
-        + "type]", exception.getMessage());
+        "Unable to adapt '/file.invalid' to SampleFile: File did not have extension `sample`.",
+        exception.getMessage());
   }
 
   @Test
@@ -162,8 +157,8 @@ public class FileModelUtilsTest {
 
     }
     assertEquals(
-        "Unable to adapt '/file.invalid' to SampleFile: Failed validation checks. [invalid file "
-        + "type]", exception.getMessage());
+        "Unable to adapt '/file.invalid' to SampleFile: File did not have extension `sample`.",
+        exception.getMessage());
   }
 
   @Test
@@ -205,8 +200,7 @@ public class FileModelUtilsTest {
     resource = context.create().resource("/resource", properties);
     context.create().resource("/resource/file.sample", properties);
 
-    assertEquals("file.sample",
-        FileModelUtils.getChildAsFileType("file.sample",
-            Objects.requireNonNull(resource.adaptTo(BaseResource.class)), SampleFile.class).getName());
+    assertEquals("file.sample", FileModelUtils.getChildAsFileType("file.sample",
+        Objects.requireNonNull(resource.adaptTo(BaseResource.class)), SampleFile.class).getName());
   }
 }
