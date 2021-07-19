@@ -62,8 +62,11 @@ public abstract class BaseFile extends BasePage {
    */
   public String getExtension() {
     String filename = getName();
-    return Optional.ofNullable(filename).filter(f -> f.contains(".")).map(
-        f -> f.substring(filename.lastIndexOf(".") + 1)).get();
+    if (filename.contains(".")) {
+      return Optional.ofNullable(filename).filter(f -> f.contains(".")).map(
+          f -> f.substring(filename.lastIndexOf(".") + 1)).get();
+    }
+    return StringUtils.EMPTY;
   }
 
   /**
