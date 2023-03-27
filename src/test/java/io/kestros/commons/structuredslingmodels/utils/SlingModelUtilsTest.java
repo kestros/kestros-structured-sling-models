@@ -985,6 +985,23 @@ public class SlingModelUtilsTest {
   }
 
   @Test
+  public void testGetFirstAncestorOfTypeWhenUsingBaseResource() throws NoValidAncestorException {
+    Map<String, Object> properties = new HashMap<>();
+    properties.put("sling:resourceType", "kestros/commons/component");
+
+    context.create().resource("/apps");
+    context.create().resource("/apps/child", properties);
+    context.create().resource("/apps/child/grand-child");
+    resource = context.create().resource("/apps/child/grand-child/great-grand-child");
+
+    assertEquals("/apps/child",
+        SlingModelUtils.getFirstAncestorOfType(resource.adaptTo(BaseResource.class), SampleResourceModel.class).getPath());
+    assertEquals("/apps/child", SlingModelUtils.getFirstAncestorOfType(
+        Objects.requireNonNull(resource.adaptTo(BaseResource.class)),
+        SampleResourceModel.class).getPath());
+  }
+
+  @Test
   public void testGetFirstAncestorOfTypeWhenPassedResourceIsValidType()
       throws NoValidAncestorException {
     Map<String, Object> properties = new HashMap<>();
@@ -1018,6 +1035,50 @@ public class SlingModelUtilsTest {
     assertEquals("/parent/child/grand-child", SlingModelUtils.getFirstAncestorOfType(
         Objects.requireNonNull(resource.adaptTo(BaseResource.class)),
         SampleResourceModel.class).getPath());
+  }
+
+  @Test
+  public void testGetFirstAncestorOfTypeWhenResolvedToLibs()
+      throws NoValidAncestorException {
+    Map<String, Object> properties = new HashMap<>();
+    properties.put("sling:resourceType", "kestros/commons/component");
+
+    context.create().resource("/libs");
+    context.create().resource("/libs/child", properties);
+    context.create().resource("/libs/child/grand-child", properties);
+
+    context.create().resource("/apps" );
+    context.create().resource("/apps/child" );
+    context.create().resource("/apps/child/grand-child" );
+    resource = context.create().resource("/apps/child/grand-child/great-grand-child", properties);
+
+    assertEquals("/libs/child/grand-child",
+        SlingModelUtils.getFirstAncestorOfType(resource, SampleResourceModel.class,true).getPath());
+    assertEquals("/libs/child/grand-child", SlingModelUtils.getFirstAncestorOfType(
+        Objects.requireNonNull(resource.adaptTo(BaseResource.class)),
+        SampleResourceModel.class, true).getPath());
+  }
+
+
+  @Test
+  public void testGetFirstAncestorOfTypeWhenNotResolvedToLibs()
+      throws NoValidAncestorException {
+    Map<String, Object> properties = new HashMap<>();
+    properties.put("sling:resourceType", "kestros/commons/component");
+
+    context.create().resource("/libs");
+    context.create().resource("/libs/child", properties);
+    context.create().resource("/libs/child/grand-child", properties);
+
+    resource = context.create().resource("/apps/child/grand-child/great-grand-child", properties);
+
+    Exception exception = null;
+    try {
+        SlingModelUtils.getFirstAncestorOfType(resource, SampleResourceModel.class,false).getPath();
+    } catch (NoValidAncestorException e) {
+      exception = e;
+    }
+    assertNotNull(exception);
   }
 
   @Test
@@ -1208,6 +1269,14 @@ public class SlingModelUtilsTest {
     context.create().resource("/resource/child-3", fileProperties);
 
     assertEquals(0, SlingModelUtils.getChildrenAsClosestTypes(resource, null).size());
+  }
+
+  @Test
+  public void testGetResourceTypesForSlingModel() {
+    assertEquals(1, SlingModelUtils.getResourceTypesForSlingModel(
+        SampleResourceModel.class).size());
+    assertEquals("kestros/commons/component", SlingModelUtils.getResourceTypesForSlingModel(
+        SampleResourceModel.class).get(0));
   }
 
 }
