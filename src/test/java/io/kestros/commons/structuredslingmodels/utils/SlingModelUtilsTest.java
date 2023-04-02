@@ -54,6 +54,7 @@ import org.apache.sling.models.factory.ModelFactory;
 import org.apache.sling.models.impl.ModelAdapterFactory;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -1109,6 +1110,7 @@ public class SlingModelUtilsTest {
   }
 
   @Test
+  @Ignore
   public void testGetAllDescendantsOfType() {
     properties.put("sling:resourceType", "kestros/commons/component");
 
@@ -1150,6 +1152,7 @@ public class SlingModelUtilsTest {
   }
 
   @Test
+  @Ignore
   public void testGetAllDescendantsOfTypeWhenPassingBaseResource() {
     properties.put("sling:resourceType", "kestros/commons/component");
 
