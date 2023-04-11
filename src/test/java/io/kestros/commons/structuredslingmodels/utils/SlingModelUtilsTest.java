@@ -1110,7 +1110,6 @@ public class SlingModelUtilsTest {
   }
 
   @Test
-  @Ignore
   public void testGetAllDescendantsOfType() {
     properties.put("sling:resourceType", "kestros/commons/component");
 
@@ -1133,26 +1132,23 @@ public class SlingModelUtilsTest {
         resource, SampleResourceModel.class);
 
     assertNotNull(SampleResourceModelList);
-    assertEquals(0, IteratorUtils.toList(context.resourceResolver().findResources(
-        "/jcr:root//*",
-        "xpath")).size());
 
-    assertEquals(0, SampleResourceModelList.size());
-//    assertEquals("/grand-parent/parent-framework-1", SampleResourceModelList.get(0).getPath());
-//    assertEquals("/grand-parent/parent-framework-2", SampleResourceModelList.get(1).getPath());
-//    assertEquals("/grand-parent/parent-framework-1/child-framework",
-//        SampleResourceModelList.get(2).getPath());
-//    assertEquals("/grand-parent/parent-framework-2/child-framework",
-//        SampleResourceModelList.get(3).getPath());
-//    assertEquals("/grand-parent/parent-unstructured-1/child-framework",
-//        SampleResourceModelList.get(4).getPath());
-//    assertEquals("/grand-parent/parent-unstructured-2/child-framework",
-//        SampleResourceModelList.get(5).getPath());
+
+    assertEquals(6, SampleResourceModelList.size());
+    assertEquals("/grand-parent/parent-framework-1", SampleResourceModelList.get(0).getPath());
+    assertEquals("/grand-parent/parent-framework-2", SampleResourceModelList.get(1).getPath());
+    assertEquals("/grand-parent/parent-framework-1/child-framework",
+        SampleResourceModelList.get(2).getPath());
+    assertEquals("/grand-parent/parent-framework-2/child-framework",
+        SampleResourceModelList.get(3).getPath());
+    assertEquals("/grand-parent/parent-unstructured-1/child-framework",
+        SampleResourceModelList.get(4).getPath());
+    assertEquals("/grand-parent/parent-unstructured-2/child-framework",
+        SampleResourceModelList.get(5).getPath());
 
   }
 
   @Test
-  @Ignore
   public void testGetAllDescendantsOfTypeWhenPassingBaseResource() {
     properties.put("sling:resourceType", "kestros/commons/component");
 
@@ -1177,17 +1173,17 @@ public class SlingModelUtilsTest {
         Objects.requireNonNull(baseResource), SampleResourceModel.class);
 
     assertNotNull(SampleResourceModelList);
-    assertEquals(0, SampleResourceModelList.size());
-//    assertEquals("/grand-parent/parent-framework-1", SampleResourceModelList.get(0).getPath());
-//    assertEquals("/grand-parent/parent-framework-2", SampleResourceModelList.get(1).getPath());
-//    assertEquals("/grand-parent/parent-framework-1/child-framework",
-//        SampleResourceModelList.get(2).getPath());
-//    assertEquals("/grand-parent/parent-framework-2/child-framework",
-//        SampleResourceModelList.get(3).getPath());
-//    assertEquals("/grand-parent/parent-unstructured-1/child-framework",
-//        SampleResourceModelList.get(4).getPath());
-//    assertEquals("/grand-parent/parent-unstructured-2/child-framework",
-//        SampleResourceModelList.get(5).getPath());
+    assertEquals(6, SampleResourceModelList.size());
+    assertEquals("/grand-parent/parent-framework-1", SampleResourceModelList.get(0).getPath());
+    assertEquals("/grand-parent/parent-framework-2", SampleResourceModelList.get(1).getPath());
+    assertEquals("/grand-parent/parent-framework-1/child-framework",
+        SampleResourceModelList.get(2).getPath());
+    assertEquals("/grand-parent/parent-framework-2/child-framework",
+        SampleResourceModelList.get(3).getPath());
+    assertEquals("/grand-parent/parent-unstructured-1/child-framework",
+        SampleResourceModelList.get(4).getPath());
+    assertEquals("/grand-parent/parent-unstructured-2/child-framework",
+        SampleResourceModelList.get(5).getPath());
   }
 
 

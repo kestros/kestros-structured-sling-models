@@ -735,24 +735,37 @@ public final class SlingModelUtils {
   @Nonnull
   public static <T extends BaseResource> List<T> getAllDescendantsOfType(
       @Nonnull final Resource resource, @Nonnull final Class<T> type) {
-
-    final List<Resource> descendants = new ArrayList<>();
-
-    for (String resourceType : getResourceTypesForSlingModel(type)) {
-      String property = "sling:resourceType";
-      if (resourceType.contains(":")) {
-        property = "jcr:primaryType";
-      }
-      String query = String.format("//*[@%s='%s']", property, resourceType);
-      descendants.addAll(IteratorUtils.toList(
-          resource.getResourceResolver().findResources(query, "xpath")));
-    }
     List<T> adaptedDescendants = new ArrayList<>();
-    for (Resource descendant : descendants) {
-      try {
-        adaptedDescendants.add(adaptTo(descendant, type));
-      } catch (InvalidResourceTypeException e) {
-        // do nothing
+
+    try {
+      final List<Resource> descendants = new ArrayList<>();
+
+      for (String resourceType : getResourceTypesForSlingModel(type)) {
+        String property = "sling:resourceType";
+        if (resourceType.contains(":")) {
+          property = "jcr:primaryType";
+        }
+        String query = String.format("//*[@%s='%s']", property, resourceType);
+        descendants.addAll(IteratorUtils.toList(
+                resource.getResourceResolver().findResources(query, "xpath")));
+      }
+      for (Resource descendant : descendants) {
+        try {
+          adaptedDescendants.add(adaptTo(descendant, type));
+        } catch (InvalidResourceTypeException e) {
+          // do nothing
+        }
+      }
+    } catch (UnsupportedOperationException e) {
+      for (Resource child : resource.getChildren()) {
+        try {
+          adaptedDescendants.add(adaptTo(child, type));
+        } catch (InvalidResourceTypeException exception) {
+          // do nothing
+        }
+      }
+      for (final BaseResource child : getChildrenOfType(resource, BaseResource.class)) {
+        adaptedDescendants.addAll(getAllDescendantsOfType(child.getResource(), type));
       }
     }
 
