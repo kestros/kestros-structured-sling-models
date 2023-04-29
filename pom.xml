@@ -30,7 +30,7 @@ under the License.
   </parent>
 
   <artifactId>kestros-structured-sling-models</artifactId>
-  <version>0.2.3-SNAPSHOT</version>
+  <version>0.2.3</version>
 
   <packaging>bundle</packaging>
 
