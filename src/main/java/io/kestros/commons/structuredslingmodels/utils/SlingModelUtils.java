@@ -38,6 +38,7 @@ import javax.annotation.Nonnull;
 import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.JcrConstants;
+import org.apache.jackrabbit.util.ISO9075;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.models.annotations.Model;
@@ -745,7 +746,8 @@ public final class SlingModelUtils {
         if (resourceType.contains(":")) {
           property = "jcr:primaryType";
         }
-        String query = String.format("//*[@%s='%s']", property, resourceType);
+        String pathQuery = ISO9075.encodePath("/jcr:root" + resource.getPath());
+        String query = String.format("%s//*[@%s='%s']",pathQuery, property, resourceType);
         descendants.addAll(IteratorUtils.toList(
                 resource.getResourceResolver().findResources(query, "xpath")));
       }
