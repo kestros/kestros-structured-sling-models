@@ -19,19 +19,21 @@
 
 package io.kestros.commons.structuredslingmodels.exceptions;
 
+import javax.annotation.Nonnull;
+
 /**
  * Generic exception for when a desired Resource cannot be found.
  */
 public class ResourceNotFoundException extends ModelAdaptionException {
 
-  private static final long serialVersionUID = 6346762327737384698L;
+
 
   /**
    * Generic exception for when a desired Resource cannot be found.
    *
    * @param resourcePath Expected Resource path.
    */
-  public ResourceNotFoundException(final String resourcePath) {
+  public ResourceNotFoundException(@Nonnull final String resourcePath) {
     this(resourcePath, "Resource not found.");
   }
 
@@ -41,7 +43,8 @@ public class ResourceNotFoundException extends ModelAdaptionException {
    * @param resourcePath Expected Resource path.
    * @param message Cause message.
    */
-  public ResourceNotFoundException(final String resourcePath, final String message) {
+  public ResourceNotFoundException(@Nonnull final String resourcePath,
+          @Nonnull final String message) {
     super(resourcePath, message);
   }
 }

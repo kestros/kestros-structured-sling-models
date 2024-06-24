@@ -49,9 +49,11 @@ public class BasePage extends BaseResource {
   @Nonnull
   public Resource getResource() {
     final Resource adaptedResource = super.getResource();
-    final Resource adaptedResourceParent = adaptedResource.getParent();
-    if (JCR_CONTENT.equals(adaptedResource.getName()) && adaptedResourceParent != null) {
-      return adaptedResourceParent;
+    if (JCR_CONTENT.equals(adaptedResource.getName())) {
+      final Resource adaptedResourceParent = adaptedResource.getParent();
+      if (adaptedResourceParent != null) {
+        return adaptedResourceParent;
+      }
     }
     return adaptedResource;
   }
@@ -86,18 +88,18 @@ public class BasePage extends BaseResource {
    * `getResource().getProperties()`.
    *
    * @return Properties ValueMap for the current Page.  If the page has a jcr:content child
-   *     Resource, the value of that Resource will be returned.
+   *         Resource, the value of that Resource will be returned.
    */
   @Override
   @Nonnull
   public ValueMap getProperties() {
     try {
       return SlingModelUtils.getChildAsType(JCR_CONTENT, getResource(),
-          BaseResource.class).getProperties();
+                                            BaseResource.class).getProperties();
     } catch (final ModelAdaptionException exception) {
       LOG.debug(
-          "Unable to get jcr:content Resource for {} while getting properties for as BasePage. "
-          + "Returning root properties.", getPath());
+              "Unable to get jcr:content Resource for {} while getting properties for as BasePage. "
+                      + "Returning root properties.", getPath().replaceAll("[\r\n]", ""));
     }
 
     return getResource().getValueMap();

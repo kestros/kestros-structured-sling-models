@@ -19,6 +19,8 @@
 
 package io.kestros.commons.structuredslingmodels.exceptions;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import javax.annotation.Nonnull;
 import org.apache.sling.api.resource.Resource;
 
 /**
@@ -26,10 +28,24 @@ import org.apache.sling.api.resource.Resource;
  */
 public class ModelAdaptionException extends Exception {
 
-  private static final long serialVersionUID = -4857016290098398418L;
 
-  protected ModelAdaptionException(final String message) {
+  /**
+   * Generic exception for when an error occurs when attempting to adapt a Resource.
+   *
+   * @param message Cause message.
+   */
+  public ModelAdaptionException(@Nonnull final String message) {
     super(message);
+  }
+
+  /**
+   * Generic exception for when an error occurs when attempting to adapt a Resource.
+   *
+   * @param message Cause message.
+   * @param cause Cause exception.
+   */
+  public ModelAdaptionException(@Nonnull final String message, @Nonnull final Throwable cause) {
+    super(message, cause);
   }
 
   /**
@@ -38,8 +54,21 @@ public class ModelAdaptionException extends Exception {
    * @param resource Resource that failed adaption.
    * @param message Cause message.
    */
-  public ModelAdaptionException(final Resource resource, final String message) {
+  public ModelAdaptionException(@Nonnull final Resource resource, @Nonnull final String message) {
     this(resource.getPath(), message);
+  }
+
+
+  /**
+   * Generic exception for when an error occurs when attempting to adapt a Resource.
+   *
+   * @param resource Resource that failed adaption.
+   * @param message Cause message.
+   * @param cause Cause exception.
+   */
+  public ModelAdaptionException(@Nonnull final Resource resource, @Nonnull final String message,
+          @Nonnull final Throwable cause) {
+    this(resource.getPath(), message, cause);
   }
 
   /**
@@ -48,8 +77,22 @@ public class ModelAdaptionException extends Exception {
    * @param resourcePath Absolute path to the Resource that failed adaption.
    * @param message Cause message.
    */
-  public ModelAdaptionException(final String resourcePath, final String message) {
+  @SuppressFBWarnings("OPM_OVERLY_PERMISSIVE_METHOD")
+  public ModelAdaptionException(@Nonnull final String resourcePath, @Nonnull final String message) {
     super("Unable to adapt '" + resourcePath + "': " + message);
+  }
+
+  /**
+   * Generic exception for when an error occurs when attempting to adapt a Resource.
+   *
+   * @param resourcePath Absolute path to the Resource that failed adaption.
+   * @param message Cause message.
+   * @param cause Cause exception.
+   */
+  @SuppressFBWarnings("OPM_OVERLY_PERMISSIVE_METHOD")
+  public ModelAdaptionException(@Nonnull final String resourcePath, @Nonnull final String message,
+          @Nonnull final Throwable cause) {
+    super("Unable to adapt '" + resourcePath + "': " + message, cause);
   }
 
   /**
@@ -59,9 +102,27 @@ public class ModelAdaptionException extends Exception {
    * @param type Model type that the Resource could not be adapted to.
    * @param message Cause message.
    */
-  public ModelAdaptionException(final String resourcePath,
-      final Class<?> type, final String message) {
+  @SuppressFBWarnings("OPM_OVERLY_PERMISSIVE_METHOD")
+  public ModelAdaptionException(@Nonnull final String resourcePath,
+          @Nonnull final Class<?> type, @Nonnull final String message) {
     this("Unable to adapt '" + resourcePath + "' to " + type.getSimpleName() + ": " + message);
+  }
+
+
+  /**
+   * Generic exception for when an error occurs when attempting to adapt a Resource.
+   *
+   * @param resourcePath Absolute path to the Resource that failed adaption.
+   * @param type Model type that the Resource could not be adapted to.
+   * @param message Cause message.
+   * @param cause Cause exception.
+   */
+  @SuppressFBWarnings("OPM_OVERLY_PERMISSIVE_METHOD")
+  public ModelAdaptionException(@Nonnull final String resourcePath,
+          @Nonnull final Class<?> type, @Nonnull final String message,
+          @Nonnull final Throwable cause) {
+    this("Unable to adapt '" + resourcePath + "' to " + type.getSimpleName() + ": " + message,
+         cause);
   }
 
 }

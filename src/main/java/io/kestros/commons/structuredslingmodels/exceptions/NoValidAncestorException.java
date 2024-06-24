@@ -19,12 +19,13 @@
 
 package io.kestros.commons.structuredslingmodels.exceptions;
 
+import javax.annotation.Nonnull;
+
 /**
  * Thrown when no ancestor Resources can be adapted to the passed Sling Model type.
  */
 public class NoValidAncestorException extends ModelAdaptionException {
 
-  private static final long serialVersionUID = 3666059665007715065L;
 
   /**
    * Thrown when no ancestor Resources can be adapted to the passed Sling Model type.
@@ -32,8 +33,21 @@ public class NoValidAncestorException extends ModelAdaptionException {
    * @param resourcePath Absolute path of the origin Resource.
    * @param type Model type which no ancestor Resource could be adapted to.
    */
-  public NoValidAncestorException(final String resourcePath, final Class<?> type) {
+  public NoValidAncestorException(@Nonnull final String resourcePath,
+          @Nonnull final Class<?> type) {
     this(resourcePath, type, "No valid ancestor found.");
+  }
+
+  /**
+   * Thrown when no ancestor Resources can be adapted to the passed Sling Model type.
+   *
+   * @param resourcePath Absolute path of the origin Resource.
+   * @param type Model type which no ancestor Resource could be adapted to.
+   * @param cause Cause exception.
+   */
+  public NoValidAncestorException(@Nonnull final String resourcePath,
+          @Nonnull final Class<?> type, @Nonnull final Throwable cause) {
+    this(resourcePath, type, "No valid ancestor found.", cause);
   }
 
   /**
@@ -43,9 +57,23 @@ public class NoValidAncestorException extends ModelAdaptionException {
    * @param type Model type which no ancestor Resource could be adapted to.
    * @param message Cause message.
    */
-  public NoValidAncestorException(final String resourcePath, final Class<?> type,
-      final String message) {
+  public NoValidAncestorException(@Nonnull final String resourcePath, @Nonnull final Class<?> type,
+          @Nonnull final String message) {
     super(String.format("Unable to retrieve ancestor matching type %s for %s: %s",
-        type.getSimpleName(), resourcePath, message));
+                        type.getSimpleName(), resourcePath, message));
+  }
+
+  /**
+   * Thrown when no ancestor Resources can be adapted to the passed Sling Model type.
+   *
+   * @param resourcePath Absolute path of the origin Resource.
+   * @param type Model type which no ancestor Resource could be adapted to.
+   * @param message Cause message.
+   * @param cause Cause exception.
+   */
+  public NoValidAncestorException(@Nonnull final String resourcePath, @Nonnull final Class<?> type,
+          @Nonnull final String message, @Nonnull final Throwable cause) {
+    super(String.format("Unable to retrieve ancestor matching type %s for %s: %s",
+                        type.getSimpleName(), resourcePath, message), cause);
   }
 }

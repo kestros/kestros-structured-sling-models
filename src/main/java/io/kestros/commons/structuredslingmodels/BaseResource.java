@@ -27,6 +27,8 @@ import static org.apache.jackrabbit.vault.util.JcrConstants.JCR_TITLE;
 import static org.apache.sling.api.resource.ResourceResolver.PROPERTY_RESOURCE_TYPE;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.kestros.commons.commonutils.jcr.JcrPropertyUtils;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
 import io.kestros.commons.structuredslingmodels.exceptions.NoParentResourceException;
@@ -45,13 +47,14 @@ import org.apache.sling.models.annotations.injectorspecific.Self;
  * Baseline Sling Model to extend all Resource Models from.
  */
 @KestrosModel(contextModel = BaseRequestContext.class,
-              docPaths = {
-                  "/content/guide-articles/kestros/structured-models/extending-base-resource",
-                  "/content/guide-articles/kestros/structured-models/model-validation",
-                  "/content/guide-articles/kestros/structured-models/using-sling-model-utils",
-                  "/content/guide-articles/kestros/structured-models/using-common-validators"})
+        docPaths = {
+                "/content/guide-articles/kestros/structured-models/extending-base-resource",
+                "/content/guide-articles/kestros/structured-models/model-validation",
+                "/content/guide-articles/kestros/structured-models/using-sling-model-utils",
+                "/content/guide-articles/kestros/structured-models/using-common-validators"})
 @Model(adaptables = Resource.class,
-       resourceType = "sling/servlet/default")
+        resourceType = "sling/servlet/default")
+@SuppressFBWarnings("FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY")
 public class BaseResource implements BaseSlingModel {
 
   /**
@@ -75,9 +78,11 @@ public class BaseResource implements BaseSlingModel {
    * Parent Resource, adapted to BaseResource.
    *
    * @return Parent Resource, adapted to BaseResource.
+   *
    * @throws NoParentResourceException No parent was found. Should only happen on the `/`
-   *     resource.
+   *         resource.
    */
+  @Nonnull
   @JsonIgnore
   public BaseResource getParent() throws NoParentResourceException {
     return SlingModelUtils.getParentResourceAsBaseResource(this);
@@ -112,6 +117,7 @@ public class BaseResource implements BaseSlingModel {
    */
   @JsonIgnore
   @Nonnull
+  @Deprecated(forRemoval = true)
   public ValueMap getProperties() {
     return getResource().getValueMap();
   }
@@ -122,10 +128,12 @@ public class BaseResource implements BaseSlingModel {
    * @param key Property to retrieve
    * @param defaultValue Value to return if no matching property is found.
    * @param <T> Generic type.
+   *
    * @return Property value, or the default value.
    */
   @Nullable
-  public <T> T getProperty(@Nonnull final String key, final T defaultValue) {
+  @Deprecated(forRemoval = true)
+  public <T> T getProperty(@Nonnull final String key, @Nullable final T defaultValue) {
     return getProperties().get(key, defaultValue);
   }
 
@@ -136,10 +144,10 @@ public class BaseResource implements BaseSlingModel {
    */
   @Nonnull
   @KestrosProperty(description = "Title of the current resource.",
-                   jcrPropertyName = JCR_TITLE,
-                   configurable = true)
+          jcrPropertyName = JCR_TITLE,
+          configurable = true)
   public String getTitle() {
-    return getProperty(JCR_TITLE, getName());
+    return JcrPropertyUtils.getStringOrDefaultValue(getResource(), JCR_TITLE, getName());
   }
 
   /**
@@ -149,10 +157,11 @@ public class BaseResource implements BaseSlingModel {
    */
   @Nonnull
   @KestrosProperty(description = "Description of the current Resource.",
-                   jcrPropertyName = JCR_DESCRIPTION,
-                   configurable = true)
+          jcrPropertyName = JCR_DESCRIPTION,
+          configurable = true)
   public String getDescription() {
-    return getProperty(JCR_DESCRIPTION, StringUtils.EMPTY);
+    return JcrPropertyUtils.getStringOrDefaultValue(getResource(), JCR_DESCRIPTION,
+                                                    StringUtils.EMPTY);
   }
 
   /**
@@ -162,12 +171,15 @@ public class BaseResource implements BaseSlingModel {
    */
   @Nonnull
   @KestrosProperty(description = "ResourceType the current resource will be displayed as when "
-                                 + "requested.")
+          + "requested.")
   public String getResourceType() {
-    if (StringUtils.isNotEmpty(getSlingResourceType())) {
-      return getSlingResourceType();
-    } else if (StringUtils.isNotEmpty(getResource().getResourceType())) {
-      return getResource().getResourceType();
+    String slingResourceType = getSlingResourceType();
+    if (StringUtils.isNotEmpty(slingResourceType)) {
+      return slingResourceType;
+    }
+    String resourceType = getResource().getResourceType();
+    if (StringUtils.isNotEmpty(resourceType)) {
+      return resourceType;
     } else {
       return getJcrPrimaryType();
     }
@@ -181,7 +193,8 @@ public class BaseResource implements BaseSlingModel {
   @Nonnull
   @JsonIgnore
   public String getJcrPrimaryType() {
-    return getProperty(JCR_PRIMARYTYPE, StringUtils.EMPTY);
+    return JcrPropertyUtils.getStringOrDefaultValue(getResource(), JCR_PRIMARYTYPE,
+                                                    StringUtils.EMPTY);
   }
 
   /**
@@ -192,7 +205,8 @@ public class BaseResource implements BaseSlingModel {
   @Nonnull
   @JsonIgnore
   public String getSlingResourceType() {
-    return getProperty(PROPERTY_RESOURCE_TYPE, StringUtils.EMPTY);
+    return JcrPropertyUtils.getStringOrDefaultValue(getResource(), PROPERTY_RESOURCE_TYPE,
+                                                    StringUtils.EMPTY);
   }
 
   /**
@@ -229,7 +243,7 @@ public class BaseResource implements BaseSlingModel {
   @Nullable
   @JsonIgnore
   public Date getLastModifiedDate() {
-    return getProperties().get(JCR_LASTMODIFIED, Date.class);
+    return JcrPropertyUtils.getDateOrNull(getResource(), JCR_LASTMODIFIED);
   }
 
   /**
@@ -240,6 +254,6 @@ public class BaseResource implements BaseSlingModel {
   @Nullable
   @JsonIgnore
   public Date getCreatedDate() {
-    return getProperties().get(JCR_CREATED, Date.class);
+    return JcrPropertyUtils.getDateOrNull(getResource(), JCR_CREATED);
   }
 }

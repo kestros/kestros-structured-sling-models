@@ -25,6 +25,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import javax.annotation.Nonnull;
 
 /**
  * Annotation used for assigning a ModelValidatorService and documentation Resource paths to a Sling
@@ -41,6 +42,7 @@ public @interface KestrosModel {
    *
    * @return The request context associated to the current Resource type.
    */
+  @Nonnull
   Class<? extends BaseRequestContext> contextModel() default BaseRequestContext.class;
 
   /**
@@ -55,6 +57,7 @@ public @interface KestrosModel {
    *
    * @return Array of documentation Resource paths.
    */
+  @Nonnull
   String[] docPaths() default {};
 
 }

@@ -31,6 +31,7 @@ import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundExcep
 import io.kestros.commons.structuredslingmodels.filetypes.BaseFile;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nonnull;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.slf4j.Logger;
@@ -54,12 +55,14 @@ public class FileModelUtils {
    * @param fileResource Resource to adapt.
    * @param type Model type to adapt the resource to. Must extend BaseFile.
    * @param <T> Model type to adapt the resource to. Must extend BaseFile.
+   *
    * @return The Resource adapted to the specified FileType.
    * @throws InvalidResourceTypeException Thrown when the Resource cannot be adapted to the
-   *     passed type, or has an error after adaption.
+   *         passed type, or has an error after adaption.
    */
-  public static <T extends BaseFile> T adaptToFileType(final BaseResource fileResource,
-      final Class<T> type) throws InvalidResourceTypeException {
+  @Nonnull
+  public static <T extends BaseFile> T adaptToFileType(@Nonnull final BaseResource fileResource,
+          @Nonnull final Class<T> type) throws InvalidResourceTypeException {
     T file = adaptTo(fileResource, type);
     if (fileResource.getName().endsWith(file.getFileType().getExtension())) {
       if (fileResource.getResource().adaptTo(type) != null) {
@@ -67,15 +70,16 @@ public class FileModelUtils {
           return file;
         } else {
           throw new InvalidResourceTypeException(fileResource.getPath(), type,
-              String.format("File mimeType '%s' did not match any expected types.",
-                  file.getMimeType()));
+                  String.format("File mimeType '%s' did not match any expected types.",
+                          file.getMimeType()));
         }
       } else {
         throw new InvalidResourceTypeException(fileResource.getPath(), type);
       }
     } else {
       throw new InvalidResourceTypeException(file.getPath(), type,
-          String.format("File did not have extension `%s`.", file.getFileType().getExtension()));
+              String.format("File did not have extension `%s`.",
+                      file.getFileType().getExtension()));
     }
   }
 
@@ -86,12 +90,14 @@ public class FileModelUtils {
    * @param fileResource Resource to adapt.
    * @param type Model type to adapt the resource to. Must extend BaseFile.
    * @param <T> Model type to adapt the resource to. Must extend BaseFile.
+   *
    * @return The Resource adapted to the specified FileType.
    * @throws InvalidResourceTypeException Thrown when the Resource cannot be adapted to the
-   *     passed type, or has an error after adaption.
+   *         passed type, or has an error after adaption.
    */
-  public static <T extends BaseFile> T adaptToFileType(final Resource fileResource,
-      final Class<T> type) throws InvalidResourceTypeException {
+  @Nonnull
+  public static <T extends BaseFile> T adaptToFileType(@Nonnull final Resource fileResource,
+          @Nonnull final Class<T> type) throws InvalidResourceTypeException {
     return adaptToFileType(adaptToBaseResource(fileResource), type);
   }
 
@@ -102,14 +108,16 @@ public class FileModelUtils {
    * @param resolver ResourceResolver.
    * @param type Model type to adapt the resource to. Must extend BaseFile.
    * @param <T> Extends {@link BaseFile}
+   *
    * @return the specified Resource, adapted to the BaseFile implementation type.
    * @throws ResourceNotFoundException No Resource found at the specified path.
    * @throws InvalidResourceTypeException Resource was found at the specified path, but could
-   *     not be adapted to the expected BaseFile implementation Model type.
+   *         not be adapted to the expected BaseFile implementation Model type.
    */
-  public static <T extends BaseFile> T getResourceAsFileType(final String path,
-      final ResourceResolver resolver, final Class<T> type)
-      throws ResourceNotFoundException, InvalidResourceTypeException {
+  @Nonnull
+  public static <T extends BaseFile> T getResourceAsFileType(@Nonnull final String path,
+          @Nonnull final ResourceResolver resolver, @Nonnull final Class<T> type)
+          throws ResourceNotFoundException, InvalidResourceTypeException {
     return adaptToFileType(getResourceAsBaseResource(path, resolver), type);
   }
 
@@ -120,16 +128,19 @@ public class FileModelUtils {
    * @param resource Resource to retrieve child of.
    * @param type Sling Model type to adapt to.
    * @param <T> Extends {@link BaseFile}
+   *
    * @return The child Resource as the specified BaseFile implementation Model.
    * @throws ChildResourceNotFoundException No child resource matching the specified name was
-   *     found.
+   *         found.
    * @throws InvalidResourceTypeException The specified child Resource was found, but could not
-   *     be adapted to the expected BaseFile implementation Model. Most likely caused by an invalid
-   *     jcr:mimeType value.
+   *         be adapted to the expected BaseFile implementation Model. Most likely caused by an
+   *         invalid
+   *         jcr:mimeType value.
    */
-  public static <T extends BaseFile> T getChildAsFileType(final String name,
-      final Resource resource, final Class<T> type)
-      throws ChildResourceNotFoundException, InvalidResourceTypeException {
+  @Nonnull
+  public static <T extends BaseFile> T getChildAsFileType(@Nonnull final String name,
+          @Nonnull final Resource resource, @Nonnull final Class<T> type)
+          throws ChildResourceNotFoundException, InvalidResourceTypeException {
     return adaptToFileType(getChildAsBaseResource(name, resource), type);
   }
 
@@ -140,16 +151,19 @@ public class FileModelUtils {
    * @param baseResource Resource to retrieve child of.
    * @param type Sling Model type to adapt to.
    * @param <T> Extends {@link BaseFile}
+   *
    * @return The child Resource as the specified BaseFile implementation Model.
    * @throws ChildResourceNotFoundException No child resource matching the specified name was
-   *     found.
+   *         found.
    * @throws InvalidResourceTypeException The specified child Resource was found, but could not
-   *     be adapted to the expected BaseFile implementation Model. Most likely caused by an invalid
-   *     jcr:mimeType value.
+   *         be adapted to the expected BaseFile implementation Model. Most likely caused by an
+   *         invalid
+   *         jcr:mimeType value.
    */
-  public static <T extends BaseFile> T getChildAsFileType(final String name,
-      final BaseResource baseResource, final Class<T> type)
-      throws ChildResourceNotFoundException, InvalidResourceTypeException {
+  @Nonnull
+  public static <T extends BaseFile> T getChildAsFileType(@Nonnull final String name,
+          @Nonnull final BaseResource baseResource, @Nonnull final Class<T> type)
+          throws ChildResourceNotFoundException, InvalidResourceTypeException {
     return getChildAsFileType(name, baseResource.getResource(), type);
   }
 
@@ -159,16 +173,20 @@ public class FileModelUtils {
    * @param resource resource to retrieve children of.
    * @param type FileType
    * @param <T> extends BaseFile
+   *
    * @return A list of child resources which are of a specified file type.
    */
-  public static <T extends BaseFile> List<T> getChildrenOfFileType(final Resource resource,
-      final Class<T> type) {
+  @Nonnull
+  public static <T extends BaseFile> List<T> getChildrenOfFileType(@Nonnull final Resource resource,
+          @Nonnull final Class<T> type) {
     List<T> children = new ArrayList<>();
     for (Resource child : resource.getChildren()) {
       try {
         children.add(adaptToFileType(child, type));
       } catch (InvalidResourceTypeException e) {
-        LOG.trace("Attempted to adapt {} to {} but failed.", child.getPath(), type.getName());
+        LOG.trace("Attempted to adapt {} to {} but failed.",
+                  child.getPath().replaceAll("[\r\n]", ""),
+                  type.getName().replaceAll("[\r\n]", ""));
       }
     }
     return children;
@@ -180,10 +198,13 @@ public class FileModelUtils {
    * @param baseResource resource to retrieve children of.
    * @param type FileType
    * @param <T> extends BaseFile
+   *
    * @return A list of child resources which are of a specified file type.
    */
-  public static <T extends BaseFile> List<T> getChildrenOfFileType(final BaseResource baseResource,
-      final Class<T> type) {
+  @Nonnull
+  public static <T extends BaseFile> List<T> getChildrenOfFileType(
+          @Nonnull final BaseResource baseResource,
+          @Nonnull final Class<T> type) {
     return getChildrenOfFileType(baseResource.getResource(), type);
   }
 

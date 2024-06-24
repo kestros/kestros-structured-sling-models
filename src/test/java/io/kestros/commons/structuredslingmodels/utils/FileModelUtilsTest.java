@@ -203,4 +203,5 @@ public class FileModelUtilsTest {
     assertEquals("file.sample", FileModelUtils.getChildAsFileType("file.sample",
         Objects.requireNonNull(resource.adaptTo(BaseResource.class)), SampleFile.class).getName());
   }
+
 }

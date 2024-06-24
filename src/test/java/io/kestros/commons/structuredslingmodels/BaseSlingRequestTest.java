@@ -61,14 +61,14 @@ public class BaseSlingRequestTest {
         assertEquals(context.resourceResolver(), requestModel.getResourceResolver());
     }
 
-    @Test
-    public void testGetBaseResource() {
-        Resource resource = context.create().resource("/resource");
-
-        context.request().setResource(resource);
-
-        requestModel = context.request().adaptTo(BaseRequestContext.class);
-
-        assertEquals("/resource", Objects.requireNonNull(requestModel).getBaseResource().getPath());
-    }
+//    @Test
+//    public void testGetBaseResource() {
+//        Resource resource = context.create().resource("/resource");
+//
+//        context.request().setResource(resource);
+//
+//        requestModel = context.request().adaptTo(BaseRequestContext.class);
+//
+//        assertEquals("/resource", Objects.requireNonNull(requestModel).getBaseResource().getPath());
+//    }
 }

@@ -27,6 +27,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
+import io.kestros.commons.structuredslingmodels.exceptions.JcrFileReadException;
 import io.kestros.commons.structuredslingmodels.utils.SampleFile;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -58,8 +59,60 @@ public class BaseFileTest {
     context.addModelsForPackage("io.kestros");
   }
 
+
   @Test
-  public void testGetBufferedReader() {
+  public void testGetJcrDataInputStream() throws JcrFileReadException {
+    properties.put("jcr:primaryType", "nt:file");
+    InputStream inputStream = new ByteArrayInputStream("file-contents".getBytes());
+
+    jcrContentProperties.put("jcr:data", inputStream);
+    resource = context.create().resource("/file", properties);
+
+    context.create().resource("/file/jcr:content", jcrContentProperties);
+    baseFile = resource.adaptTo(SampleFile.class);
+
+    assertNotNull(Objects.requireNonNull(baseFile).getJcrDataInputStream());
+  }
+
+  @Test
+  public void  testGetJcrDataInputStreamWhenDataPropertyIsMissing() {
+    properties.put("jcr:primaryType", "nt:file");
+    resource = context.create().resource("/file", properties);
+
+    context.create().resource("/file/jcr:content", jcrContentProperties);
+    baseFile = resource.adaptTo(SampleFile.class);
+
+    Exception exception = null;
+    try {
+      baseFile.getJcrDataInputStream();
+    } catch (JcrFileReadException e) {
+      exception = e;
+    }
+    assertNotNull(exception);
+    assertEquals("Unable to read '/file': No jcr:data property found on /file", exception.getMessage());
+  }
+
+
+  @Test
+  public void  testGetJcrDataInputStreamWhenDataPropertyValueIsNull() {
+    properties.put("jcr:primaryType", "nt:file");
+    properties.put("jcr:data", null);
+    resource = context.create().resource("/file", properties);
+
+    context.create().resource("/file/jcr:content", jcrContentProperties);
+    baseFile = resource.adaptTo(SampleFile.class);
+
+    Exception exception = null;
+    try {
+      baseFile.getJcrDataInputStream();
+    } catch (JcrFileReadException e) {
+      exception = e;
+    }
+    assertNotNull(exception);
+    assertEquals("Unable to read '/file': No jcr:data property found on /file", exception.getMessage());
+  }
+  @Test
+  public void testGetBufferedReader() throws JcrFileReadException {
     properties.put("jcr:primaryType", "nt:file");
     InputStream inputStream = new ByteArrayInputStream("file-contents".getBytes());
 
@@ -104,7 +157,7 @@ public class BaseFileTest {
   }
 
   @Test
-  public void testGetFileSize() {
+  public void testGetFileSize() throws JcrFileReadException, IOException {
     properties.put("jcr:primaryType", "nt:file");
     InputStream inputStream = new ByteArrayInputStream(
         "file-contents\nmore-contents\nthird-line".getBytes());
@@ -120,18 +173,40 @@ public class BaseFileTest {
   }
 
   @Test
-  public void testGetFileSizeWhenIoException() throws IOException {
+  public void testGetFileSizeWhenIoException() throws JcrFileReadException, IOException {
     properties.put("jcr:primaryType", "nt:file");
     InputStream inputStream = mock(ByteArrayInputStream.class);
 
-    when(inputStream.read(any())).thenThrow(IOException.class);
+    when(inputStream.read(any())).thenThrow(new IOException("Test Exception"));
     resource = context.create().resource("/file.txt", properties);
 
     baseFile = resource.adaptTo(SampleFile.class);
     baseFile = spy(Objects.requireNonNull(baseFile));
-    doReturn(inputStream).when(baseFile).getJcrDataInputStream();
 
-    assertEquals("", baseFile.getFileSize());
+    Exception exception = null;
+    doReturn(inputStream).when(baseFile).getJcrDataInputStream();
+    try {
+       baseFile.getFileSize();
+    } catch (IOException e) {
+      exception = e;
+    }
+    assertNotNull(exception);
+    assertEquals("Test Exception", exception.getMessage());
   }
 
+  @Test
+  public void testGetExtension() {
+    properties.put("jcr:primaryType", "nt:file");
+    InputStream inputStream = new ByteArrayInputStream(
+        "file-contents\nmore-contents\nthird-line".getBytes());
+
+    jcrContentProperties.put("jcr:data", inputStream);
+    resource = context.create().resource("/file.txt", properties);
+
+    context.create().resource("/file.txt/jcr:content", jcrContentProperties);
+
+    baseFile = resource.adaptTo(SampleFile.class);
+
+    assertEquals("txt", Objects.requireNonNull(baseFile).getExtension());
+  }
 }

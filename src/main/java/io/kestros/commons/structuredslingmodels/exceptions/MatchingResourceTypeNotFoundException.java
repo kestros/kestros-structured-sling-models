@@ -19,6 +19,7 @@
 
 package io.kestros.commons.structuredslingmodels.exceptions;
 
+import javax.annotation.Nonnull;
 import org.apache.sling.api.resource.Resource;
 
 /**
@@ -28,17 +29,15 @@ import org.apache.sling.api.resource.Resource;
  */
 public class MatchingResourceTypeNotFoundException extends InvalidResourceTypeException {
 
-  private static final long serialVersionUID = 6639023707837948167L;
-
   /**
    * Exception thrown when no matching Sling Model type can be found for a resource while using
    * {@link org.apache.sling.models.factory.ModelFactory} to
    * {@link org.apache.sling.models.factory.ModelFactory#getModelFromResource(Resource)}.
    *
    * @param resourcePath Absolute path to the Resource that could not be matched to a Sling
-   *     Model type.
+   *         Model type.
    */
-  public MatchingResourceTypeNotFoundException(final String resourcePath) {
+  public MatchingResourceTypeNotFoundException(@Nonnull final String resourcePath) {
     this(resourcePath, "No matching Sling Model type found.");
   }
 
@@ -48,10 +47,40 @@ public class MatchingResourceTypeNotFoundException extends InvalidResourceTypeEx
    * {@link org.apache.sling.models.factory.ModelFactory#getModelFromResource(Resource)}.
    *
    * @param resourcePath Absolute path to the Resource that could not be matched to a Sling
-   *     Model type.
+   *         Model type.
+   * @param cause Cause exception.
+   */
+  public MatchingResourceTypeNotFoundException(@Nonnull final String resourcePath,
+          @Nonnull final Throwable cause) {
+    super("Unable to retrieve model for " + resourcePath, cause);
+  }
+
+  /**
+   * Exception thrown when no matching Sling Model type can be found for a resource while using
+   * {@link org.apache.sling.models.factory.ModelFactory} to
+   * {@link org.apache.sling.models.factory.ModelFactory#getModelFromResource(Resource)}.
+   *
+   * @param resourcePath Absolute path to the Resource that could not be matched to a Sling
+   *         Model type.
    * @param message Cause message.
    */
-  public MatchingResourceTypeNotFoundException(final String resourcePath, final String message) {
+  public MatchingResourceTypeNotFoundException(@Nonnull final String resourcePath,
+          @Nonnull final String message) {
     super("Unable to retrieve model for " + resourcePath + ": " + message);
+  }
+
+  /**
+   * Exception thrown when no matching Sling Model type can be found for a resource while using
+   * {@link org.apache.sling.models.factory.ModelFactory} to
+   * {@link org.apache.sling.models.factory.ModelFactory#getModelFromResource(Resource)}.
+   *
+   * @param resourcePath Absolute path to the Resource that could not be matched to a Sling
+   *         Model type.
+   * @param message Cause message.
+   * @param cause Cause exception.
+   */
+  public MatchingResourceTypeNotFoundException(@Nonnull final String resourcePath,
+          @Nonnull final String message, @Nonnull final Throwable cause) {
+    super("Unable to retrieve model for " + resourcePath + ": " + message, cause);
   }
 }

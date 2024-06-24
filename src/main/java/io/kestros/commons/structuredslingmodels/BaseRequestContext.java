@@ -20,6 +20,9 @@
 package io.kestros.commons.structuredslingmodels;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
@@ -32,8 +35,7 @@ import org.apache.sling.models.annotations.injectorspecific.SlingObject;
 /**
  * Baseline Sling Model for extending Request based Models.
  */
-@Model(adaptables = SlingHttpServletRequest.class,
-       resourceType = "sling/servlet/default")
+@Model(adaptables = SlingHttpServletRequest.class, resourceType = "sling/servlet/default")
 public class BaseRequestContext implements BaseSlingModel {
 
   /**
@@ -53,10 +55,18 @@ public class BaseRequestContext implements BaseSlingModel {
    * SlingHttpServletRequest the model was initially adapted from.
    *
    * @return SlingHttpServletRequest the model was initially adapted from.
+   * @throws IllegalStateException if request is null.
    */
+  @SuppressFBWarnings({"AI_ANNOTATION_ISSUES_NEEDS_NULLABLE", "WEM_WEAK_EXCEPTION_MESSAGING"})
+  @Nonnull
   @JsonIgnore
   public SlingHttpServletRequest getRequest() {
-    return request;
+    if (request != null) {
+      return request;
+    }
+    throw new IllegalStateException(
+            "Request was null, which should not be possible for a Sling Model adapted from a "
+                    + "SlingHttpServletRequest.");
   }
 
   /**
@@ -64,6 +74,7 @@ public class BaseRequestContext implements BaseSlingModel {
    *
    * @return SlingHttpServletResponse associated with the current request.
    */
+  @Nullable
   @JsonIgnore
   public SlingHttpServletResponse getResponse() {
     return response;
@@ -74,21 +85,13 @@ public class BaseRequestContext implements BaseSlingModel {
    *
    * @return ResourceResolver associated to the current request.
    */
+  @Nonnull
   @JsonIgnore
   public ResourceResolver getResourceResolver() {
     return getRequest().getResourceResolver();
   }
 
-  /**
-   * The Resource associated to the current Request, adapted to a BaseResource.
-   *
-   * @return The Resource associated to the current Request, adapted to a BaseResource.
-   */
-  @JsonIgnore
-  public BaseResource getBaseResource() {
-    return request.getResource().adaptTo(BaseResource.class);
-  }
-
+  @Nonnull
   @Override
   public Resource getResource() {
     return request.getResource();

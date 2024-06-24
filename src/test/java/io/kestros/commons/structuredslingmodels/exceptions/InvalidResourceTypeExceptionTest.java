@@ -35,23 +35,47 @@ public class InvalidResourceTypeExceptionTest {
   @Test
   public void testGetMessageWhenResourceAndMessage() {
     InvalidResourceTypeException exception =
-        new InvalidResourceTypeException("/resource", "My Message");
+            new InvalidResourceTypeException("/resource", "My Message");
     assertEquals("Unable to adapt '/resource': My Message", exception.getMessage());
   }
 
   @Test
   public void testGetMessageWhenResourceAndClass() {
     InvalidResourceTypeException exception =
-        new InvalidResourceTypeException("/resource", BaseResource.class);
+            new InvalidResourceTypeException("/resource", BaseResource.class);
     assertEquals("Unable to adapt '/resource' to BaseResource: Invalid resource type.",
-        exception.getMessage());
+                 exception.getMessage());
   }
 
   @Test
   public void testGetMessageWhenResourceAndClassAndMessage() {
     InvalidResourceTypeException exception =
-        new InvalidResourceTypeException("/resource", BaseResource.class, "My Message");
+            new InvalidResourceTypeException("/resource", BaseResource.class, "My Message");
     assertEquals("Unable to adapt '/resource' to BaseResource: My Message", exception.getMessage());
+  }
+
+  @Test
+  public void testGetMessageWhenResourceAndClassAndCause() {
+    InvalidResourceTypeException exception =
+            new InvalidResourceTypeException("/resource", BaseResource.class,
+                                             new Exception("My Cause"));
+    assertEquals("Unable to adapt '/resource' to BaseResource: Invalid resource type.",
+                 exception.getMessage());
+  }
+
+  @Test
+  public void testGetMessageWhenResourceAndClassAndCauseAndMessage() {
+    InvalidResourceTypeException exception =
+            new InvalidResourceTypeException("/resource", BaseResource.class,
+                                             "My Message", new Exception("My Cause"));
+    assertEquals("Unable to adapt '/resource' to BaseResource: My Message", exception.getMessage());
+  }
+
+  @Test
+  public void testGetMessageWhenResourceAndMessageAndCause() {
+    InvalidResourceTypeException exception =
+            new InvalidResourceTypeException("/resource", "My Message", new Exception("My Cause"));
+    assertEquals("Unable to adapt '/resource': My Message", exception.getMessage());
   }
 
 }

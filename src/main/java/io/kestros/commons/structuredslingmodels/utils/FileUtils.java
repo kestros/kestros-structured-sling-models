@@ -21,6 +21,7 @@ package io.kestros.commons.structuredslingmodels.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import javax.annotation.Nonnull;
 import org.apache.commons.io.IOUtils;
 
 /**
@@ -38,7 +39,9 @@ public class FileUtils {
    * @return Size of an input stream, in a readable format.
    * @throws IOException InputStream could not be read.
    */
-  public static String getReadableFileSize(final InputStream inputStream) throws IOException {
+  @Nonnull
+  public static String getReadableFileSize(@Nonnull final InputStream inputStream) throws
+          IOException {
     final byte[] bytes = IOUtils.toByteArray(inputStream);
     return getReadableFileSize(bytes.length);
   }
@@ -49,7 +52,8 @@ public class FileUtils {
    * @param size Number to convert to readable file size format.
    * @return Long to a readable file size format (B,kB, MB,GB,TB ).
    */
-  private static String getReadableFileSize(final long size) {
+  @Nonnull
+  private static String getReadableFileSize(@Nonnull final long size) {
     return org.apache.commons.io.FileUtils.byteCountToDisplaySize(size);
   }
 

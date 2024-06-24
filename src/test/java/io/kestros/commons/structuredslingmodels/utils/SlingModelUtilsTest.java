@@ -601,6 +601,7 @@ public class SlingModelUtilsTest {
     resources.add(childResource);
 
     when(resource.getChildren()).thenReturn(resources);
+    when(resource.getPath()).thenReturn("/resource");
 
     SlingModelUtils.getChildrenOfType(resource, SampleResourceModel.class);
 
@@ -1276,6 +1277,17 @@ public class SlingModelUtilsTest {
         SampleResourceModel.class).size());
     assertEquals("kestros/commons/component", SlingModelUtils.getResourceTypesForSlingModel(
         SampleResourceModel.class).get(0));
+  }
+
+  @Test
+  public void testGetResourcesAsBaseResource() {
+    context.create().resource("/resource-1", properties);
+    context.create().resource("/resource-2", properties);
+    context.create().resource("/resource-3", properties);
+
+    List<String> paths = Arrays.asList("/resource-1", "/resource-2", "/resource-3");
+
+    assertEquals(3, SlingModelUtils.getResourcesAsBaseResource(paths, context.resourceResolver()).size());
   }
 
 }
