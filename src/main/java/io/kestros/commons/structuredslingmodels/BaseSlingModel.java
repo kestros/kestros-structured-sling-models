@@ -19,6 +19,7 @@
 
 package io.kestros.commons.structuredslingmodels;
 
+import javax.annotation.Nonnull;
 import org.apache.sling.api.resource.Resource;
 
 /**
@@ -31,6 +32,7 @@ public interface BaseSlingModel {
    *
    * @return JCR Resource associated to the current model.
    */
+  @Nonnull
   Resource getResource();
 
 }

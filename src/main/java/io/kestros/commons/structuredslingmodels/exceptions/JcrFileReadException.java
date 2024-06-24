@@ -22,28 +22,26 @@ package io.kestros.commons.structuredslingmodels.exceptions;
 import javax.annotation.Nonnull;
 
 /**
- * Thrown when no parent Resource can be returned.
+ * Thrown when trying to read a file from the JCR that does not exist or cannot be found
+ * (possibly due to permissions).
  */
-public class NoParentResourceException extends ModelAdaptionException {
-
-
-  /**
-   * Thrown when no parent Resource can be returned.
-   *
-   * @param resourcePath Absolute path of Resource that could not retrieve a parent Resource.
-   */
-  public NoParentResourceException(@Nonnull final String resourcePath) {
-    this(resourcePath, "Parent not found.");
-  }
+public class JcrFileReadException extends Exception {
 
   /**
-   * Thrown when no parent Resource can be returned.
-   *
-   * @param resourcePath Absolute path of Resource that could not retrieve a parent Resource.
+   * Thrown when trying to read a file from the JCR that does not exist or cannot be found.
    * @param message Cause message.
    */
-  protected NoParentResourceException(@Nonnull final String resourcePath,
-          @Nonnull final String message) {
-    super("Unable to retrieve parent of '" + resourcePath + "':" + message);
+  protected JcrFileReadException(@Nonnull final String message) {
+    super(message);
   }
+
+  /**
+   * Thrown when trying to read a file from the JCR that does not exist or cannot be found.
+   * @param resourcePath Absolute path to the file that could not be read.
+   * @param message Cause message.
+   */
+  public JcrFileReadException(@Nonnull final String resourcePath, @Nonnull final String message) {
+    this("Unable to read '" + resourcePath + "': " + message);
+  }
+
 }

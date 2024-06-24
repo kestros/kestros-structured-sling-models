@@ -20,6 +20,7 @@
 package io.kestros.commons.structuredslingmodels.filetypes;
 
 import java.util.List;
+import javax.annotation.Nonnull;
 
 /**
  * Interface used for providing File type detailed to {@link BaseFile} Models.
@@ -31,6 +32,7 @@ public interface FileType {
    *
    * @return File type's extension.
    */
+  @Nonnull
   String getExtension();
 
   /**
@@ -38,6 +40,7 @@ public interface FileType {
    *
    * @return Content type of this file's output.
    */
+  @Nonnull
   String getOutputContentType();
 
   /**
@@ -45,8 +48,9 @@ public interface FileType {
    * associated Model.
    *
    * @return Content types (read from jcr:mimeType) that can be interpreted by this FileType and its
-   *     associated Model.
+   *         associated Model.
    */
+  @Nonnull
   List<String> getReadableContentTypes();
 
   /**
@@ -54,13 +58,16 @@ public interface FileType {
    *
    * @return Name of the file type.
    */
+  @Nonnull
   String getName();
 
   /**
    * Sling Model class associated to this FileType.
    *
    * @param <T> extends {@link BaseFile}
+   *
    * @return Sling Model class associated to this FileType.
    */
+  @Nonnull
   <T extends BaseFile> Class<T> getFileModelClass();
 }

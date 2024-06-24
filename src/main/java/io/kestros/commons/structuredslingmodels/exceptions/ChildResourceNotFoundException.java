@@ -19,13 +19,14 @@
 
 package io.kestros.commons.structuredslingmodels.exceptions;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import javax.annotation.Nonnull;
+
 /**
  * Thrown when trying to retrieve a Child of a BaseResource that does not exist or cannot be found
  * (possibly due to permissions).
  */
 public class ChildResourceNotFoundException extends ModelAdaptionException {
-
-  private static final long serialVersionUID = 4411171046174043655L;
 
   /**
    * Thrown when trying to retrieve a Child of a BaseResource that does not exist or cannot be found
@@ -33,7 +34,7 @@ public class ChildResourceNotFoundException extends ModelAdaptionException {
    *
    * @param message Cause message.
    */
-  protected ChildResourceNotFoundException(final String message) {
+  protected ChildResourceNotFoundException(@Nonnull final String message) {
     super(message);
   }
 
@@ -44,7 +45,8 @@ public class ChildResourceNotFoundException extends ModelAdaptionException {
    * @param childName Name of expected child Resource.
    * @param parentPath Path of Resource attempting to retrieve child from.
    */
-  public ChildResourceNotFoundException(final String childName, final String parentPath) {
+  public ChildResourceNotFoundException(@Nonnull final String childName,
+          @Nonnull final String parentPath) {
     this(childName, parentPath, "Child not found.");
   }
 
@@ -56,8 +58,10 @@ public class ChildResourceNotFoundException extends ModelAdaptionException {
    * @param parentPath Path of Resource attempting to retrieve child from.
    * @param message Cause message.
    */
-  public ChildResourceNotFoundException(final String childName, final String parentPath,
-      final String message) {
+  @SuppressFBWarnings("OPM_OVERLY_PERMISSIVE_METHOD")
+  public ChildResourceNotFoundException(@Nonnull final String childName,
+          @Nonnull final String parentPath,
+          @Nonnull final String message) {
     super(String.format("Unable to adapt '%s' under '%s': %s", childName, parentPath, message));
   }
 }

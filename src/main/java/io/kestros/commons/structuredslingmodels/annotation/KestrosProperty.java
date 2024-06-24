@@ -24,6 +24,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -39,6 +41,7 @@ public @interface KestrosProperty {
    *
    * @return Description of the annotated method.
    */
+  @Nullable
   String description();
 
   /**
@@ -46,6 +49,7 @@ public @interface KestrosProperty {
    *
    * @return JCR Property used to configure the property.
    */
+  @Nonnull
   String jcrPropertyName() default StringUtils.EMPTY;
 
   /**
@@ -53,6 +57,7 @@ public @interface KestrosProperty {
    *
    * @return Property's default value.
    */
+  @Nullable
   String defaultValue() default StringUtils.EMPTY;
 
   /**
@@ -67,5 +72,6 @@ public @interface KestrosProperty {
    *
    * @return Sample value of the JCR Property, to be used for documentation purposes.
    */
+  @Nullable
   String sampleValue() default StringUtils.EMPTY;
 }
