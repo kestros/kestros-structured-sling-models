@@ -20,6 +20,8 @@
 package io.kestros.commons.structuredslingmodels.exceptions;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import io.kestros.commons.structuredslingmodels.BaseResource;
 import org.junit.Test;
@@ -76,6 +78,33 @@ public class InvalidResourceTypeExceptionTest {
     InvalidResourceTypeException exception =
             new InvalidResourceTypeException("/resource", "My Message", new Exception("My Cause"));
     assertEquals("Unable to adapt '/resource': My Message", exception.getMessage());
+  }
+
+  @Test
+  public void testExceptionWithEmptyMessage() {
+    InvalidResourceTypeException exception = new InvalidResourceTypeException("");
+    assertEquals("", exception.getMessage());
+  }
+
+  @Test
+  public void testExceptionWithEmptyResourcePath() {
+    InvalidResourceTypeException exception = new InvalidResourceTypeException("", "My Message");
+    assertEquals("Unable to adapt '': My Message", exception.getMessage());
+  }
+
+  @Test
+  public void testExceptionWithCauseOnly() {
+    Exception cause = new Exception("Root cause");
+    InvalidResourceTypeException exception =
+            new InvalidResourceTypeException("/resource", "Message", cause);
+    assertNotNull(exception.getCause());
+    assertEquals(cause, exception.getCause());
+  }
+
+  @Test
+  public void testExceptionIsThrowable() {
+    InvalidResourceTypeException exception = new InvalidResourceTypeException("message");
+    assertTrue(exception instanceof Exception);
   }
 
 }

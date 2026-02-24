@@ -41,4 +41,21 @@ public class FileUtilsTest {
   public void getReadableFileSize() throws IOException {
     assertEquals("0 bytes", FileUtils.getReadableFileSize(context.request().getInputStream()));
   }
+
+  @Test
+  public void testGetReadableFileSizeNotNull() throws IOException {
+    assertNotNull(FileUtils.getReadableFileSize(context.request().getInputStream()));
+  }
+
+  @Test
+  public void testGetReadableFileSizeIsString() throws IOException {
+    assertTrue(FileUtils.getReadableFileSize(context.request().getInputStream()) instanceof String);
+  }
+
+  @Test
+  public void testGetReadableFileSizeContainsUnit() throws IOException {
+    String result = FileUtils.getReadableFileSize(context.request().getInputStream());
+    assertTrue(result.contains("byte") || result.contains("KB") || result.contains("MB") ||
+               result.contains("GB"));
+  }
 }

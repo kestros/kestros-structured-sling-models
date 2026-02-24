@@ -37,5 +37,31 @@ public class JcrFileReadExceptionTest {
     assertEquals("Unable to read '/path/to/resource': Test Message", exception.getMessage());
   }
 
+  @Test
+  public void testJcrFileReadExceptionWithCause() {
+    Exception cause = new Exception("Cause");
+    JcrFileReadException exception = new JcrFileReadException("Test", cause);
+    assertEquals(cause, exception.getCause());
+  }
+
+  @Test
+  public void testJcrFileReadExceptionWithPathAndCause() {
+    Exception cause = new Exception("Cause");
+    JcrFileReadException exception = new JcrFileReadException("/path", "Test", cause);
+    assertEquals("Unable to read '/path': Test", exception.getMessage());
+    assertEquals(cause, exception.getCause());
+  }
+
+  @Test
+  public void testJcrFileReadExceptionWithEmptyPath() {
+    JcrFileReadException exception = new JcrFileReadException("", "Test Message");
+    assertEquals("Unable to read '': Test Message", exception.getMessage());
+  }
+
+  @Test
+  public void testJcrFileReadExceptionIsException() {
+    JcrFileReadException exception = new JcrFileReadException("Test");
+    assertTrue(exception instanceof Exception);
+  }
 
 }

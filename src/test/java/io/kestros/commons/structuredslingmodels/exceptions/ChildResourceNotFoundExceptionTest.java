@@ -20,6 +20,7 @@
 package io.kestros.commons.structuredslingmodels.exceptions;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -50,6 +51,36 @@ public class ChildResourceNotFoundExceptionTest {
         "/parent", "My Message");
     assertEquals("Unable to adapt 'child-name' under '/parent': My Message",
         exception.getMessage());
+  }
+
+  @Test
+  public void testGetMessageWithEmptyChildName() {
+    ChildResourceNotFoundException exception = new ChildResourceNotFoundException("",
+        "/parent");
+    assertEquals("Unable to adapt '' under '/parent': Child not found.",
+        exception.getMessage());
+  }
+
+  @Test
+  public void testGetMessageWithEmptyParentPath() {
+    ChildResourceNotFoundException exception = new ChildResourceNotFoundException("child-name",
+        "");
+    assertEquals("Unable to adapt 'child-name' under '': Child not found.",
+        exception.getMessage());
+  }
+
+  @Test
+  public void testGetMessageWithEmptyCustomMessage() {
+    ChildResourceNotFoundException exception = new ChildResourceNotFoundException("child-name",
+        "/parent", "");
+    assertEquals("Unable to adapt 'child-name' under '/parent': ",
+        exception.getMessage());
+  }
+
+  @Test
+  public void testExceptionIsThrowable() {
+    ChildResourceNotFoundException exception = new ChildResourceNotFoundException("child", "/parent");
+    assertTrue(exception instanceof Exception);
   }
 
 }

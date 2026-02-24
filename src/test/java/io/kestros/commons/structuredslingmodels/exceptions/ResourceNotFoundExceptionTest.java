@@ -20,6 +20,7 @@
 package io.kestros.commons.structuredslingmodels.exceptions;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -35,6 +36,32 @@ public class ResourceNotFoundExceptionTest {
   public void testGetMessageWhenResourceAndMessage() {
     ResourceNotFoundException exception = new ResourceNotFoundException("/resource", "My Message");
     assertEquals("Unable to adapt '/resource': My Message", exception.getMessage());
+  }
+
+  @Test
+  public void testGetMessageWithEmptyResourcePath() {
+    ResourceNotFoundException exception = new ResourceNotFoundException("");
+    assertEquals("Unable to adapt '': Resource not found.", exception.getMessage());
+  }
+
+  @Test
+  public void testGetMessageWithEmptyCustomMessage() {
+    ResourceNotFoundException exception = new ResourceNotFoundException("/resource", "");
+    assertEquals("Unable to adapt '/resource': ", exception.getMessage());
+  }
+
+  @Test
+  public void testExceptionWithLongPath() {
+    String longPath = "/very/long/resource/path/with/many/segments/that/should/work";
+    ResourceNotFoundException exception = new ResourceNotFoundException(longPath);
+    assertEquals("Unable to adapt '" + longPath + "': Resource not found.", exception.getMessage());
+  }
+
+  @Test
+  public void testExceptionIsSerializable() {
+    ResourceNotFoundException exception = new ResourceNotFoundException("/resource", "My Message");
+    assertEquals("Unable to adapt '/resource': My Message", exception.getMessage());
+    assertTrue(exception instanceof Exception);
   }
 
 }

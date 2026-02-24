@@ -55,6 +55,29 @@ public class MatchingResourceTypeNotFoundExceptionTest {
     assertEquals("Unable to retrieve model for /path/to/resource: Test Message", exception.getMessage());
   }
 
+  @Test
+  public void testExceptionWithEmptyMessage() {
+    MatchingResourceTypeNotFoundException exception = new MatchingResourceTypeNotFoundException("");
+    assertEquals("Unable to retrieve model for : No matching Sling Model type found.", exception.getMessage());
+  }
 
+  @Test
+  public void testExceptionWithEmptyResourcePath() {
+    MatchingResourceTypeNotFoundException exception = new MatchingResourceTypeNotFoundException("", "Test Message");
+    assertEquals("Unable to retrieve model for : Test Message", exception.getMessage());
+  }
+
+  @Test
+  public void testExceptionCauseIsPreserved() {
+    Exception cause = new Exception("Original cause");
+    MatchingResourceTypeNotFoundException exception = new MatchingResourceTypeNotFoundException("/path", "Test", cause);
+    assertEquals(cause, exception.getCause());
+  }
+
+  @Test
+  public void testExceptionIsThrowable() {
+    MatchingResourceTypeNotFoundException exception = new MatchingResourceTypeNotFoundException("Test");
+    assertTrue(exception instanceof Exception);
+  }
 
 }
