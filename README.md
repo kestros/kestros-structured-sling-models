@@ -1,293 +1,226 @@
-# Structured Sling Models
+# Kestros Structured Sling Models
 
-A baseline framework that builds off of Sling Models to provide a structured and consistent way to
- build and adapt to Sling Models.
+Foundational Sling Model framework providing base model types, structured resource adaption, and model interaction utilities for Kestros/Sling instances.
 
-## Install
-To add this bundle to a project, add the following dependency to your `pom.xml`.
+## Purpose
+
+`kestros-structured-sling-models` is the core model layer of the Kestros architecture. It provides `BaseResource`, `BasePage`, and `BaseSlingModel` -- the base classes that all Kestros Sling Models extend. It also provides `SlingModelUtils`, a utility class for type-safe resource adaption based on `sling:resourceType` matching.
+
+Every Kestros module that defines Sling Models depends on this bundle. If you are creating a new model, component, or page type, you will extend one of the base classes provided here.
+
+## Installation & Build
+
+**Maven coordinates:**
+
+```xml
+<dependency>
+  <groupId>io.kestros.commons</groupId>
+  <artifactId>kestros-structured-sling-models</artifactId>
+  <version>0.2.5</version>
+</dependency>
 ```
-<dependencies>
-  <dependency>
-    <groupId>io.kestros.commons</groupId>
-      <artifactId>kestros-structured-sling-models</artifactId>
-    <version>--version--</version>
-  </dependency>
-</dependencies>
-```
-The bundle can either be installed manually from the Felix console, or embedded into a content-package.
 
-## Extending BaseResource
+**Build:**
 
-BaseResource is a simple Sling Model that adapts from Sling Resource.  It provides general information about the Resource such as path, name title. More importantly, it provides a baseline for the structured adaption framework.  In order to make full use of all of the functionality in this bundle, it is recommended that your Sling Models (which adapt from Resource.class) extend BaseResource (or another Model that is a descendent of BaseResource).  
+```bash
+mvn clean package
 ```
+
+**Deploy to a Sling instance:**
+
+```bash
+curl -u admin:admin \
+  -F "action=install" \
+  -F "bundlestart=true" \
+  -F "bundlefile=@target/kestros-structured-sling-models-0.2.5.jar" \
+  "http://localhost:8080/system/console/bundles"
+```
+
+## Configuration
+
+No OSGi configuration required. This bundle provides model classes and utilities only.
+
+## API / Service Usage
+
+### Core Model Types
+
+#### `BaseSlingModel` (Interface)
+
+The root interface for all Kestros Sling Models.
+
+```java
+public interface BaseSlingModel {
+    Resource getResource();
+}
+```
+
+#### `BaseResource`
+
+Baseline Sling Model for all resource types. Adapts from `Resource` and provides property access, resource type resolution, and metadata retrieval.
+
+```java
+@Model(adaptables = Resource.class, resourceType = "sling/servlet/default")
+public class BaseResource implements BaseSlingModel
+```
+
+**Key methods:**
+
+| Method | Returns | Description |
+|--------|---------|-------------|
+| `getResource()` | `Resource` | The underlying JCR resource |
+| `getName()` | `String` | Resource name |
+| `getPath()` | `String` | Resource path |
+| `getTitle()` | `String` | `jcr:title` value, or resource name if not set |
+| `getDescription()` | `String` | `jcr:description` value, or empty string |
+| `getResourceType()` | `String` | `sling:resourceType`, falling back to `jcr:primaryType` |
+| `getSlingResourceType()` | `String` | `sling:resourceType` property only |
+| `getResourceSuperType()` | `String` | `sling:resourceSuperType` property |
+| `getJcrPrimaryType()` | `String` | `jcr:primaryType` property |
+| `getParent()` | `BaseResource` | Parent resource adapted to BaseResource |
+| `getProperty(key, defaultValue)` | `<T>` | Property value from the resource's ValueMap |
+| `getResourceResolver()` | `ResourceResolver` | Resolver associated with this resource |
+| `getLastModifiedDate()` | `Date` | `jcr:lastModified` value |
+| `getCreatedDate()` | `Date` | `jcr:created` value |
+
+**Usage -- extending BaseResource:**
+
+```java
 @Model(adaptables = Resource.class, resourceType = "myapp/myresource")
 public class MyResource extends BaseResource {
-```
 
-### Getting Property Values
-To retrieve a resource's property values either the `getProperty` or `getProperties` method can be used.
-```
-public String getMyProperty() {
-  return getProperty("myProperty", "default value");
-}
-```
-```
-public boolean getMyProperty() {
-  return getProperty("myProperty", Boolean.FALSE);
-}
-```
-```
-public String getMyProperty() {
-  return getProperties().get("myProperty", "default value");
-}
-```
-```
-public boolean getMyBooleanProperty() {
-  return getProperties().get("myBooleanProperty", Boolean.FALSE);
-}
-
-```
-
-## Structured Model Adaption
-`SlingModelUtils` has been provided to make retrieving resources as compatible model types easier.  To make use of this, Models should be configured using the `@Model` annotation with `resourceType` configured.
-
-```
-@Model(adaptables = Resource.class, resourceType = "myapp/myresource")
-public class MyResource extends BaseResource {
-```
-### Get Resources As Specified Type
-`SlingModelUtils` is a utility Class that helps adapt Resources to their Model types.  If There is an issue retrieving the adapted Resource, a specific Exception type will be thrown, giving more context as to why the adaption failed.  All thrown Exceptions extend `ModelAdaptionException`, which can be used as a catch-all. 
-#### Get Resource by Path
-
-To retrieve a resource as a specific type, use `SlingModelUtils.getResourceAsType`.  If the requested Resource cannot be adapted to the specified Model type, `InvalidResourceTypeException` will be thrown.  If the Resource is not found, `ResourceNotFoundException` will be thrown.
-```
-try {
-      SlingModelUtils.getResourceAsType("/content/my-resource", getResourceResolver(), MyResource.class);
-    } catch (InvalidResourceTypeException exception) {
-      // resource could not be adapted to the Model Type
-    } catch (ResourceNotFoundException exception) {
-      // No resource was found
+    public String getMyProperty() {
+        return getProperty("myProperty", "default value");
     }
+}
 ```
 
-#### Get Child Resource
-To retrieve a child Resource as a specific type, use `SlingModelUtils.getChildAsType`.
+#### `BasePage`
+
+Base model for page types. Extends `BaseResource` and automatically handles `jcr:content` child resources -- property access transparently reads from the `jcr:content` node when present.
+
+```java
+@Model(adaptables = Resource.class)
+public class BasePage extends BaseResource
 ```
+
+If the model is adapted from a `jcr:content` resource, `BasePage` automatically resolves to the parent page resource, so `getName()`, `getPath()`, and `getProperties()` always refer to the page level.
+
+#### `BaseRequestContext`
+
+Base model for request-scoped contexts. Adapts from `SlingHttpServletRequest`.
+
+### Annotations
+
+#### `@KestrosModel`
+
+Marks a class as a Kestros model. Supports optional `contextModel` and `docPaths` attributes.
+
+```java
+@KestrosModel(contextModel = BaseRequestContext.class,
+              docPaths = {"/content/guide-articles/..."})
+```
+
+#### `@KestrosProperty`
+
+Documents model properties with description and JCR property name.
+
+```java
+@KestrosProperty(description = "Title of the resource.",
+                 jcrPropertyName = "jcr:title",
+                 configurable = true)
+public String getTitle() { ... }
+```
+
+### SlingModelUtils
+
+Static utility class for type-safe resource adaption. Uses the `@Model` annotation's `resourceType` value to validate adaption.
+
+| Method | Description |
+|--------|-------------|
+| `adaptTo(resource, type)` | Adapts a resource to a type; throws `InvalidResourceTypeException` if resource type does not match |
+| `getResourceAsType(path, resolver, type)` | Gets a resource by path and adapts to the specified type |
+| `getResourceAsBaseResource(path, resolver)` | Gets a resource by path as `BaseResource` |
+| `getChildAsType(name, resource, type)` | Gets a named child resource and adapts to a type |
+| `getChildrenOfType(resource, type)` | Returns all children that can be adapted to the specified type |
+| `getChildrenAsClosestTypes(resource, modelFactory)` | Returns children adapted to their closest matching registered model type |
+| `getResourceAsClosestType(resource, modelFactory)` | Dynamically adapts a resource to its closest registered model type |
+| `getParentResourceAsBaseResource(model)` | Gets the parent resource as `BaseResource` |
+| `getFirstAncestorOfType(model, type)` | Walks up the tree to find the first ancestor matching the specified type |
+
+**Usage examples:**
+
+```java
+// Get a resource by path as a specific type
 try {
-      SlingModelUtils.getChildAsType("child", this, MyResource.class);
-    } catch (InvalidResourceTypeException exception) {
-      // `child` was found, but could not be adapted to `MyResource.class`
-    } catch (ChildResourceNotFoundException exception) {
-      // No child with the name `child` was found. 
-    }
-```
-
-#### Get All Children of Type
-To retrieve all child Resources as a specific type, use `SlingModelUtils.getChildrenOfType`.  If a child cannot be adapted to the specified type, it will be excluded from the returned `List`.
-```
-SlingModelUtils.getChildrenOfType(this,MyResource.class);
-```
-
-### Dynamic Model Adaption
-Resources can be dynamically adapted to a Model type, using `SlingModelUtils.getResourceAsClosestType`.  If no Model types match the `sling:resourceType` or `jcr:primaryType` of the Resource, `InvalidResourceTypeException` will be thrown.
-```
-try {
-      SlingModelUtils.getResourceAsClosestType(resource, modelFactory);
-    } catch (InvalidResourceTypeException exception) {
-      // No matching Model type was found.
-    }
-```
-
-## Model Validation
-
-A structured Model validation framework has been provided, which can be used on any Model that 
-extends `BaseResource` or `BaseSlingRequest`.
-
-Validation messages can be configured to one of three levels:
-* `ModelValidationMessageType.ERROR` 
-* `ModelValidationMessageType.WARNING`
-* `ModelValidationMessageType.INFO`
-
-### Adding a Validation Service to a Model.
-A Model Validation Service can be attached to a Model Type using the `@StructuredModel` annotation.
-  This will set `ModelValidators` to automatically run after a Model is initially adapted.
-```
-@StructuredModel(validationService = MyResourceModelValidationService.class)
-@Model(adaptables = Resource.class, resourceType = "myapp/myresource")
-public class MyResource extends BaseResource {
+    MyResource res = SlingModelUtils.getResourceAsType(
+        "/content/my-resource", resolver, MyResource.class);
+} catch (InvalidResourceTypeException e) {
+    // Resource type mismatch
+} catch (ResourceNotFoundException e) {
+    // Resource not found
 }
+
+// Get all children of a specific type
+List<MyResource> children = SlingModelUtils.getChildrenOfType(parentResource, MyResource.class);
+
+// Dynamic adaption based on registered model types
+MyResource res = SlingModelUtils.getResourceAsClosestType(resource, modelFactory);
 ```
 
-### Creating the Validation Service Class
-To create a new `ModelValidationService`, extend the `ModelValidationService` class.
-```
-public class MyresourecValidationService extends ModelValidationService {
+### FileModelUtils / FileUtils
 
-  @Override
-  public <T extends BaseSlingModel> T getModel() {
-    return null;
-  }
+Utility classes for working with JCR file resources (`nt:file`). Use `FileModelUtils.adaptToFileType()` to adapt file resources with type validation.
 
-  @Override
-  public void registerValidators() {
+### File Types
 
-  }
-}
-```
-The `getModel()` method, will have to be updated to return the Model type of the Model that the
- Service validates.
-```
-  @Override
-  public MyResource getModel() {
-    return (MyResource) getGenericModel();
-  }
+#### `BaseFile`
 
-```
+Base model for file resources. Extend this instead of `BaseResource` when working with `nt:file` resources.
 
-#### Creating ModelValidators
-The `ModelValidator` interface provides a structure for consistent and modular validation.
+#### `FileType`
 
-The following Methods must be configured:
-* `isValid` the boolean logic that determines whether the current Model passes the current `ModelValidator`.
-* `getMessage` the message to be shown when the model fails this validator.
-* `isAlwaysRun` whether or not to always run the current validator during Sling Model adaption.  
-If false, the current validator will only be checked during `model.doDetailedValidation()`.  It is 
-generally recommended to return false when the Validator must look to another Model type when 
-determining validity, because this will trigger that model's validation (as well as subsequent model 
-validation).  Running detailed validation only when it is needed can potentially save a significant 
-amount of time/processing power when adapt large quantities of models.
-* `getType` the level the message should be shown at if the validator fails. 
+Interface defining a file type with extension and MIME type validation.
 
-To create a new `ModelValidator`, create a new implementation of `ModelValidator`
-```
-public ModelValidator isPropertyValueValid() {
-    return new ModelValidator() {
-      @Override
-      public boolean isValid() {
-        return StringUtils.isNotEmpty(getModel().getName());
-      }
+### Exceptions
 
-      @Override
-      public String getMessage() {
-        return "Has a name";
-      }
+| Exception | Thrown When |
+|-----------|------------|
+| `ResourceNotFoundException` | A resource at the specified path does not exist |
+| `InvalidResourceTypeException` | A resource cannot be adapted to the target type due to resource type mismatch |
+| `ChildResourceNotFoundException` | A named child resource does not exist |
+| `NoParentResourceException` | The resource has no parent (root resource) |
+| `NoValidAncestorException` | No ancestor matching the target type was found |
+| `MatchingResourceTypeNotFoundException` | No registered model type matches the resource |
+| `ModelAdaptionException` | Base exception for all model adaption failures |
+| `JcrFileReadException` | A JCR file resource could not be read |
 
-      @Override
-      public boolean isAlwaysRun() {
-        return true;
-      }
+## Dependencies
 
-      @Override
-      public ModelValidationMessageType getType() {
-        //ModelValidationMessageType.ERROR
-        //ModelValidationMessageType.WARNING
-        //ModelValidationMessageType.INFO
-        return ModelValidationMessageType.ERROR;
-      }
-    };
-  }
-```
+### Upstream
 
+| Dependency | Maven Coordinates |
+|------------|-------------------|
+| kestros-common-utils | `io.kestros.commons:kestros-common-utils:[0.0.3,0.0.99]` |
+| Apache Sling API | `org.apache.sling:org.apache.sling.api` |
+| Apache Sling Models API | `org.apache.sling:org.apache.sling.models.api` |
+| Apache Jackrabbit | `org.apache.jackrabbit:jackrabbit-jcr-commons` |
 
+### Downstream (modules that depend on this)
 
-#### Creating ModelValidatorBundle
-`ModelValidatorBundle` is an abstract implementation of `ModelValidator` that can be extended to
- provided more structured validation logic. A `ModelValidatorBundle` has one or more 
- `ModelValidators` or `ModelValidatorBundles` added to it, one or all of which must pass for the 
- bundle to pass (depending on the configuration). 
+This is a foundational dependency used by nearly every Kestros module, including:
 
+- `kestros-osgi-service-utils`
+- `kestros-validation-api`
+- `kestros-validation-core`
+- `kestros-site-management-core`
+- `kestros-content-objects`
+- `kestros-sling-ui-libraries`
+- `kestros-component-types-core`
 
-To create a ModelValidator bundle,  
-```
-new ModelValidatorBundle() {
-      @Override
-      public boolean isAlwaysRun() {
-        return false;
-      }
+## Contribution Notes
 
-      @Override
-      public ModelValidationMessageType getType() {
-        return null;
-      }
-
-      @Override
-      public void registerValidators() {
-
-      }
-
-      @Override
-      public boolean isAllMustBeTrue() {
-        return false;
-      }
-    };
-```
-#### Register validators to a ModelValidatorBundle
-Multiple `ModelValidator` and `ModelValidatorBundle` implementations can be added to a 
-`ModelValidatorBundle`. To do so, pass those to the `addBasicValidator` method, inside of the overridden
- `reigsterValidators` method. 
-```
-@Override
-public void registerValidators() {
-  addBasicValidator(myValidator);
-  addBasicValidator(myValidatorBundle);
-}
-```
-
-##### All Validators Must Pass
-For all validators in a bundle to pass in order for the current `ModelValidatorBundle` to be 
-considered valid, return `true` for `isAllMustBeTrue`.
-``` 
-@Override
-public boolean isAllMustBeTrue() {
- return true;
-}
-```
-
-##### One Validator Must Pass
-For only one validator in a bundle to pass in order for the current `ModelValidatorBundle` to be 
-considered valid, return `false` for `isAllMustBeTrue`.
-``` 
-@Override
-public boolean isAllMustBeTrue() {
- return true;
-}
-```
-
-
-### Model Validation Using @PostConstruct
-Validation logic can also be added to the Model type in the `@PostConstruct` method.
-
-```
-@PostConstruct
-@Override
-public void validate() {
-  if(StringUtils.isEmpty(getMyProperty()) {
-    addErrorMessage("My error message.");
-    // addWarningMessage("My warning message.");
-    // addInfoMessage("My info message.");
-  }
-}
-``` 
-
-#### Registering ModelValidators to the Service
-To add a `ModelValidator` or `ModelValidatorBundle` to a `ModelValidationService`, so that it is 
-automatically run when a model is constructed, pass it into the `addBasicValidator` method inside of the
-`ModelValidationService`'s overridden `registerValidators` method.
-
-```
-@Override
-public void registerValidators() {
-  addBasicValidator(myValidator);
-  addBasicValidator(myValidatorBundle);
-}
-```
-
-#### Using Common ModelValidators
-Common validators have been provided in the `CommonValidators` class.
-
-## Adapting File Resources
-Since all file Resources have a `jcr:primaryType` of `nt:file`, `InvalidResourceTypeException` can 
-never be thrown when using `SlingModelUtils`.  To solve for this, `BaseFile` should be extended 
-instead of `BaseResource`.  When adapting a Resource to the new Class, use
- `FileModelUtils.adaptToFileType(myResource, MyFileType.class)`. If there are any validation errors,
- `InvalidResourceTypeException` will be thrown.
+- **Branch from:** `develop`
+- **PR target:** `develop`
+- **Branch naming:** `{type}/TASK-NNN-short-description` (e.g. `fix/TASK-055-base-resource-null-check`)
+- **Commit format:** `[kestros-structured-sling-models]: <action>, <brief result>`
+- **Build verification:** Run `mvn clean package` before submitting; all tests must pass
