@@ -12,12 +12,8 @@ Every Kestros module that defines Sling Models depends on this bundle. If you ar
 
 **Maven coordinates:**
 
-```xml
-<dependency>
-  <groupId>io.kestros.commons</groupId>
-  <artifactId>kestros-structured-sling-models</artifactId>
-  <version>0.2.5</version>
-</dependency>
+```
+io.kestros.commons:kestros-structured-sling-models
 ```
 
 **Build:**
@@ -29,11 +25,7 @@ mvn clean package
 **Deploy to a Sling instance:**
 
 ```bash
-curl -u admin:admin \
-  -F "action=install" \
-  -F "bundlestart=true" \
-  -F "bundlefile=@target/kestros-structured-sling-models-0.2.5.jar" \
-  "http://localhost:8080/system/console/bundles"
+mvn clean install -P installBundle -Dsling.host=localhost -Dsling.port=8080
 ```
 
 ## Configuration
@@ -200,7 +192,7 @@ Interface defining a file type with extension and MIME type validation.
 
 | Dependency | Maven Coordinates |
 |------------|-------------------|
-| kestros-common-utils | `io.kestros.commons:kestros-common-utils:[0.0.3,0.0.99]` |
+| kestros-common-utils | `io.kestros.commons:kestros-common-utils` |
 | Apache Sling API | `org.apache.sling:org.apache.sling.api` |
 | Apache Sling Models API | `org.apache.sling:org.apache.sling.models.api` |
 | Apache Jackrabbit | `org.apache.jackrabbit:jackrabbit-jcr-commons` |
@@ -216,11 +208,3 @@ This is a foundational dependency used by nearly every Kestros module, including
 - `kestros-content-objects`
 - `kestros-sling-ui-libraries`
 - `kestros-component-types-core`
-
-## Contribution Notes
-
-- **Branch from:** `develop`
-- **PR target:** `develop`
-- **Branch naming:** `{type}/TASK-NNN-short-description` (e.g. `fix/TASK-055-base-resource-null-check`)
-- **Commit format:** `[kestros-structured-sling-models]: <action>, <brief result>`
-- **Build verification:** Run `mvn clean package` before submitting; all tests must pass
