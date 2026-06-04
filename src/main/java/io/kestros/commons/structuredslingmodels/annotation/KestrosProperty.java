@@ -74,4 +74,14 @@ public @interface KestrosProperty {
    */
   @Nullable
   String sampleValue() default StringUtils.EMPTY;
+
+  /**
+   * Whether to ignore this method during model documentation validation. A public method that is
+   * not a configurable JCR property — for example a helper or structural accessor required by a
+   * template — can set this to true so it satisfies validation without being treated as a
+   * documented property.
+   *
+   * @return Whether to ignore this method during model documentation validation.
+   */
+  boolean ignore() default false;
 }
