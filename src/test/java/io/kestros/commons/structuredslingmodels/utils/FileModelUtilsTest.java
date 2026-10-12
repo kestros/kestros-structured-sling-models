@@ -21,6 +21,7 @@ package io.kestros.commons.structuredslingmodels.utils;
 
 
 import static io.kestros.commons.structuredslingmodels.utils.FileModelUtils.adaptToFileType;
+import static io.kestros.commons.structuredslingmodels.utils.FileModelUtils.getChildrenOfFileType;
 import static io.kestros.commons.structuredslingmodels.utils.FileModelUtils.getResourceAsFileType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -31,6 +32,7 @@ import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFound
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.apache.sling.api.resource.Resource;
@@ -202,6 +204,55 @@ public class FileModelUtilsTest {
 
     assertEquals("file.sample", FileModelUtils.getChildAsFileType("file.sample",
         Objects.requireNonNull(resource.adaptTo(BaseResource.class)), SampleFile.class).getName());
+  }
+
+  @Test
+  public void testGetChildrenOfFileType() {
+    resource = context.create().resource("/resource");
+    properties.put("jcr:mimeType", "sample/test");
+    context.create().resource("/resource/file-1.sample", properties);
+    context.create().resource("/resource/file-2.sample", properties);
+    context.create().resource("/resource/file.invalid", properties);
+    properties.put("jcr:mimeType", "sample-secondary/test");
+    context.create().resource("/resource/file-3.sample", properties);
+    context.create().resource("/resource/file.sample-secondary", properties);
+
+    List<SampleFile> children = getChildrenOfFileType(resource, SampleFile.class);
+
+    assertEquals(2, children.size());
+    assertEquals("file-1.sample", children.get(0).getName());
+    assertEquals("file-2.sample", children.get(1).getName());
+  }
+
+  @Test
+  public void testGetChildrenOfFileTypeWhenNoChildren() {
+    resource = context.create().resource("/resource");
+
+    assertEquals(0, getChildrenOfFileType(resource, SampleFile.class).size());
+  }
+
+  @Test
+  public void testGetChildrenOfFileTypeWhenNoChildMatches() {
+    resource = context.create().resource("/resource");
+    properties.put("jcr:mimeType", "sample/test");
+    context.create().resource("/resource/file.invalid", properties);
+    context.create().resource("/resource/file.sample-secondary", properties);
+
+    assertEquals(0, getChildrenOfFileType(resource, SampleFile.class).size());
+  }
+
+  @Test
+  public void testGetChildrenOfFileTypeWhenPassingBaseResource() {
+    resource = context.create().resource("/resource");
+    properties.put("jcr:mimeType", "sample-secondary/test");
+    context.create().resource("/resource/file.sample-secondary", properties);
+    context.create().resource("/resource/file.sample", properties);
+
+    List<SampleFileSecondary> children = getChildrenOfFileType(
+        Objects.requireNonNull(resource.adaptTo(BaseResource.class)), SampleFileSecondary.class);
+
+    assertEquals(1, children.size());
+    assertEquals("file.sample-secondary", children.get(0).getName());
   }
 
 }
